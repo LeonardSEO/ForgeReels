@@ -24,9 +24,11 @@ When a lesson appears twice, promote it into the right reference file (or a scri
   final -14.0 LUFS, -1.4 dBTP, final-mix read-back WER 0.
 - Bug fixed (test first): beatmix's speech mask dropped the last partial 50 ms window and crashed whenever the voice
   length was not a whole number of windows.
-- pace_check counts a smooth camera push over dark, soft gradients as "still" (per-frame change under its 14-level
-  threshold): the hook here visibly pushes in 1.6 s and still reads "17 still frames". Judge the first 2 s by eye
-  when the camera is moving; the hook motion that the checker sees is a cut, a pop or high-contrast movement.
+- pace_check counted a smooth camera push over dark, soft gradients as "still" (under 14 grey levels per frame):
+  "17 still frames" in a hook that visibly pushes. FIXED (test first, `tests/test_pace_check.py`): a frame now also
+  counts as motion when it differs from the frame 0.25 s back (`--window`). Same reel: 17 -> 5, and those 5
+  (frames 1-5) really are near-identical to frame 0 (under 20 changed pixels): the push eases in for 0.17 s. Next
+  reel: the camera moves from frame 1 at full speed.
 - Hook fixes that worked: capture loops at constant speed from frame 0 (no ease-in), open wide and push into the
   subject on the first word, strike the claim the voice contradicts ("blur in a box" on "Real glass"), scan-reveal
   the technical diagram.
