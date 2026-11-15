@@ -108,6 +108,18 @@ def resolve(plan, words, parts, dur):
     return sorted(out, key=lambda x: x["t"]), errors
 
 
+def caption_data(words, events):
+    """Caption groups for the runtime: text + times, and key=True on every word that triggers a visual event (the
+    headline captions box it, so the viewer sees which word moved the picture)."""
+    keys = {(e["line"], e["i"]) for e in events}
+    out = []
+    for g in caption_groups(words):
+        first = next(((w["line"], w["i"]) for w in g if (w["line"], w["i"]) in keys), None)   # one box per phrase
+        out.append([dict({k: w[k] for k in ("text", "start", "end")}, **({"key": True} if (w["line"], w["i"]) == first else {}))
+                    for w in g])
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--project", required=True)
@@ -123,7 +135,7 @@ def main():
     if errors:
         print("\n".join(["", "PLAN ERRORS:"] + errors))
         return 1
-    groups = [[{k: w[k] for k in ("text", "start", "end")} for w in g] for g in caption_groups(words)]
+    groups = caption_data(words, events)
     duration = round(max(w["end"] for w in words) + TAIL, 2)
     (pj / "assets").mkdir(parents=True, exist_ok=True)
     data = {"scene": scene, "events": events, "captions": groups, "duration": duration}

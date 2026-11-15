@@ -26,6 +26,19 @@
    ]
   },
   {
+   "type": "steps",
+   "id": "rail",
+   "x": 80,
+   "y": 820,
+   "w": 920,
+   "steps": [
+    "Log in",
+    "Cookie",
+    "Every visit",
+    "It's you"
+   ]
+  },
+  {
    "type": "nodes",
    "id": "net",
    "x": 90,

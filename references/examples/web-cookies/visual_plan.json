@@ -130,6 +130,38 @@
    "action": "type",
    "object": "site.title",
    "dur": 0.7
+  },
+  {
+   "word_ref": {
+    "line": 2,
+    "expected": "log"
+   },
+   "action": "highlight",
+   "object": "rail.s1"
+  },
+  {
+   "word_ref": {
+    "line": 2,
+    "expected": "cookie"
+   },
+   "action": "highlight",
+   "object": "rail.s2"
+  },
+  {
+   "word_ref": {
+    "line": 3,
+    "expected": "every"
+   },
+   "action": "highlight",
+   "object": "rail.s3"
+  },
+  {
+   "word_ref": {
+    "line": 4,
+    "expected": "knows"
+   },
+   "action": "highlight",
+   "object": "rail.s4"
   }
  ]
 }

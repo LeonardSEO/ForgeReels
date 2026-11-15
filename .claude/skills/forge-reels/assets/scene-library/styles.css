@@ -13,12 +13,36 @@
 .fr-card { background: var(--card); border-radius: 28px; box-shadow: 0 2px 0 var(--edge), 0 30px 60px -20px var(--shadow); }
 
 /* ---------- captions (same word times as the animations) */
-.fr-captions { position: absolute; left: 100px; right: 150px; top: 1135px; display: flex; justify-content: center; }
-.fr-captions .pill { display: inline-flex; flex-wrap: wrap; justify-content: center; gap: 0 16px; max-width: 960px;
+.fr-captions { position: absolute; left: 100px; right: 150px; display: flex; justify-content: center; text-align: center; }
+/* headline (default): the spoken phrase at the top, words appear as they are said, the key word in a selection box */
+.fr-captions.headline { top: 270px; }
+.fr-captions.headline .pill { display: inline-flex; flex-wrap: wrap; justify-content: center; gap: 4px 18px; max-width: 900px; }
+.fr-captions.headline span { font-size: 66px; font-weight: 560; letter-spacing: -0.03em; line-height: 1.12;
+  color: var(--muted); text-shadow: 0 2px 18px var(--bg); }
+.fr-captions.headline span.next { visibility: hidden; }
+.fr-captions.headline span.now { color: var(--ink); font-weight: 820; }
+.fr-captions.headline span.key { color: var(--ink); font-weight: 820; padding: 0 12px; margin: 0 -6px;
+  outline: 3px solid var(--accent2); outline-offset: 2px; background:
+  linear-gradient(var(--accent2), var(--accent2)) 0 0 / 11px 11px no-repeat,
+  linear-gradient(var(--accent2), var(--accent2)) 100% 0 / 11px 11px no-repeat,
+  linear-gradient(var(--accent2), var(--accent2)) 0 100% / 11px 11px no-repeat,
+  linear-gradient(var(--accent2), var(--accent2)) 100% 100% / 11px 11px no-repeat, var(--key-bg); }
+/* pill: a karaoke bar at the bottom of the safe zone */
+.fr-captions.pill-style { top: 1135px; }
+.fr-captions.pill-style .pill { display: inline-flex; flex-wrap: wrap; justify-content: center; gap: 0 16px; max-width: 960px;
   padding: 14px 30px 20px; border-radius: 26px; background: var(--cap-bg); box-shadow: 0 20px 50px -18px rgba(0,0,0,.45); }
-.fr-captions span { font-size: 64px; font-weight: 820; letter-spacing: -0.025em; line-height: 1.16; color: var(--cap-ink); }
-.fr-captions span.next { opacity: .42; }
-.fr-captions span.now { color: var(--accent); }
+.fr-captions.pill-style span { font-size: 64px; font-weight: 820; letter-spacing: -0.025em; line-height: 1.16; color: var(--cap-ink); }
+.fr-captions.pill-style span.next { opacity: .42; }
+.fr-captions.pill-style span.now, .fr-captions.pill-style span.key.now { color: var(--accent); }
+
+/* ---------- steps (chapter rail) */
+.fr-steps .line { position: absolute; left: 20px; right: 20px; top: 21px; height: 3px; background: var(--line-strong); }
+.fr-steps { display: flex; justify-content: space-between; }
+.fr-steps .step { position: relative; display: flex; flex-direction: column; align-items: center; gap: 12px; min-width: 0; }
+.fr-steps .step i { width: 44px; height: 44px; border-radius: 50%; background: var(--bg); border: 3px solid var(--line-strong);
+  box-shadow: inset 0 0 0 calc(var(--hl, 0) * 22px) var(--accent2); }
+.fr-steps .step span { font-size: 24px; font-weight: 750; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--muted); opacity: calc(.55 + var(--hl, 0) * .45); }
 
 /* ---------- phone */
 .fr-phone .body { position: absolute; inset: 0; border-radius: calc(var(--w) * .16); padding: calc(var(--w) * .035);

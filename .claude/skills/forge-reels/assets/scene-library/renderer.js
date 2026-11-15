@@ -13,12 +13,12 @@
              chrome: "#eef0f3", line: "#e3e6eb", "line-strong": "#c9ced6", edge: "rgba(20,22,26,.06)",
              shadow: "rgba(20,22,26,.28)", dot: "rgba(20,22,26,.10)", vignette: "rgba(120,100,70,.10)",
              accent: "#ff5a1f", "accent-glow": "rgba(255,90,31,.45)", accent2: "#2f6bff", marker: "rgba(255,196,0,.55)",
-             "cap-bg": "rgba(16,18,24,.9)", "cap-ink": "#ffffff" },
+             "cap-bg": "rgba(16,18,24,.9)", "cap-ink": "#ffffff", "key-bg": "rgba(47,107,255,.10)" },
     dark:  { bg: "#0b0d12", ink: "#f2f4f8", "ink-soft": "#d5dae3", muted: "#8b93a3", card: "#161a22", screen: "#10131a",
              chrome: "#1d222c", line: "#262c38", "line-strong": "#3a4252", edge: "rgba(255,255,255,.05)",
              shadow: "rgba(0,0,0,.6)", dot: "rgba(255,255,255,.07)", vignette: "rgba(0,0,0,.45)",
              accent: "#ff6b35", "accent-glow": "rgba(255,107,53,.5)", accent2: "#4d8bff", marker: "rgba(255,196,0,.35)",
-             "cap-bg": "rgba(255,255,255,.95)", "cap-ink": "#0b0d12" },
+             "cap-bg": "rgba(255,255,255,.95)", "cap-ink": "#0b0d12", "key-bg": "rgba(77,139,255,.16)" },
   };
 
   const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
@@ -145,6 +145,12 @@
     return [10, 10, `<svg data-obj="${c.id}.arrow" class="arrow" width="10" height="10"><path pathLength="1" d="M0 0 L${to.dx} ${to.dy}"/><circle cx="${to.dx}" cy="${to.dy}" r="9" fill="var(--ink)"/></svg><div data-obj="${c.id}.label" class="label">${esc(c.text)}</div>`, "fr-callout"];
   };
 
+  B.steps = (c) => {
+    const steps = c.steps || [], w = c.w || 920, id = c.id;
+    const st = steps.map((l, i) => `<div data-obj="${id}.s${i + 1}" class="step"><i></i><span>${esc(l)}</span></div>`).join("");
+    return [w, c.h || 96, `<div class="line"></div>${st}`];
+  };
+
   B.image = (c) => [c.w || 900, c.h || 600, `<img src="${esc(c.src)}" alt="">`, "fr-image" + (c.card === false ? "" : " fr-card")];
 
   // ---------- mount + render
@@ -169,7 +175,10 @@
     }
     stage.appendChild(world);
     const vig = document.createElement("div"); vig.className = "fr-vignette"; stage.appendChild(vig);
-    const cap = document.createElement("div"); cap.className = "fr-captions"; stage.appendChild(cap);
+    const headline = scene.captions !== "pill";
+    const cap = document.createElement("div"); cap.className = "fr-captions " + (headline ? "headline" : "pill-style");
+    stage.appendChild(cap);
+    const view = FR.viewFor(scene);
 
     const els = {}, boxes = {}, flows = {};
     world.querySelectorAll("[data-obj]").forEach((e) => (els[e.dataset.obj] = e));
@@ -195,7 +204,10 @@
       const sc = s.s * (1 + 0.06 * s.pulse);
       el.style.translate = s.tx || s.ty ? `${s.tx.toFixed(2)}px ${s.ty.toFixed(2)}px` : "";
       el.style.scale = sc !== 1 ? sc.toFixed(4) : "";
-      el.style.filter = s.pulse > 0.001 ? `drop-shadow(0 0 ${(30 * s.pulse).toFixed(1)}px var(--accent))` : "";
+      const fx = [];
+      if (s.blur > 0.05) fx.push(`blur(${s.blur.toFixed(2)}px)`);
+      if (s.pulse > 0.001) fx.push(`drop-shadow(0 0 ${(30 * s.pulse).toFixed(1)}px var(--accent))`);
+      el.style.filter = fx.join(" ");
       el.style.setProperty("--grow", s.grow.toFixed(4));
       el.style.setProperty("--hl", s.hl.toFixed(4));
       el.style.setProperty("--explode", s.explode.toFixed(4));
@@ -219,11 +231,12 @@
 
     let lastCap = "";
     function render(t) {
-      const st = FR.stateAt(t, scene, events, boxes);
-      world.style.transform = FR.cameraTransform(st.camera);
+      const st = FR.stateAt(t, scene, events, boxes, view);
+      world.style.transform = FR.cameraTransform(st.camera, view);
       for (const id in st.obj) apply(id, st.obj[id]);
       const c = FR.captionAt(t, data.captions);
-      const html = c ? '<div class="pill">' + c.words.map((w) => `<span class="${w.state}">${esc(w.text)}</span>`).join("") + "</div>" : "";
+      // headline: words appear as they are spoken; the word that triggers an animation gets the selection box
+      const html = c ? '<div class="pill">' + c.words.map((w) => `<span class="${w.state}${w.key ? " key" : ""}">${esc(w.text)}</span>`).join("") + "</div>" : "";
       if (html !== lastCap) { cap.innerHTML = html; lastCap = html; }
       return st;
     }

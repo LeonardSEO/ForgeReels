@@ -71,7 +71,7 @@ test("every component draws exactly the parts core.js says it has", () => {
     nodes: { nodes: [{ id: "a", label: "A", x: 0, y: 0 }, { id: "b", label: "B", x: 300, y: 0 }], links: [["a", "b"]] },
     chart: { bars: [{ value: 1 }, { value: 3 }] }, document: { lines: ["one", "two"] }, chip: { traces: 6 },
     stack: { layers: [{ label: "Glass" }, { label: "Grid" }] }, text: { text: "Hi" }, counter: { value: 9 },
-    callout: { text: "Here" }, image: { src: "x.png" },
+    callout: { text: "Here" }, image: { src: "x.png" }, steps: { steps: ["Build", "Ship"] },
   };
   assert.deepEqual(Object.keys(samples).sort(), Object.keys(FR.COMPONENTS).sort());
   for (const [type, spec] of Object.entries(samples)) {
@@ -83,23 +83,64 @@ test("every component draws exactly the parts core.js says it has", () => {
 
 test("the camera can frame a group of objects (their union box)", () => {
   const b = { a: { x: 0, y: 0, w: 100, h: 100 }, b: { x: 300, y: 500, w: 100, h: 100 } };
-  const sc = { world: { w: 2000, h: 3000 }, camera: { start: ["a", "b"] }, components: [] };
+  const sc = { world: { w: 2000, h: 3000 }, camera: { start: ["a", "b"], push: 0 }, components: [] };
   const cam = FR.stateAt(0, sc, [], b).camera;
   assert.equal(cam.x, 200); assert.equal(cam.y, 300);
   const f = FR.stateAt(5, sc, [ev(1, "focus", ["a", "b"])], b).camera;
   assert.deepEqual(f, cam);
 });
 
-test("the camera frames pictures inside the reel safe zone (168-1330 px), above the captions", () => {
-  const s = FR.VIEW.safe;
-  assert.ok(s.y >= 168 && s.y + s.h <= 1135, JSON.stringify(s));
+test("pill captions sit below the picture area and inside the reel safe zone", () => {
+  const s = FR.viewFor({ captions: "pill" }).safe;
   const css = require("fs").readFileSync(require("path").join(__dirname, "../assets/scene-library/styles.css"), "utf8");
-  const top = +css.match(/\.fr-captions \{[^}]*top: (\d+)px/)[1];
-  assert.ok(top >= s.y + s.h && top + 170 <= 1330, "captions top " + top);   // two caption lines ~170 px
+  const top = +css.match(/\.fr-captions\.pill-style \{[^}]*top: (\d+)px/)[1];
+  assert.ok(top >= s.y + s.h && top + 170 <= 1330, "pill captions top " + top);
+  const head = +css.match(/\.fr-captions\.headline \{[^}]*top: (\d+)px/)[1];
+  assert.ok(head >= 168 && head + 150 <= FR.viewFor({}).safe.y, "headline captions top " + head);
 });
 
 test("a value that counts up is hidden until its count starts (no floating 0.00)", () => {
   const evs = [ev(2, "count", "c.v1", 1, { from: 0, to: 0.82 })];
   assert.equal(FR.stateAt(1.9, scene, evs, boxes).obj["c.v1"].o, 0);
   assert.equal(FR.stateAt(3.5, scene, evs, boxes).obj["c.v1"].o, 1);
+});
+
+// ---------- style upgrades learned from reference reels (2026-11-15)
+test("the camera keeps pushing in slowly while it holds, and stays continuous into the next move", () => {
+  const sc = { world: { w: 2000, h: 3000 }, camera: { start: "all" }, components: [] };
+  const evs = [ev(1, "focus", "phone", 0.5), ev(5, "wide", null, 1)];
+  const landed = FR.stateAt(1.5, sc, evs, boxes).camera, later = FR.stateAt(3.5, sc, evs, boxes).camera;
+  assert.ok(later.s > landed.s * 1.02 && later.s < landed.s * 1.08, `${landed.s} -> ${later.s}`);
+  const justBefore = FR.stateAt(4.999, sc, evs, boxes).camera, atStart = FR.stateAt(5, sc, evs, boxes).camera;
+  assert.ok(Math.abs(justBefore.s - atStart.s) < 1e-3);
+  const still = { world: sc.world, camera: { start: "all", push: 0 }, components: [] };
+  assert.deepEqual(FR.stateAt(3.5, still, evs, boxes).camera, FR.stateAt(1.5, still, evs, boxes).camera);
+});
+
+test("focus blurs the other components (depth of field) and wide clears it", () => {
+  const sc2 = { components: [{ type: "phone", id: "phone", x: 0, y: 0 }, { type: "chip", id: "ic", x: 0, y: 1200 }] };
+  const evs = [ev(1, "focus", "phone.screen", 0.5), ev(4, "wide", null, 0.5)];
+  const st = FR.stateAt(2, sc2, evs, boxes).obj;
+  assert.equal(st.phone.blur, 0);
+  assert.ok(st.ic.blur > 4);
+  assert.equal(FR.stateAt(5, sc2, evs, boxes).obj.ic.blur, 0);
+  const off = Object.assign({ camera: { dof: false } }, sc2);
+  assert.equal(FR.stateAt(2, off, evs, boxes).obj.ic.blur, 0);
+});
+
+test("headline captions keep the key-word flag and hide words not yet spoken", () => {
+  const g = [[{ text: "the", start: 1, end: 1.2 }, { text: "glass", start: 1.3, end: 1.7, key: true }, { text: "now", start: 1.8, end: 2 }]];
+  const c = FR.captionAt(1.4, g);
+  assert.deepEqual(c.words.map((w) => [w.state, !!w.key]), [["past", false], ["now", true], ["next", false]]);
+});
+
+test("the view leaves room for headline captions at the top, or pill captions at the bottom", () => {
+  const top = FR.viewFor({}), pill = FR.viewFor({ captions: "pill" });
+  assert.ok(top.safe.y >= 440 && top.safe.y + top.safe.h <= 1330);
+  assert.ok(pill.safe.y >= 168 && pill.safe.y + pill.safe.h <= 1135);
+});
+
+test("steps: one part per step", () => {
+  assert.deepEqual(FR.parts({ components: [{ type: "steps", id: "rail", steps: ["Build", "Deploy", "Serve"] }] }),
+    ["rail", "rail.s1", "rail.s2", "rail.s3"]);
 });

@@ -47,6 +47,7 @@
     text:     { parts: () => [], hidden: () => [] },
     counter:  { parts: () => ["label"], hidden: () => [] },
     callout:  { parts: () => ["arrow", "label"], hidden: () => [] },
+    steps:    { parts: (s) => n("s", (s.steps || []).length), hidden: () => [] },
     image:    { parts: () => [], hidden: () => [] },
   };
 
@@ -71,7 +72,7 @@
 
   // ---------- per-object state at t
   const BASE = () => ({ o: 1, s: 1, tx: 0, ty: 0, draw: 1, type: 1, pulse: 0, hl: 0, count: null, grow: 1,
-                        explode: 0, flow: -1 });
+                        explode: 0, flow: -1, blur: 0 });
 
   function objectState(t, id, evs, hidden) {
     const st = BASE();
@@ -109,9 +110,13 @@
   }
 
   // ---------- camera: eased moves between framings of objects
-  // pictures live in 200-1080 px, captions in 1135-1310: everything a viewer must see stays inside the 168-1330 px
-  // reel safe zone (references/platform-specs.md); app buttons cover the rest
-  FR.VIEW = { w: 1080, h: 1920, safe: { x: 80, y: 200, w: 920, h: 880 } };
+  // Everything a viewer must see stays inside the 168-1330 px reel safe zone (references/platform-specs.md).
+  // Default "headline" captions sit at the top (270-420 px), pictures below them (450-1300 px); "pill" captions sit
+  // at the bottom (1135-1310 px), pictures above them (200-1080 px).
+  const VIEW_TOP = { w: 1080, h: 1920, safe: { x: 80, y: 450, w: 920, h: 850 } };
+  const VIEW_PILL = { w: 1080, h: 1920, safe: { x: 80, y: 200, w: 920, h: 880 } };
+  FR.VIEW = VIEW_TOP;
+  FR.viewFor = (scene) => (scene && scene.captions === "pill" ? VIEW_PILL : VIEW_TOP);
 
   function frame(box, args, view) {
     const pad = args.pad == null ? 60 : args.pad;
@@ -138,32 +143,60 @@
 
   function cameraAt(t, scene, events, boxes, view) {
     const target = (id, args) => frame(boxOf(id, scene, boxes), args || {}, view);
+    // while the camera holds it keeps pushing in slowly (default 1.5% a second, at most 4 s): the frame never sits still
+    const push = scene.camera && scene.camera.push != null ? scene.camera.push : 0.015;
+    const drift = (c, hold) => ({ x: c.x, y: c.y, s: c.s * (1 + push * clamp(hold, 0, 4)) });
     let cam = target(scene.camera && scene.camera.start, (scene.camera && scene.camera.args) || {});
+    let lastEnd = 0, moving = false;
     for (const e of events) {
       if (FR.CAMERA_ACTIONS.indexOf(e.action) < 0) continue;
       if (t < e.t) break;
+      const from = moving ? cam : drift(cam, e.t - lastEnd);
       const to = target(e.action === "wide" ? (e.object || "all") : e.object, e.args);
-      const p = E.inOut(clamp((t - e.t) / Math.max(e.dur, 1e-6), 0, 1));
+      const raw = clamp((t - e.t) / Math.max(e.dur, 1e-6), 0, 1), p = E.inOut(raw);
       // zoom in log space so pushes feel even; centre follows the screen-space path
-      cam = { x: lerp(cam.x, to.x, p), y: lerp(cam.y, to.y, p), s: Math.exp(lerp(Math.log(cam.s), Math.log(to.s), p)) };
+      cam = { x: lerp(from.x, to.x, p), y: lerp(from.y, to.y, p), s: Math.exp(lerp(Math.log(from.s), Math.log(to.s), p)) };
+      moving = raw < 1;
+      if (!moving) lastEnd = e.t + e.dur;
     }
-    return cam;
+    return moving ? cam : drift(cam, t - lastEnd);
+  }
+
+  // depth of field: while the camera is on a target, every other component goes soft and dims a little
+  function sharpSet(e) {
+    if (!e || e.action !== "focus") return null;
+    return Array.isArray(e.object) ? e.object : [e.object];
+  }
+  function blurAt(t, scene, camEvents) {
+    const out = {};
+    if (scene.camera && scene.camera.dof === false) return out;
+    const started = camEvents.filter((e) => e.t <= t);
+    const cur = started[started.length - 1];
+    if (!cur) return out;
+    const prev = started[started.length - 2];
+    const p = E.inOut(clamp((t - cur.t) / Math.max(cur.dur, 1e-6), 0, 1));
+    const amount = (set, id) => (!set || set.some((x) => x === id || x.indexOf(id + ".") === 0 || id.indexOf(x + ".") === 0) ? 0 : 1);
+    const a = sharpSet(prev), b = sharpSet(cur);
+    for (const c of scene.components || []) out[c.id] = lerp(amount(a, c.id), amount(b, c.id), p);
+    return out;
   }
 
   FR.stateAt = function (t, scene, events, boxes, view) {
-    view = view || FR.VIEW;
+    view = view || FR.viewFor(scene);
     const evs = events.slice().sort((a, b) => a.t - b.t);
     const by = {};
     for (const e of evs) if (FR.CAMERA_ACTIONS.indexOf(e.action) < 0) (by[e.object] = by[e.object] || []).push(e);
     const hidden = FR.hiddenAtStart(scene);
     const obj = {};
     for (const id of FR.parts(scene)) obj[id] = objectState(t, id, by[id] || [], hidden);
+    const soft = blurAt(t, scene, evs.filter((e) => FR.CAMERA_ACTIONS.indexOf(e.action) >= 0));
+    for (const id in soft) if (obj[id] && soft[id] > 0) { obj[id].blur = 9 * soft[id]; obj[id].o *= 1 - 0.5 * soft[id]; }
     return { camera: cameraAt(t, scene, evs, boxes || {}, view), obj };
   };
 
   // camera {x, y, s} -> CSS transform for the world layer (world point x,y lands at the safe-area centre)
   FR.cameraTransform = function (cam, view) {
-    view = view || FR.VIEW;
+    view = view || FR.VIEW;   // renderer passes FR.viewFor(scene)
     const cx = view.safe.x + view.safe.w / 2, cy = view.safe.y + view.safe.h / 2;
     return "translate(" + (cx - cam.x * cam.s).toFixed(2) + "px," + (cy - cam.y * cam.s).toFixed(2) + "px) scale(" +
       cam.s.toFixed(4) + ")";
@@ -174,7 +207,8 @@
     for (const g of groups || []) {
       const st = g[0].start - 0.05, en = g[g.length - 1].end + 0.25;
       if (t >= st && t < en) {
-        return { words: g.map((w) => ({ text: w.text, state: t < w.start ? "next" : t < w.end ? "now" : "past" })) };
+        return { words: g.map((w) => ({ text: w.text, key: !!w.key,
+                                        state: t < w.start ? "next" : t < w.end ? "now" : "past" })) };
       }
     }
     return null;

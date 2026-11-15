@@ -88,5 +88,23 @@ class GroupTest(unittest.TestCase):
         self.assertIn("only focus and wide", errors[0])
 
 
+
+class CaptionKeyTest(unittest.TestCase):
+    def test_words_that_trigger_an_event_are_key_words_in_the_captions(self):
+        events, _ = vp.resolve({"events": [ev({"line": 1, "index": 3, "expected": "glass"}),
+                                           ev({"line": 2, "expected": "grid"}, action="draw", obj="phone.rows")]},
+                               WORDS, PARTS, DUR)
+        groups = vp.caption_data(WORDS, events)
+        keys = [w["text"] for g in groups for w in g if w.get("key")]
+        self.assertEqual(keys, ["glass.", "grid."])
+        self.assertEqual(sum(len(g) for g in groups), len(WORDS))
+
+    def test_at_most_one_key_word_per_caption_group(self):
+        events, _ = vp.resolve({"events": [ev({"line": 1, "index": 1, "expected": "screen"}),
+                                           ev({"line": 1, "index": 3, "expected": "glass"})]}, WORDS, PARTS, DUR)
+        for g in vp.caption_data(WORDS, events):
+            self.assertLessEqual(sum(1 for w in g if w.get("key")), 1)
+
+
 if __name__ == "__main__":
     unittest.main()

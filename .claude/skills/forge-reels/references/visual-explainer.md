@@ -18,8 +18,9 @@ Proven projects (they double as regression tests), in the workspace: `references
 4. **Real objects, not icons.** Rebuild the actual thing (a phone and its sensor grid, the real UI, the chip) with
    the scene library; screenshots of a real product go in an `image` component.
 5. **Captions use the same word times** as the animations (built in; the spoken word lights up).
-6. **Everything a viewer must see sits in 168-1330 px.** The runtime frames pictures in 200-1080 px and captions in
-   1135-1310 px; below is decoration only (`platform-specs.md`).
+6. **Everything a viewer must see sits in 168-1330 px.** Default "headline" captions sit at 270-420 px and the camera
+   frames pictures in 450-1300 px; with `"captions": "pill"` in scene.json the captions move to 1135-1310 px and the
+   pictures to 200-1080 px. Below 1330 px is decoration only (`platform-specs.md`).
 7. **Facts first.** Every claim and number in `facts.md` with a source; illustrations are labelled as such.
 
 ## Project folder (`reels/<yyyy-mm-dd>-<slug>/` in the workspace)
@@ -77,6 +78,7 @@ token in `colors` (bg, ink, card, accent, accent2, marker, cap-bg, ...).
 | `counter` | value, prefix, suffix, decimals, label | label (count on the id) |
 | `callout` | text, to{dx,dy} | arrow (draw), label |
 | `image` | src, w, h, card | (the id itself): real screenshots and product photos |
+| `steps` | w, steps[] | s1..N: a chapter rail; `highlight` on sN marks that chapter reached |
 
 Add a component: a `parts`/`hidden` entry in `core.js` FR.COMPONENTS and a builder in `renderer.js` FR.BUILD that
 marks every part with `data-obj`; `tests/scene_core.test.js` checks the two agree.
@@ -100,11 +102,34 @@ marks every part with `data-obj`; `tests/scene_core.test.js` checks the two agre
 - An object whose first event is `reveal` or `count` is hidden until it; `draw`, `type`, `grow` start empty.
 - A camera move every 1-2 lines; a smaller event (pulse, flow, highlight) on most key words in between.
 
+## Look (measured on professional explainer reels, 2026-11-15)
+
+Studied: five long explainers (82-150 s) and two shorter ones, frame by frame. What they all do, and what the
+runtime now does by default:
+
+- **Headline captions at the top**: the phrase appears word by word as it is spoken; earlier words grey, the spoken
+  word bold, and the ONE word per phrase that moves the picture sits in a selection box with corner handles.
+  The runtime boxes the first event word of each caption group automatically, so the box always means "this word
+  just changed the picture".
+- **The camera never parks**: between moves it keeps pushing in (1.5 %/s, at most 6 %; `camera.push` in scene.json,
+  0 to switch off). Their reels never hold a still frame longer than 0.1-1.1 s.
+- **Depth of field**: while the camera is on a target, every other component blurs and dims (`camera.dof: false` to
+  switch off). Objects behind the captions are then soft, so the words stay readable.
+- **Chapter rail** (`steps`): the story's stops, each lit on its word. Viewers see how far along they are.
+- **Honest labels**: small "Magnified illustration", "Values illustrative", "Not to scale" notes in a corner, as a
+  `text` component (size ~24, muted colour). Use them whenever the picture is a model, not the real thing.
+- **Real subjects**: their hero objects are photoreal (a fingertip, glass, glowing field lines, a real dashboard).
+  For that level, make the subject with `scripts/gen_image.py` (Codex) and animate it as an `image` component with
+  library parts on top (fields, labels, flows). The CSS components are the diagram layer.
+- **Pace**: visible change on most 0.1 s steps (46-94 % in theirs); a new visual idea every ~2 s; 80-150 s long
+  when every line shows something new.
+
 ## Rhythm and length
 
 - Explainers may run longer than the 20-45 s reel default (60-110 s) when every line shows something new; the
   hook rules of `retention.md` still apply to the first 3 s. Judge length by `performance.md`, not by habit.
-- Aim for a visible change at least every ~1.5 s (the touchscreen example: 35 events in 24 s).
+- Aim for a visible change at least every ~1.5 s (the touchscreen example: 35 events in 24 s), and no still frame
+  longer than 0.5 s.
 
 ## Lessons from building the three examples (2026-11-15)
 
