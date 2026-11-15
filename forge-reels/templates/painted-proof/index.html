@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Painted proof (p5.brush standalone in HyperFrames)</title>
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #f3ecdc; }
+      #paint canvas { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script src="lib/brush.js"></script>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="4" data-width="1080" data-height="1920">
+      <div id="paint" style="position:absolute;inset:0"></div>
+    </div>
+    <script>
+      // Proof for references/painted-animation.md, route A. Every frame is drawn from t alone (frames render out of order).
+      const W = 1080, H = 1920, BOIL = 12;
+      brush.createCanvas(W, H, { parent: document.getElementById("paint"), pixelDensity: 1 });
+      brush.scaleBrushes(5);
+      const hash = (a, b) => { let h = (a * 374761393 + b * 668265263) | 0; h = Math.imul(h ^ (h >>> 13), 1274126177); return Math.abs(h ^ (h >>> 16)); };
+      const seg = (t, a, b) => Math.min(1, Math.max(0, (t - a) / (b - a)));
+      const easeOut = (k) => 1 - Math.pow(1 - k, 3);
+      const easeInOut = (k) => (k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2);
+      const backOut = (k) => { const c = 1.7; return 1 + (c + 1) * Math.pow(k - 1, 3) + c * Math.pow(k - 1, 2); };
+      // one seed per element per boil frame: still things repeat exactly within a boil frame
+      function seedFor(t, key, boil = true) { const b = boil ? Math.floor(t * BOIL) : 0; brush.seed(hash(b, key)); brush.noiseSeed(hash(b, key + 7)); }
+
+      let lastT = -1;
+      function renderAt(t) {
+        if (t === lastT) return; lastT = t;   // hf-seek and the clock tween can both fire for one frame
+        brush.clear("#f3ecdc");
+        brush.push();
+        brush.translate(-W / 2, -H / 2);
+        // 1. a watercolour wash blooms in (0.0-1.2 s), then holds and boils
+        const k1 = easeOut(seg(t, 0.0, 1.2));
+        if (k1 > 0) {
+          seedFor(t, 1, false);
+          brush.noStroke();
+          brush.fill("#e07a5f", 150); brush.fillBleed(0.18, "out"); brush.fillTexture(0.45, 0.5);
+          brush.circle(540, 760, 40 + 320 * k1);
+          brush.noFill();
+        }
+        // 2. an ink line draws itself along a wave (0.8-2.2 s)
+        const k2 = easeInOut(seg(t, 0.8, 2.2));
+        if (k2 > 0.02) {
+          seedFor(t, 2);
+          brush.set("2B", "#2b2622", 1.6);
+          const n = Math.max(3, Math.round(40 * k2)), pts = [];
+          for (let i = 0; i < n; i++) { const u = (i / (n - 1)) * k2; pts.push([160 + 760 * u, 1240 + 110 * Math.sin(u * Math.PI * 2)]); }
+          brush.spline(pts, 0.5);
+          brush.noStroke();
+        }
+        // 3. a hatched card arrives on an arc (1.6-2.4 s), overshoots and settles
+        const k3 = seg(t, 1.6, 2.4);
+        if (k3 > 0) {
+          seedFor(t, 3);
+          const p = backOut(k3);
+          const x = -620 + (860) * p, y = 1420 - 80 * Math.sin(Math.PI * k3);
+          brush.set("HB", "#2b2622", 1);
+          brush.wash("#81b29a", 255);
+          brush.hatch(14, 45, { rand: 0.15 });
+          brush.rect(x, y, 600, 300);
+          brush.noHatch(); brush.noWash(); brush.noStroke();
+        }
+        // 4. brush wipe out (3.2-4.0 s): ragged painted bands (wash + charcoal hatch) sweep across, staggered
+        const k4 = seg(t, 3.2, 4.0);
+        if (k4 > 0) {
+          const n = 6, bh = (H + 300) / n + 40;
+          for (let i = 0; i < n; i++) {
+            const d = [0, .14, .06, .18, .1, .04][i];
+            const q = easeOut(Math.min(1, Math.max(0, (k4 * 1.25 - d) / (1 - d))));
+            const x0 = -300, x1 = -300 + (W + 700) * q;
+            if (x1 - x0 < 30) continue;
+            seedFor(t, 40 + i);
+            const y0 = -150 + i * (H + 300) / n, pts = [];
+            for (let k = 0; k <= 8; k++) pts.push([x0 + (x1 - x0) * k / 8, y0 + Math.sin(k * .9 + i) * 14]);
+            for (let k = 1; k < 9; k++) pts.push([x1 + 50 * ((hash(i * 31, k) % 100) / 100), y0 + bh * k / 9]);
+            for (let k = 8; k >= 0; k--) pts.push([x0 + (x1 - x0) * k / 8, y0 + bh + Math.sin(k * .8 + i * 2) * 14]);
+            brush.noStroke(); brush.noFill();
+            brush.wash(i % 2 ? "#3d405b" : "#4a4f73", 255);
+            brush.hatch(44, 0, { rand: .6, gradient: .5 }); brush.hatchStyle("charcoal", "#f3ecdc", .8);
+            brush.polygon(pts);
+            brush.noHatch(); brush.noWash();
+          }
+        }
+        brush.pop();
+        brush.render();
+      }
+      // clock tween (registers the timeline HyperFrames expects) + hf-seek, both drawing from t alone
+      const clock = { t: 0 };
+      const tl = gsap.timeline({ paused: true });
+      tl.to(clock, { t: 4, duration: 4, ease: "none", onUpdate: () => renderAt(clock.t) });
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = tl;
+      window.addEventListener("hf-seek", (e) => renderAt(e.detail.time));
+      renderAt(0);
+    </script>
+  </body>
+</html>

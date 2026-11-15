@@ -1,0 +1,16 @@
+# forge-reels Python packages (Python 3.10-3.12)
+numpy
+scipy
+opencv-python
+pillow
+mediapipe>=0.10.14
+soundfile
+librosa
+matplotlib
+pypdf
+kokoro-onnx
+faster-whisper
+pocket-tts
+# forced alignment of script words (scripts/asr.py, words.py --align): Apache 2.0 wav2vec2 models
+torchaudio
+transformers

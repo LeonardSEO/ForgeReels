@@ -1,0 +1,121 @@
+# QC gate
+
+A video goes to the user only after this passes. Measured checks first, then eyes.
+
+## 1. Measured
+```
+npx hyperframes check --json                       # 0 errors, every warning weighed
+python -I scripts/qc_reel.py out.mp4 --sheet qc.png --frames 8
+```
+`qc_reel.py` must print `"pass": true`: 1080x1920, 30/60 fps, h264, yuv420p, AAC, length in
+range, -16..-13 LUFS, true peak <= -1 dBTP, frame 0 not black. Optional extras:
+mcp-video `sound_qa_loudness`, `video_quality_check`, `shorts_review`,
+`video_hook_candidates`.
+
+Voice = script (added 2026-11-15), BEFORE anyone listens and again after any `build_vo.py` re-run:
+`python -I scripts/vo_check.py --vo vo --language nl --engine parakeet` (default engine: faster-whisper).
+It must exit 0: every line within `--max-wer 0.08` of the script and its last word heard in its last 1.5 s.
+Digits the ASR writes for spelled-out numbers are not errors. A FAIL line is regenerated
+(`build_vo.py --only N`) or rewritten, never waved through.
+
+Pace (added 2026-10-29):
+`python -I scripts/pace_check.py out.mp4 --mask <avatar box> --mask <caption box>`.
+- Rule: something behind the avatar changes at least every second, and the first 2 s never
+  sit still. Each listed stretch gets a pop, a count, a zoom or a camera move, or is confirmed
+  as a deliberate hold (a disclaimer, a key number left to land).
+- Example from a real 80 s reel: 17 stretches over 1 s, including the hook's first ~1.2 s and two
+  2.4-2.9 s holds. Each next video should beat its predecessor's number.
+
+Beat sync (added 2026-11-01): `python -I scripts/cuecheck.py --timeline timeline.json --cues cues.json` exits 0:
+every `beat` and `anchor` event within 1 frame of a beat (test reel: 13 events, mean 4 ms, max 30 ms).
+Print its table into the review notes; a reel with music and no timeline.json is not done.
+
+Sound (opuscar TECHNIQUE.md §8 + earshot): `sound/SOUND.md` exists and lists every placement; the 5 "check with
+headphones" timestamps go to the user; Whisper reads the FINAL MIX back (music and SFX must not eat a word; an
+unknown name is the only allowed miss); `ffmpeg -i out.mp4 -vf blackdetect=d=0.05:pix_th=0.02 -an -f null -`
+prints nothing; music low end (20-120 Hz) about -3 dB vs the rest. Optional when nothing else runs:
+`earshot critique out.mp4` (scorecard vs pro launch films; evidence, not a verdict).
+
+Reading time (opuscar DIRECTOR.md §7): text that animates in holds at least letters ÷ 15 + 1.5 s once settled;
+a caption at least 1.8 s and never shorter than its spoken line + 0.6 s; a title card at least 4 s.
+`npx hyperframes check` reports `line_unread`: fix every one or say why it is deliberate.
+
+Motion vs references (2026-11-02): `python -I scripts/motion_score.py out.mp4 [--format creator-edit]` (~11 s for
+10 s). Flags camera stillness, dead half-seconds, a weak hook, few picture changes, low effective fps against 71
+measured reference reels. A flag means look, not fail (it cannot judge taste). A one-take avatar test: 1 flag, 0 picture
+changes per 10 s (refs median 6.5).
+
+Voice over the bed (2026-11-02): `beatmix.py` prints a voice gate in SOUND.md: voice over everything else while
+speaking, median >= 10 dB and worst 5% >= 4 dB (a reviewer wanted 14 / 6 by ear; `--gate-median 14
+--gate-worst 6` for a voice-led story reel). The voice-first limiter (default on) holds music 10 dB and SFX 6 dB
+under the speaking voice only where they would cross it.
+
+Flow (2026-11-04): `python -I scripts/flow_check.py out.mp4 --sheet flow.jpg` (~4 min per 86 s at the
+default stride 2). Per transition, CARRY = how much of the change is motion (a push, slide, zoom-through, morph)
+vs replaced content (a cut, a fade, a pop-in); plus rhythm (shot lengths should vary >= 4x, at least one still
+run >= 0.5 s, no metronome) and moves over 80 px/frame (blur them: HyperFrames `data-motion-blur="on"`; a whip
+that is already blurred still gets flagged, so READ the frame). Calibrated: hard cut 0.09-0.17, cross-fade 0.04,
+zoom-through 0.95, push 0.98. Baselines: two approved 80-90 s avatar explainer reels scored 0.40 and 0.42 (rhythm OK:
+shots varied 16x and 25x, 59% and 70% still). A new reel should raise the mean carry (`each video beats the last`). READ
+flow.jpg (start, peak, end of each transition) before acting on a number: avatar pose swaps and caption changes
+count as small replacements.
+
+Avatar mouth: a new face rig must print `"lip_seal_ok": true`. READ its `mouth_zoom.png`: the
+lips meet at both corners in all 9 shapes, with no skin strip between them.
+
+## 2. Look (READ the images, do not just generate them)
+- Promise = picture (added 2026-11-15): list every feature, number or claim the script SAYS. For each, find it
+  on screen in the contact sheet (`scripts/pipeline/sheets.py`) within +-2 s of the word (time from
+  `vo/words.json`, `--align` timings). A claim said but not shown, or shown seconds later, is a fix: move the
+  visual onto the word or cut the claim. Write the list with the frame times into the QC notes.
+- `qc.png` contact sheet: every word and face inside the green safe box? Nothing
+  important in the tinted bands?
+- Frame 0 and the first 3 s (`npx hyperframes snapshot --range 0,3 --frames 7`): hook
+  visual and text there at frame 0?
+- `npx hyperframes snapshot --review`: read `review-beats.jpg`, the seam strips around
+  every cut and `review-phone.jpg` (360 px wide, the legibility test).
+- The climax: build frames and the release frame; the number readable for 0.5 s+?
+- Captions: never over a face or the avatar's mouth; key word highlighted; no orphan
+  single words.
+- Hindi: conjuncts and matras render correctly (Mukta or Noto Sans Devanagari loaded via
+  `@font-face`); no tofu boxes.
+- 3D / WebGL frames look right in the actual render (code can look fine and render wrong).
+- Key actions (a pose pop, a card landing, a flip, a hand-over): a 0.2 s frame strip, enlarged.
+- Expressions at their FINAL placed size, brows above all ("worried" and "angry" are one brow flip apart).
+- Opuscar's frequent failures: subject too small or against the frame edge; colour on the same colour; a gag or
+  reveal too fast to read; blank frames in a transition; a timed effect that loses its subject after the camera
+  moves (one world-to-screen function).
+- One fix round: everything the checks find is fixed together, then checked once more.
+- AI b-roll: watermark gone (crop sheet read), no garbled text, no uncanny faces.
+- Last frame to first frame: does the loop seam read as continuous?
+- Not a slide deck (`visual-grammar.md` "Video, not slides", added 2026-10-31): the 6 structural
+  checks pass (no opacity-toggled scene blocks, a visual thread > 60%, ≤ 2 text levels, not
+  Ken Burns only, ≥ 2 transition kinds with ≥ 1 with depth, one special moment). Ask of each
+  sheet frame: could it be a corporate slide unchanged?
+- Shot sizes: the camera reaches close-ups on the element being talked about; no world edge
+  shows at any shot peak; text lands after the camera arrives.
+- Contrast: grey-scale 3 frames with full text; no background area as bright as the letters.
+- Sizes: no text under 30 px on the 1080-wide frame (titles ≥ 100, body ≥ 44, labels ≥ 34,
+  disclaimer/credits ≥ 30). Measure from the HTML, not by eye.
+- Every company/product/place the VO names is on screen in its scene.
+- Grainy or soft gradients: zoom the encoded MP4 frame for banding.
+- Not just defects: look for clutter. Is anything busy sitting behind the presenter? Is any hand or prop
+  cut at the frame or box edge? (A reviewer caught both on a real reel after the defect checks had
+  passed.)
+
+## 3. Facts and rights
+- Every on-screen number and claim is in `sources.md` with a link, or labelled
+  illustrative. Gate: `python -I scripts/number_check.py --sources sources.md --script vo/script.txt --html
+  hf/index.html` exits 0 (spoken + visible numbers vs sources.md; 0-10 and lines containing "illustrative" pass;
+  spelled-out amounts are listed for an eye check).
+- Facts from several sources that disagree: say only what every source supports ("70 times", "over Rs 30,000
+  crore"), never the most dramatic figure (a past reel: 67.15x intraday vs 70.5x final).
+- Every music track, SFX pack, font, image and clip is in `licences.md`.
+- Brand pack compliance items done (disclaimer slot, banned phrases).
+
+## 4. Self-score (from `retention.md` section 9)
+Score 1-5 each; anything under 4 gets fixed or explained to the user.
+
+## 5. Phone review
+The user watches the draft on a phone before the delivery render. Their notes go into
+`lessons.md` in their own words.
