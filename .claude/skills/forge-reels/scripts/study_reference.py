@@ -53,6 +53,12 @@ def probe_duration(video):
     return float(r.stdout.strip())
 
 
+def has_audio(video):
+    r = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "a", "-show_entries", "stream=index", "-of", "csv=p=0",
+                        str(video)], capture_output=True, text=True)
+    return bool(r.stdout.strip())
+
+
 def cuts(video, threshold=12):
     r = subprocess.run(["ffmpeg", "-hide_banner", "-i", str(video), "-vf", f"scdet=threshold={threshold}", "-an",
                         "-f", "null", "-"], capture_output=True, text=True)
@@ -98,12 +104,14 @@ def main():
                     f"fps=1/{step:.3f},scale=180:-1,tile=8x5:padding=3:color=white", "-frames:v", "1",
                     str(out / "sheet.jpg")], check=True)
     themes = theme_segments(lumas(video, 0.5), 0.5)
-    wav = out / "voice.wav"
-    subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(video), "-ac", "1", "-ar", "16000", str(wav)], check=True)
-    import asr
-    words = [{"word": w.get("word", w.get("text", "")), "start": w["start"], "end": w["end"]}
-             for w in asr.transcribe(str(wav), language=a.lang)]
-    wav.unlink()
+    words = []
+    if has_audio(video):                         # silent loops (product shots) have no voice to transcribe
+        wav = out / "voice.wav"
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(video), "-ac", "1", "-ar", "16000", str(wav)], check=True)
+        import asr
+        words = [{"word": w.get("word", w.get("text", "")), "start": w["start"], "end": w["end"]}
+                 for w in asr.transcribe(str(wav), language=a.lang)]
+        wav.unlink()
     sent = sentences(words)
     study = {
         "file": video.name, "duration": round(dur, 2), "cuts": cuts(video),
