@@ -10,3 +10,5 @@ This folder is a video studio. The user clones it once and makes every video ins
 - Tools and models live outside this folder in `~/forge-reels` (venv, models, caches), set up by
   `bash setup/setup-mac.sh`. Run scripts with `~/forge-reels/venv/bin/python -I <script>`.
 - Never commit anything under `reels/`, `output/` or reference media: they are the user's own work.
+- Hooks in `.claude/settings.json` check plans on every edit and block "done" until `qc_reel.py` passes
+  on each new video in `output/` (it writes `<video>.qc-pass`). Fix what they report; never bypass them.

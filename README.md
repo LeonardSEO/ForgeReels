@@ -176,6 +176,11 @@ every engine and builds a blind listening page.
 | `pace_check.py`, `motion_score.py`, `flow_check.py` | Still stretches, slideshow feel, weak camera motion |
 | `number_check.py` | Any number on screen or in the voice without a source |
 
+These gates also run on their own through Claude Code hooks (`.claude/settings.json`, script in `.claude/hooks/`):
+an edit to a `visual_plan.json` or `scene.json` is resolved against the voice at once, Claude cannot call a video
+done while a finished video in `output/` has no passing `qc_reel.py` run, and each session starts with the newest
+lesson and the reels still in progress.
+
 ## What is inside
 
 ```text

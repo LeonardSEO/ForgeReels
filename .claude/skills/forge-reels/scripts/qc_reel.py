@@ -15,6 +15,7 @@ Exit code 0 when every hard check passes, 1 otherwise.
 """
 import argparse
 import json
+import pathlib
 import re
 import subprocess
 import sys
@@ -112,6 +113,8 @@ def main():
               SAFE_ADS if a.ads else SAFE)
         report["sheet"] = a.sheet
     print(json.dumps(report, indent=1))
+    if report["pass"]:  # the Stop hook (.claude/hooks/forge_hooks.py) looks for this stamp
+        pathlib.Path(a.video + ".qc-pass").write_text(json.dumps(report["checks"]), encoding="utf-8")
     return 0 if report["pass"] else 1
 
 
