@@ -10,8 +10,9 @@ import sys
 import wave
 from pathlib import Path
 
-# vo_cache + tts_engines live in the skill's scripts/: found from inside the skill or from a copied project folder
-for _d in (Path(__file__).resolve().parents[3] / "scripts", Path.home() / ".claude" / "skills" / "forge-reels" / "scripts"):
+# vo_cache + tts_engines live in the skill's scripts/: inside the skill, or in the workspace this project sits in
+_here = Path(__file__).resolve()
+for _d in [_here.parents[3] / "scripts", *[p / ".claude" / "skills" / "forge-reels" / "scripts" for p in _here.parents]]:
     if (_d / "vo_cache.py").exists():
         sys.path.insert(0, str(_d))
         break

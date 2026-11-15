@@ -5,11 +5,24 @@ __pycache__/
 renders/
 out/
 .superpowers/
-# built from each example's sources by build_explainer.py
-forge-reels/examples/*/vo/
-forge-reels/examples/*/fr/
-forge-reels/examples/*/out/
-forge-reels/examples/*/assets/
-forge-reels/examples/*/index.html
-forge-reels/examples/*/hyperframes.json
 .impeccable/
+
+# workspace: your own videos, outputs and reference media stay local
+reels/*
+!reels/README.md
+output/*
+!output/README.md
+references/*
+!references/README.md
+!references/examples/
+# built from each example's sources by build_explainer.py
+references/examples/*/vo/
+references/examples/*/fr/
+references/examples/*/out/
+references/examples/*/assets/
+references/examples/*/index.html
+references/examples/*/hyperframes.json
+# skills installed by setup into this workspace (third-party); only ForgeReels itself is tracked
+.claude/skills/*
+!.claude/skills/forge-reels/
+.claude/settings.local.json

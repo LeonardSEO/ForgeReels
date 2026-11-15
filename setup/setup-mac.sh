@@ -17,7 +17,6 @@ set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
 ROOT="$(dirname "$HERE")"
 HOME_DIR="${FORGE_REELS_HOME:-$HOME/forge-reels}"
-SKILLS="$HOME/.claude/skills"
 [ "$(uname -s)" = "Darwin" ] || { echo "ForgeReels runs on macOS only."; exit 1; }
 NO_SKILLS=0; MINIMAL=0
 for arg in "$@"; do
@@ -58,20 +57,15 @@ base=https://storage.googleapis.com/mediapipe-models
 [ -s "$MP/pose_landmarker_heavy.task" ] || curl -fL -o "$MP/pose_landmarker_heavy.task" "$base/pose_landmarker/pose_landmarker_heavy/float16/1/pose_landmarker_heavy.task"
 [ -s "$MP/hand_landmarker.task" ]       || curl -fL -o "$MP/hand_landmarker.task"       "$base/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task"
 
-say "4/6 Skill -> $SKILLS/forge-reels"
-mkdir -p "$SKILLS"
-if [ -d "$SKILLS/forge-reels" ]; then
-  BK="$HOME/.claude/skills-archive/$(date +%Y-%m-%d-%H%M%S)-forge-reels"
-  mkdir -p "$(dirname "$BK")"; mv "$SKILLS/forge-reels" "$BK"; echo "existing copy moved to $BK"
-fi
-cp -R "$ROOT/forge-reels" "$SKILLS/forge-reels"
+say "4/6 Workspace: the skill is already here (.claude/skills/forge-reels); Claude Code loads it in this folder"
+mkdir -p "$ROOT/reels" "$ROOT/output" "$ROOT/brand" "$ROOT/references"
 
 if [ "$NO_SKILLS" = 0 ]; then
   say "5/6 Third-party skills (setup/skills.txt$([ "$MINIMAL" = 1 ] && echo ', core only'))"
   grep -v '^#' "$HERE/skills.txt" | grep '|' | { [ "$MINIMAL" = 1 ] && grep '# core' || cat; } | while IFS='|' read -r repo skill; do
     repo="$(echo "$repo" | xargs)"; skill="$(echo "${skill%%#*}" | xargs)"
     echo "  $repo -> $skill"
-    npx --yes skills add "$repo" --skill "$skill" -g -y -a claude-code </dev/null >/dev/null || echo "  (failed: install it later by hand)"
+    (cd "$ROOT" && npx --yes skills add "$repo" --skill "$skill" -y -a claude-code </dev/null) >/dev/null || echo "  (failed: install it later by hand)"
   done
 fi
 
@@ -85,7 +79,7 @@ c.update(home=sys.argv[1], rhubarb=sys.argv[2], mediapipe_models=sys.argv[3], so
 f.write_text(json.dumps(c, indent=1)); print("config:", f)
 PY
 export HYPERFRAMES_PYTHON="$VPY"
-"$VPY" -I "$SKILLS/forge-reels/scripts/smoke_test.py" || { echo "Smoke test failed: read the output above."; exit 1; }
+"$VPY" -I "$ROOT/.claude/skills/forge-reels/scripts/smoke_test.py" || { echo "Smoke test failed: read the output above."; exit 1; }
 
 cat <<EOF
 

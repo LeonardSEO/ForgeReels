@@ -18,6 +18,7 @@ import shutil
 import sys
 
 CONFIG_FILE = pathlib.Path.home() / ".forge-reels" / "config.json"
+SKILL = pathlib.Path(__file__).resolve().parent.parent          # <workspace>/.claude/skills/forge-reels
 
 
 def _config():
@@ -25,6 +26,35 @@ def _config():
         return json.loads(CONFIG_FILE.read_text(encoding="utf-8"))
     except (OSError, ValueError):
         return {}
+
+
+def workspace():
+    """The ForgeReels workspace: the cloned repo you work in. FORGE_REELS_WORKSPACE, else the folder that holds
+    .claude/skills/forge-reels, else the current folder."""
+    v = os.environ.get("FORGE_REELS_WORKSPACE")
+    if v:
+        return pathlib.Path(v).expanduser()
+    if SKILL.parent.name == "skills" and SKILL.parents[1].name == ".claude":
+        return SKILL.parents[2]
+    return pathlib.Path.cwd()
+
+
+def reels_dir():
+    """<workspace>/reels: one working folder per video."""
+    return workspace() / "reels"
+
+
+def output_dir():
+    """<workspace>/output: finished videos, ready to post."""
+    p = workspace() / "output"
+    p.mkdir(parents=True, exist_ok=True)
+    return p
+
+
+def skill_dir(name):
+    """Another skill's folder: the workspace's own .claude/skills first, then ~/.claude/skills."""
+    local = workspace() / ".claude" / "skills" / name
+    return local if local.exists() else pathlib.Path.home() / ".claude" / "skills" / name
 
 
 def home():

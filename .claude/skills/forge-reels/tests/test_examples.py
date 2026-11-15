@@ -10,7 +10,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts" / "pipeline"))
 import visual_plan as vp  # noqa: E402
 
-EXAMPLES = sorted(p for p in (ROOT / "examples").iterdir() if (p / "visual_plan.json").exists())
+EXAMPLES = sorted(p for p in (ROOT.parents[2] / "references" / "examples").iterdir() if (p / "visual_plan.json").exists())
 
 
 @unittest.skipUnless(shutil.which("node"), "needs node")

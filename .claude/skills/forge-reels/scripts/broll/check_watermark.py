@@ -16,6 +16,7 @@ LOOK AT THE SHEET. The first scrub passed bump and shape on every clip while lea
 visible smooth smudge on dark textured plates; only the texture ratio and the eye caught it.
 """
 import os
+import pathlib
 import subprocess
 import sys
 
@@ -31,6 +32,8 @@ from process_video import FFMPEG  # noqa: E402
 _CANDIDATES = [os.path.join(os.path.dirname(os.path.dirname(HERE)), "assets", "veo-watermark-alpha.png"),  # <skill>/assets
                os.path.join(os.path.dirname(HERE), "assets", "veo-watermark-alpha.png"),
                os.path.join(HERE, "veo-watermark-alpha.png"),
+               *[os.path.join(str(d), ".claude", "skills", "forge-reels", "assets", "veo-watermark-alpha.png")
+                 for d in [pathlib.Path.cwd(), *pathlib.Path.cwd().parents]],      # run from inside the workspace
                os.path.join(os.path.expanduser("~"), ".claude", "skills", "forge-reels", "assets",
                             "veo-watermark-alpha.png")]
 ALPHA = next((c for c in _CANDIDATES if os.path.exists(c)), _CANDIDATES[-1])

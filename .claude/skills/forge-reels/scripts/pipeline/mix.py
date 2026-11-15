@@ -25,10 +25,14 @@ import json
 import pathlib
 import re
 import subprocess
+import sys
 
 import librosa
 import numpy as np
 import soundfile as sf
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
+import _paths  # noqa: E402
 from scipy.ndimage import maximum_filter1d, uniform_filter1d
 
 SR = 48000
@@ -39,7 +43,7 @@ def main():
     ap.add_argument("--video", required=True); ap.add_argument("--vo", required=True)
     ap.add_argument("--dur", type=float, required=True); ap.add_argument("--music")
     ap.add_argument("--sfx", required=True); ap.add_argument("--timing")
-    ap.add_argument("--sfx-dir", default=str(pathlib.Path.home() / ".claude/skills/sound-effects/sfx"))
+    ap.add_argument("--sfx-dir", default=str(_paths.skill_dir("sound-effects") / "sfx"))
     ap.add_argument("--hard", default="", help="comma list of cue names / times that should land on beats")
     ap.add_argument("--music-credit", default="(music credit)")
     ap.add_argument("--target", type=float, default=-14.0, help="integrated LUFS")
