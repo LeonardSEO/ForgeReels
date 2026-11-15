@@ -69,7 +69,10 @@ def speech_mask(vo, win=0.05, floor_db=-40):
     k = len(vo) // n
     r = np.sqrt(np.mean(np.square(vo[:k * n]).reshape(k, n, 2), axis=(1, 2)))
     on = 20 * np.log10(r + 1e-9) > (20 * np.log10(r.max() + 1e-9) + floor_db)
-    return np.repeat(on, n)[:len(vo)] if k else np.zeros(len(vo), bool), n
+    if not k:
+        return np.zeros(len(vo), bool), n
+    m = np.repeat(on, n)
+    return np.concatenate([m, np.full(len(vo) - len(m), on[-1])]), n      # the last partial window keeps the last state
 
 
 def smooth(g, sec=0.08):

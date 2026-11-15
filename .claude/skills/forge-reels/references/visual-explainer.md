@@ -41,6 +41,9 @@ Build, check and render in one command (re-run after every edit; unchanged voice
 python -I .claude/skills/forge-reels/scripts/pipeline/build_explainer.py --project reels/<date>-<slug> [--lang nl --engine pocket] --render --frames
 ```
 
+Sound after the picture is approved: `scripts/pipeline/explainer_cues.py --project <p> --anchors <hook word> <turn word>`
+(events -> cues.json on the same words), then beatgrid / score / beatmix as in `sound.md`.
+
 Steps it runs: `build_vo` -> `vo_check` -> `words --align` -> `visual_plan` -> assemble -> `semantic_sync`
 -> HyperFrames draft render -> `semantic_sync --frames`. It stops at the first failing gate. Then READ
 `out/sync_sheet.jpg` (before | after of every event) and a contact sheet of the render, and run

@@ -16,6 +16,22 @@ Format for each entry:
 
 When a lesson appears twice, promote it into the right reference file (or a script) and say so here ("promoted").
 
+## 2026-11-15 · Liquid Glass for React, finished (score, SFX, delivery)
+- Sound for an explainer: `scripts/pipeline/explainer_cues.py` turns the visual events into cues.json (camera move =
+  whoosh.short, new component = land.light, strike = hit, type = text, highlight/pulse/count = tick, 0.3 s minimum
+  gap; anchors = the hook word, the turn, the CTA word). beatgrid fitted 110 bpm with the 3 anchors within 21 ms;
+  score.py --style calm --key D (22 bars, 8 hits); beatmix placed 26 SFX, voice gate median 18 dB / p5 6.6 dB;
+  final -14.0 LUFS, -1.4 dBTP, final-mix read-back WER 0.
+- Bug fixed (test first): beatmix's speech mask dropped the last partial 50 ms window and crashed whenever the voice
+  length was not a whole number of windows.
+- pace_check counts a smooth camera push over dark, soft gradients as "still" (per-frame change under its 14-level
+  threshold): the hook here visibly pushes in 1.6 s and still reads "17 still frames". Judge the first 2 s by eye
+  when the camera is moving; the hook motion that the checker sees is a cut, a pop or high-contrast movement.
+- Hook fixes that worked: capture loops at constant speed from frame 0 (no ease-in), open wide and push into the
+  subject on the first word, strike the claim the voice contradicts ("blur in a box" on "Real glass"), scan-reveal
+  the technical diagram.
+- Delivery set in output/: mp4, cover png, caption txt (CC BY credit line included), music credits.
+
 ## 2026-11-15 · Liquid Glass for React (first real reel in the workspace, EN, 46 s, visual explainer)
 - Route: visual explainer + REAL product footage. The live demo was captured frame by frame with puppeteer-core and
   HyperFrames' own headless Chrome (`reels/<..>/capture.mjs`: drag a glass lens, scroll the components page), then
