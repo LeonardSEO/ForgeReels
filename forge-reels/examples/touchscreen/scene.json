@@ -1,0 +1,88 @@
+{
+ "theme": "light",
+ "world": {
+  "w": 1080,
+  "h": 2050
+ },
+ "camera": {
+  "start": [
+   "title",
+   "phone"
+  ]
+ },
+ "components": [
+  {
+   "type": "text",
+   "id": "title",
+   "x": 90,
+   "y": 110,
+   "w": 900,
+   "size": 76,
+   "align": "center",
+   "text": "How your screen finds your finger"
+  },
+  {
+   "type": "phone",
+   "id": "phone",
+   "x": 330,
+   "y": 330,
+   "w": 420,
+   "title": "Messages",
+   "items": [
+    "Anna",
+    "Team chat",
+    "Mom",
+    "Delivery"
+   ],
+   "touch": {
+    "x": 0.62,
+    "y": 0.47
+   },
+   "notification": "Tap: row 5, column 3"
+  },
+  {
+   "type": "callout",
+   "id": "glassTag",
+   "x": 900,
+   "y": 470,
+   "text": "Glass",
+   "to": {
+    "dx": -150,
+    "dy": 120
+   }
+  },
+  {
+   "type": "callout",
+   "id": "rowsTag",
+   "x": 240,
+   "y": 700,
+   "text": "Rows",
+   "to": {
+    "dx": 170,
+    "dy": 40
+   }
+  },
+  {
+   "type": "callout",
+   "id": "colsTag",
+   "x": 840,
+   "y": 1000,
+   "text": "Columns",
+   "to": {
+    "dx": -160,
+    "dy": -60
+   }
+  },
+  {
+   "type": "chip",
+   "id": "ic",
+   "x": 190,
+   "y": 1460,
+   "w": 700,
+   "h": 620,
+   "label": "TOUCH IC",
+   "traces": 8,
+   "hidden": true
+  }
+ ]
+}

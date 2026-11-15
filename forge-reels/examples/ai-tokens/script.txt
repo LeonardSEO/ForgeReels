@@ -1,0 +1,5 @@
+An AI never reads your question as words.
+First it cuts the sentence into tokens, small pieces of words.
+Each token becomes a long list of numbers.
+The model uses those numbers to predict the next token.
+That token goes back in, and the answer grows one piece at a time.

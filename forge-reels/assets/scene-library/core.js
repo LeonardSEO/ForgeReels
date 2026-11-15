@@ -77,7 +77,8 @@
     const st = BASE();
     const first = {};
     for (const e of evs) if (!(e.action in first)) first[e.action] = e;
-    if (hidden.has(id) || (evs[0] && evs[0].action === "reveal")) st.o = 0;
+    // hidden until its first event: a reveal, or a value that counts up (no "0.00" floating before its moment)
+    if (hidden.has(id) || (evs[0] && (evs[0].action === "reveal" || evs[0].action === "count"))) st.o = 0;
     if (first.draw) st.draw = 0;
     if (first.type) st.type = 0;
     if (first.grow) st.grow = 0;
@@ -93,7 +94,7 @@
         case "draw": st.draw = q; break;
         case "type": st.type = p; break;
         case "grow": st.grow = E.back(p); break;
-        case "count": st.count = lerp(a.from || 0, a.to, q); break;
+        case "count": st.count = lerp(a.from || 0, a.to, q); st.o = Math.max(st.o, clamp(p * 4, 0, 1)); break;
         case "highlight": st.hl = q; break;
         case "explode": st.explode = q; break;
         case "collapse": st.explode = 1 - q; break;
@@ -108,7 +109,9 @@
   }
 
   // ---------- camera: eased moves between framings of objects
-  FR.VIEW = { w: 1080, h: 1920, safe: { x: 60, y: 150, w: 960, h: 1230 } };   // area above the captions
+  // pictures live in 200-1080 px, captions in 1135-1310: everything a viewer must see stays inside the 168-1330 px
+  // reel safe zone (references/platform-specs.md); app buttons cover the rest
+  FR.VIEW = { w: 1080, h: 1920, safe: { x: 80, y: 200, w: 920, h: 880 } };
 
   function frame(box, args, view) {
     const pad = args.pad == null ? 60 : args.pad;
@@ -122,10 +125,20 @@
     return { x: 0, y: 0, w, h };
   }
 
+  // a camera target: "all", one object id, or a list of ids (framed by their union box)
+  function boxOf(id, scene, boxes) {
+    if (!id || id === "all") return worldBox(scene);
+    const ids = Array.isArray(id) ? id : [id];
+    const bs = ids.map((k) => boxes[k]).filter(Boolean);
+    if (!bs.length) return worldBox(scene);
+    const x0 = Math.min(...bs.map((b) => b.x)), y0 = Math.min(...bs.map((b) => b.y));
+    const x1 = Math.max(...bs.map((b) => b.x + b.w)), y1 = Math.max(...bs.map((b) => b.y + b.h));
+    return { x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
+  }
+
   function cameraAt(t, scene, events, boxes, view) {
-    const target = (id, args) => frame(id && id !== "all" ? boxes[id] : worldBox(scene), args || {}, view);
-    const start = scene.camera && scene.camera.start;
-    let cam = target(start && boxes[start] ? start : "all", (scene.camera && scene.camera.args) || {});
+    const target = (id, args) => frame(boxOf(id, scene, boxes), args || {}, view);
+    let cam = target(scene.camera && scene.camera.start, (scene.camera && scene.camera.args) || {});
     for (const e of events) {
       if (FR.CAMERA_ACTIONS.indexOf(e.action) < 0) continue;
       if (t < e.t) break;

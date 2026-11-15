@@ -1,0 +1,4 @@
+Ever wonder how a website remembers you?
+When you log in, the server sends a small piece of data called a cookie.
+Your browser stores it, and sends it back with every visit.
+The server reads it, and knows it's you.

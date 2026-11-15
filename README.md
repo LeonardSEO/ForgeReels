@@ -14,6 +14,10 @@ times every animation to the spoken word, renders a 1080×1920 MP4 and checks ev
 
 </div>
 
+<p align="center"><img src="docs/demo.gif" alt="Three ForgeReels visual explainers: a touchscreen, web cookies and an AI writing its answer" width="780"></p>
+
+<p align="center"><sub>Three reference explainers, rendered locally. Every change on screen lands on its spoken word.</sub></p>
+
 ```text
 > /forge-reels Make a 30 s reel: "Why your phone steals two hours a day". Warm, punchy, English.
 ```
@@ -36,6 +40,8 @@ brief → sources → hook → script → voice → word timing → animation �
 
 ## What it makes
 
+- **Visual explainers** in one continuous world: the camera travels through a rebuilt device, interface or process,
+  and every key word triggers its own animation, tied to the word in a plan, not to a guessed second.
 - **Vertical reels** for Instagram, TikTok and YouTube Shorts, with a hook in frame 0, re-hooks, a climax and a
   seamless loop.
 - **Product demos** where the real interface is rebuilt and used on screen: typing, clicks, results, zooms.
@@ -106,6 +112,28 @@ npm i -g @openai/codex && codex login   # AI still images through your Codex acc
 
 Then open Claude Code anywhere and type `/forge-reels` followed by what you want.
 
+## Visual explainers
+
+The format for "how does X work" reels. You write the script and two small JSON files, ForgeReels does the rest:
+
+```text
+examples/touchscreen/
+  script.txt          the voice-over, one line per row
+  facts.md            a source for every claim
+  scene.json          the world: a phone, its sensor grid, a touch chip, callouts
+  visual_plan.json    {"word_ref": {"line": 2, "expected": "grid"}, "action": "draw", "object": "phone.rows"}, ...
+```
+
+```bash
+python -I scripts/pipeline/build_explainer.py --project examples/touchscreen --render --frames
+```
+
+Voice → spoken-equals-script check → word alignment → events resolved onto their words → render →
+a frame-by-frame check that every event visibly changes the picture. Re-record the voice and every animation
+re-times itself. A scene library of 12 components (phone, browser, terminal, AI flow, chart, document, chip,
+exploded stack, text, counter, callout, screenshot) and 15 actions (reveal, focus, draw, type, pulse, flow, grow,
+count, highlight, explode, ...) covers hardware, software and AI topics. The runtime is offline and seek-exact.
+
 ## Voices
 
 English is the default. Dutch is fully supported: voice, word timing and checks.
@@ -131,6 +159,7 @@ every engine and builds a blind listening page.
 |---|---|
 | `vo_check.py` | A take that says something else than the script, drops a word or is cut off mid-word |
 | `words.py --align` | Captions and animations drifting from the voice |
+| `semantic_sync.py` | An animation on the wrong word, stale timing after a re-voice, an event that changes nothing on screen, a spoken line the picture ignores |
 | `qc_reel.py` | Wrong size, codec or loudness; a black first frame; text outside the safe zone |
 | `pace_check.py`, `motion_score.py`, `flow_check.py` | Still stretches, slideshow feel, weak camera motion |
 | `number_check.py` | Any number on screen or in the voice without a source |
@@ -142,8 +171,10 @@ setup/              setup-mac.sh, setup-voxcpm.sh, setup-audio.sh, pinned requir
 forge-reels/        the skill (installed into ~/.claude/skills/forge-reels)
   SKILL.md          entry point: routing table, pipeline, hard rules
   references/       voice, visual grammar, retention, sound, QC, toolchain, machine limits, film styles
-  scripts/          voice engines, alignment, QC gates, render helpers, sound, image generation
-  templates/        reel project, screen walkthrough, brand pack, cartoon avatar
+  scripts/          voice engines, alignment, visual plan + semantic sync, QC gates, render, sound, images
+  assets/           scene library (offline explainer runtime + components), fonts
+  templates/        reel project, visual explainer, screen walkthrough, brand pack, cartoon avatar
+  examples/         three reference explainers (hardware, software UI, AI), also regression tests
   tests/            unit and integration tests (python -I -m unittest discover -s forge-reels/tests)
 ```
 

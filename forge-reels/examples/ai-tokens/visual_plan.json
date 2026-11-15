@@ -1,0 +1,265 @@
+{
+ "events": [
+  {
+   "word_ref": {
+    "line": 1,
+    "expected": "An"
+   },
+   "action": "reveal",
+   "object": "title"
+  },
+  {
+   "word_ref": {
+    "line": 1,
+    "expected": "question"
+   },
+   "action": "reveal",
+   "object": "prompt"
+  },
+  {
+   "word_ref": {
+    "line": 2,
+    "expected": "cuts"
+   },
+   "action": "focus",
+   "object": [
+    "prompt",
+    "tokens"
+   ],
+   "args": {
+    "pad": 30
+   }
+  },
+  {
+   "word_ref": {
+    "line": 2,
+    "expected": "tokens"
+   },
+   "action": "type",
+   "object": "tokens",
+   "dur": 1.2
+  },
+  {
+   "word_ref": {
+    "line": 3,
+    "expected": "token"
+   },
+   "action": "reveal",
+   "object": "vec"
+  },
+  {
+   "word_ref": {
+    "line": 3,
+    "expected": "token"
+   },
+   "action": "focus",
+   "object": "vec",
+   "args": {
+    "pad": 30
+   }
+  },
+  {
+   "word_ref": {
+    "line": 3,
+    "expected": "list"
+   },
+   "action": "grow",
+   "object": "vec.b1",
+   "offset": 0.0
+  },
+  {
+   "word_ref": {
+    "line": 3,
+    "expected": "list"
+   },
+   "action": "count",
+   "object": "vec.v1",
+   "offset": 0.0,
+   "args": {
+    "from": 0,
+    "to": 0.82
+   }
+  },
+  {
+   "word_ref": {
+    "line": 3,
+    "expected": "list"
+   },
+   "action": "grow",
+   "object": "vec.b2",
+   "offset": 0.08
+  },
+  {
+   "word_ref": {
+    "line": 3,
+    "expected": "list"
+   },
+   "action": "count",
+   "object": "vec.v2",
+   "offset": 0.08,
+   "args": {
+    "from": 0,
+    "to": 0.31
+   }
+  },
+  {
+   "word_ref": {
+    "line": 3,
+    "expected": "list"
+   },
+   "action": "grow",
+   "object": "vec.b3",
+   "offset": 0.16
+  },
+  {
+   "word_ref": {
+    "line": 3,
+    "expected": "list"
+   },
+   "action": "count",
+   "object": "vec.v3",
+   "offset": 0.16,
+   "args": {
+    "from": 0,
+    "to": 0.64
+   }
+  },
+  {
+   "word_ref": {
+    "line": 3,
+    "expected": "numbers"
+   },
+   "action": "grow",
+   "object": "vec.b4",
+   "offset": 0.0
+  },
+  {
+   "word_ref": {
+    "line": 3,
+    "expected": "numbers"
+   },
+   "action": "count",
+   "object": "vec.v4",
+   "offset": 0.0,
+   "args": {
+    "from": 0,
+    "to": 0.12
+   }
+  },
+  {
+   "word_ref": {
+    "line": 3,
+    "expected": "numbers"
+   },
+   "action": "grow",
+   "object": "vec.b5",
+   "offset": 0.08
+  },
+  {
+   "word_ref": {
+    "line": 3,
+    "expected": "numbers"
+   },
+   "action": "count",
+   "object": "vec.v5",
+   "offset": 0.08,
+   "args": {
+    "from": 0,
+    "to": 0.93
+   }
+  },
+  {
+   "word_ref": {
+    "line": 3,
+    "expected": "numbers"
+   },
+   "action": "grow",
+   "object": "vec.b6",
+   "offset": 0.16
+  },
+  {
+   "word_ref": {
+    "line": 3,
+    "expected": "numbers"
+   },
+   "action": "count",
+   "object": "vec.v6",
+   "offset": 0.16,
+   "args": {
+    "from": 0,
+    "to": 0.47
+   }
+  },
+  {
+   "word_ref": {
+    "line": 4,
+    "expected": "model"
+   },
+   "action": "reveal",
+   "object": "loop"
+  },
+  {
+   "word_ref": {
+    "line": 4,
+    "expected": "model"
+   },
+   "action": "focus",
+   "object": "loop",
+   "args": {
+    "pad": 40
+   }
+  },
+  {
+   "word_ref": {
+    "line": 4,
+    "expected": "predict"
+   },
+   "action": "pulse",
+   "object": "loop.n_model",
+   "args": {
+    "repeat": 2
+   }
+  },
+  {
+   "word_ref": {
+    "line": 4,
+    "expected": "next"
+   },
+   "action": "flow",
+   "object": "loop.l_model_next",
+   "dur": 0.9
+  },
+  {
+   "word_ref": {
+    "line": 5,
+    "expected": "back"
+   },
+   "action": "flow",
+   "object": "loop.l_next_model",
+   "dur": 0.9
+  },
+  {
+   "word_ref": {
+    "line": 5,
+    "expected": "answer"
+   },
+   "action": "focus",
+   "object": [
+    "loop",
+    "answer"
+   ],
+   "args": {
+    "pad": 30
+   }
+  },
+  {
+   "word_ref": {
+    "line": 5,
+    "expected": "grows"
+   },
+   "action": "type",
+   "object": "answer",
+   "dur": 1.4
+  }
+ ]
+}

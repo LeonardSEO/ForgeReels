@@ -76,5 +76,17 @@ class SceneTest(unittest.TestCase):
         self.assertEqual(dur["reveal"], 0.5)
 
 
+
+class GroupTest(unittest.TestCase):
+    def test_camera_may_target_a_group_and_rejects_unknown_members(self):
+        ref = {"line": 1, "index": 3, "expected": "glass"}
+        out, errors = vp.resolve({"events": [ev(ref, action="focus", obj=["phone", "phone.glass"])]}, WORDS, PARTS, DUR)
+        self.assertEqual((errors, out[0]["object"]), ([], ["phone", "phone.glass"]))
+        _, errors = vp.resolve({"events": [ev(ref, action="focus", obj=["phone", "nope"])]}, WORDS, PARTS, DUR)
+        self.assertIn("nope", errors[0])
+        _, errors = vp.resolve({"events": [ev(ref, action="reveal", obj=["phone"])]}, WORDS, PARTS, DUR)
+        self.assertIn("only focus and wide", errors[0])
+
+
 if __name__ == "__main__":
     unittest.main()

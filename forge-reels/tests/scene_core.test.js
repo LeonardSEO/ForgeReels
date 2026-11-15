@@ -63,3 +63,43 @@ test("captions mark the spoken word as now", () => {
   assert.deepEqual(c.words.map((w) => w.state), ["past", "now"]);
   assert.equal(FR.captionAt(5, g), null);
 });
+
+test("every component draws exactly the parts core.js says it has", () => {
+  require("../assets/scene-library/renderer.js");
+  const samples = {
+    phone: {}, browser: { tabs: ["A", "B"], results: ["x", "y", "z"] }, terminal: { lines: ["$ ls", "ok"] },
+    nodes: { nodes: [{ id: "a", label: "A", x: 0, y: 0 }, { id: "b", label: "B", x: 300, y: 0 }], links: [["a", "b"]] },
+    chart: { bars: [{ value: 1 }, { value: 3 }] }, document: { lines: ["one", "two"] }, chip: { traces: 6 },
+    stack: { layers: [{ label: "Glass" }, { label: "Grid" }] }, text: { text: "Hi" }, counter: { value: 9 },
+    callout: { text: "Here" }, image: { src: "x.png" },
+  };
+  assert.deepEqual(Object.keys(samples).sort(), Object.keys(FR.COMPONENTS).sort());
+  for (const [type, spec] of Object.entries(samples)) {
+    const c = Object.assign({ type, id: "k", x: 0, y: 0 }, spec);
+    const drawn = new Set(["k", ...[...FR.BUILD[type](c)[2].matchAll(/data-obj="([^"]+)"/g)].map((m) => m[1])]);
+    assert.deepEqual([...drawn].sort(), FR.parts({ components: [c] }).sort(), type);
+  }
+});
+
+test("the camera can frame a group of objects (their union box)", () => {
+  const b = { a: { x: 0, y: 0, w: 100, h: 100 }, b: { x: 300, y: 500, w: 100, h: 100 } };
+  const sc = { world: { w: 2000, h: 3000 }, camera: { start: ["a", "b"] }, components: [] };
+  const cam = FR.stateAt(0, sc, [], b).camera;
+  assert.equal(cam.x, 200); assert.equal(cam.y, 300);
+  const f = FR.stateAt(5, sc, [ev(1, "focus", ["a", "b"])], b).camera;
+  assert.deepEqual(f, cam);
+});
+
+test("the camera frames pictures inside the reel safe zone (168-1330 px), above the captions", () => {
+  const s = FR.VIEW.safe;
+  assert.ok(s.y >= 168 && s.y + s.h <= 1135, JSON.stringify(s));
+  const css = require("fs").readFileSync(require("path").join(__dirname, "../assets/scene-library/styles.css"), "utf8");
+  const top = +css.match(/\.fr-captions \{[^}]*top: (\d+)px/)[1];
+  assert.ok(top >= s.y + s.h && top + 170 <= 1330, "captions top " + top);   // two caption lines ~170 px
+});
+
+test("a value that counts up is hidden until its count starts (no floating 0.00)", () => {
+  const evs = [ev(2, "count", "c.v1", 1, { from: 0, to: 0.82 })];
+  assert.equal(FR.stateAt(1.9, scene, evs, boxes).obj["c.v1"].o, 0);
+  assert.equal(FR.stateAt(3.5, scene, evs, boxes).obj["c.v1"].o, 1);
+});

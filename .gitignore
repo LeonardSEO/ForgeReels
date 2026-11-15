@@ -5,3 +5,10 @@ __pycache__/
 renders/
 out/
 .superpowers/
+# built from each example's sources by build_explainer.py
+forge-reels/examples/*/vo/
+forge-reels/examples/*/fr/
+forge-reels/examples/*/out/
+forge-reels/examples/*/assets/
+forge-reels/examples/*/index.html
+forge-reels/examples/*/hyperframes.json

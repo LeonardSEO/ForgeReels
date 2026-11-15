@@ -1,0 +1,81 @@
+{
+ "theme": "light",
+ "world": {
+  "w": 1080,
+  "h": 2200
+ },
+ "camera": {
+  "start": "site"
+ },
+ "components": [
+  {
+   "type": "browser",
+   "id": "site",
+   "x": 80,
+   "y": 120,
+   "w": 920,
+   "h": 640,
+   "tabs": [
+    "Shop"
+   ],
+   "url": "shop.example.com",
+   "title": "Welcome back, Anna",
+   "results": [
+    "Your basket: 2 items",
+    "Recently viewed"
+   ]
+  },
+  {
+   "type": "nodes",
+   "id": "net",
+   "x": 90,
+   "y": 1000,
+   "w": 900,
+   "h": 300,
+   "nodes": [
+    {
+     "id": "browser",
+     "label": "Your browser",
+     "x": 210,
+     "y": 150,
+     "icon": "B"
+    },
+    {
+     "id": "server",
+     "label": "Server",
+     "sub": "shop.example.com",
+     "x": 700,
+     "y": 150,
+     "icon": "S"
+    }
+   ],
+   "links": [
+    [
+     "browser",
+     "server"
+    ],
+    [
+     "server",
+     "browser"
+    ]
+   ],
+   "hidden": true
+  },
+  {
+   "type": "document",
+   "id": "cookie",
+   "x": 230,
+   "y": 1440,
+   "w": 620,
+   "h": 400,
+   "title": "Cookie",
+   "lines": [
+    "session_id = 8f3a91c2",
+    "site: shop.example.com",
+    "expires: in 30 days"
+   ],
+   "source": "Set by the server at login",
+   "hidden": true
+  }
+ ]
+}

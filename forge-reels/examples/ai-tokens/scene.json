@@ -1,0 +1,133 @@
+{
+ "theme": "dark",
+ "world": {
+  "w": 1080,
+  "h": 2500
+ },
+ "camera": {
+  "start": [
+   "title",
+   "prompt"
+  ]
+ },
+ "components": [
+  {
+   "type": "text",
+   "id": "title",
+   "x": 90,
+   "y": 120,
+   "w": 900,
+   "size": 74,
+   "text": "How an AI writes its answer",
+   "hidden": true
+  },
+  {
+   "type": "text",
+   "id": "prompt",
+   "x": 90,
+   "y": 330,
+   "w": 900,
+   "size": 60,
+   "weight": 700,
+   "color": "var(--ink-soft)",
+   "text": "\u201cHow do touchscreens work?\u201d",
+   "hidden": true
+  },
+  {
+   "type": "text",
+   "id": "tokens",
+   "x": 90,
+   "y": 470,
+   "w": 900,
+   "size": 54,
+   "weight": 760,
+   "color": "var(--accent2)",
+   "text": "How \u00b7 do \u00b7 touch \u00b7 screens \u00b7 work \u00b7 ?"
+  },
+  {
+   "type": "chart",
+   "id": "vec",
+   "x": 110,
+   "y": 720,
+   "w": 860,
+   "h": 520,
+   "title": "\u201ctouch\u201d as numbers (illustration)",
+   "bars": [
+    {
+     "value": 0.82,
+     "decimals": 2
+    },
+    {
+     "value": 0.31,
+     "decimals": 2
+    },
+    {
+     "value": 0.64,
+     "decimals": 2,
+     "hot": true
+    },
+    {
+     "value": 0.12,
+     "decimals": 2
+    },
+    {
+     "value": 0.93,
+     "decimals": 2
+    },
+    {
+     "value": 0.47,
+     "decimals": 2
+    }
+   ],
+   "max": 1,
+   "hidden": true
+  },
+  {
+   "type": "nodes",
+   "id": "loop",
+   "x": 90,
+   "y": 1620,
+   "w": 900,
+   "h": 300,
+   "nodes": [
+    {
+     "id": "model",
+     "label": "Model",
+     "x": 230,
+     "y": 150,
+     "icon": "M"
+    },
+    {
+     "id": "next",
+     "label": "Next token",
+     "sub": "\u201cTouch\u201d",
+     "x": 680,
+     "y": 150,
+     "icon": "T"
+    }
+   ],
+   "links": [
+    [
+     "model",
+     "next"
+    ],
+    [
+     "next",
+     "model"
+    ]
+   ],
+   "hidden": true
+  },
+  {
+   "type": "text",
+   "id": "answer",
+   "x": 90,
+   "y": 2020,
+   "w": 900,
+   "size": 54,
+   "weight": 700,
+   "text": "Touchscreens sense your finger through a grid of tiny electric fields\u2026",
+   "linesHint": 3
+  }
+ ]
+}

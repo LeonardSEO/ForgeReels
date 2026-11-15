@@ -1,0 +1,354 @@
+{
+ "events": [
+  {
+   "word_ref": {
+    "line": 1,
+    "expected": "Your"
+   },
+   "action": "reveal",
+   "object": "title"
+  },
+  {
+   "word_ref": {
+    "line": 2,
+    "expected": "Under"
+   },
+   "action": "focus",
+   "object": "phone",
+   "args": {
+    "pad": 40
+   }
+  },
+  {
+   "word_ref": {
+    "line": 2,
+    "expected": "Under"
+   },
+   "action": "hide",
+   "object": "title"
+  },
+  {
+   "word_ref": {
+    "line": 1,
+    "expected": "glass"
+   },
+   "action": "pulse",
+   "object": "phone.glass"
+  },
+  {
+   "word_ref": {
+    "line": 1,
+    "expected": "glass"
+   },
+   "action": "reveal",
+   "object": "glassTag"
+  },
+  {
+   "word_ref": {
+    "line": 2,
+    "expected": "Under"
+   },
+   "action": "hide",
+   "object": "glassTag"
+  },
+  {
+   "word_ref": {
+    "line": 2,
+    "expected": "grid"
+   },
+   "action": "reveal",
+   "object": "phone.grid",
+   "dur": 0.2
+  },
+  {
+   "word_ref": {
+    "line": 2,
+    "expected": "grid"
+   },
+   "action": "draw",
+   "object": "phone.rows"
+  },
+  {
+   "word_ref": {
+    "line": 2,
+    "expected": "wires"
+   },
+   "action": "draw",
+   "object": "phone.cols"
+  },
+  {
+   "word_ref": {
+    "line": 3,
+    "expected": "Rows"
+   },
+   "action": "pulse",
+   "object": "phone.rows"
+  },
+  {
+   "word_ref": {
+    "line": 3,
+    "expected": "Rows"
+   },
+   "action": "reveal",
+   "object": "rowsTag"
+  },
+  {
+   "word_ref": {
+    "line": 3,
+    "expected": "Columns"
+   },
+   "action": "pulse",
+   "object": "phone.cols"
+  },
+  {
+   "word_ref": {
+    "line": 3,
+    "expected": "Columns"
+   },
+   "action": "reveal",
+   "object": "colsTag"
+  },
+  {
+   "word_ref": {
+    "line": 4,
+    "expected": "crossing"
+   },
+   "action": "hide",
+   "object": "rowsTag"
+  },
+  {
+   "word_ref": {
+    "line": 4,
+    "expected": "crossing"
+   },
+   "action": "hide",
+   "object": "colsTag"
+  },
+  {
+   "word_ref": {
+    "line": 4,
+    "expected": "crossing"
+   },
+   "action": "focus",
+   "object": "phone.screen",
+   "args": {
+    "zoom": 1.25
+   }
+  },
+  {
+   "word_ref": {
+    "line": 4,
+    "expected": "charge"
+   },
+   "action": "pulse",
+   "object": "phone.grid",
+   "args": {
+    "repeat": 2
+   },
+   "dur": 1.0
+  },
+  {
+   "word_ref": {
+    "line": 5,
+    "expected": "finger"
+   },
+   "action": "reveal",
+   "object": "phone.finger"
+  },
+  {
+   "word_ref": {
+    "line": 5,
+    "expected": "pulls"
+   },
+   "action": "reveal",
+   "object": "phone.field"
+  },
+  {
+   "word_ref": {
+    "line": 5,
+    "expected": "away"
+   },
+   "action": "pulse",
+   "object": "phone.field"
+  },
+  {
+   "word_ref": {
+    "line": 6,
+    "expected": "chip"
+   },
+   "action": "reveal",
+   "object": "ic"
+  },
+  {
+   "word_ref": {
+    "line": 6,
+    "expected": "chip"
+   },
+   "action": "focus",
+   "object": "ic",
+   "args": {
+    "pad": 30
+   }
+  },
+  {
+   "word_ref": {
+    "line": 6,
+    "expected": "scans"
+   },
+   "action": "flow",
+   "object": "ic.t1",
+   "args": {
+    "repeat": 3
+   },
+   "dur": 1.8
+  },
+  {
+   "word_ref": {
+    "line": 6,
+    "expected": "scans"
+   },
+   "action": "flow",
+   "object": "ic.t2",
+   "args": {
+    "repeat": 3
+   },
+   "dur": 1.8,
+   "offset": 0.1
+  },
+  {
+   "word_ref": {
+    "line": 6,
+    "expected": "scans"
+   },
+   "action": "flow",
+   "object": "ic.t3",
+   "args": {
+    "repeat": 3
+   },
+   "dur": 1.8,
+   "offset": 0.2
+  },
+  {
+   "word_ref": {
+    "line": 6,
+    "expected": "scans"
+   },
+   "action": "flow",
+   "object": "ic.t4",
+   "args": {
+    "repeat": 3
+   },
+   "dur": 1.8,
+   "offset": 0.3
+  },
+  {
+   "word_ref": {
+    "line": 6,
+    "expected": "every"
+   },
+   "action": "flow",
+   "object": "ic.t5",
+   "args": {
+    "repeat": 3
+   },
+   "dur": 1.8
+  },
+  {
+   "word_ref": {
+    "line": 6,
+    "expected": "every"
+   },
+   "action": "flow",
+   "object": "ic.t6",
+   "args": {
+    "repeat": 3
+   },
+   "dur": 1.8,
+   "offset": 0.1
+  },
+  {
+   "word_ref": {
+    "line": 6,
+    "expected": "every"
+   },
+   "action": "flow",
+   "object": "ic.t7",
+   "args": {
+    "repeat": 3
+   },
+   "dur": 1.8,
+   "offset": 0.2
+  },
+  {
+   "word_ref": {
+    "line": 6,
+    "expected": "every"
+   },
+   "action": "flow",
+   "object": "ic.t8",
+   "args": {
+    "repeat": 3
+   },
+   "dur": 1.8,
+   "offset": 0.3
+  },
+  {
+   "word_ref": {
+    "line": 6,
+    "expected": "second"
+   },
+   "action": "pulse",
+   "object": "ic.chip"
+  },
+  {
+   "word_ref": {
+    "line": 7,
+    "expected": "crossing"
+   },
+   "action": "focus",
+   "object": "phone.screen",
+   "args": {
+    "zoom": 1.25
+   }
+  },
+  {
+   "word_ref": {
+    "line": 7,
+    "expected": "touched"
+   },
+   "action": "pulse",
+   "object": "phone.finger",
+   "args": {
+    "repeat": 2
+   }
+  },
+  {
+   "word_ref": {
+    "line": 8,
+    "expected": "tap"
+   },
+   "action": "wide",
+   "object": "phone",
+   "args": {
+    "pad": 40
+   }
+  },
+  {
+   "word_ref": {
+    "line": 8,
+    "expected": "click"
+   },
+   "action": "reveal",
+   "object": "phone.notification"
+  },
+  {
+   "word_ref": {
+    "line": 8,
+    "expected": "click"
+   },
+   "action": "pulse",
+   "object": "phone.notification",
+   "offset": 0.15
+  }
+ ]
+}

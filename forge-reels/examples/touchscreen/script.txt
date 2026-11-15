@@ -1,0 +1,8 @@
+Your phone screen is not just glass.
+Under the glass sits a grid of invisible wires.
+Rows run across. Columns run down.
+Each crossing holds a tiny electric charge.
+Your finger conducts, so it pulls some of that charge away.
+A chip scans every crossing, many times a second.
+The crossing that loses the most is where you touched.
+That is how a tap becomes a click.

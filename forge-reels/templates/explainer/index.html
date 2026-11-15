@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <!-- ForgeReels visual explainer: built by scripts/pipeline/build_explainer.py. Edit scene.json and
+         visual_plan.json, not this file. Offline: no CDN, no GSAP; HyperFrames drives it through hf-seek. -->
+    <link rel="stylesheet" href="fr/styles.css" />
+    <script src="fr/core.js"></script>
+    <script src="fr/renderer.js"></script>
+    <script src="assets/events.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-no-timeline data-start="0" data-duration="{{DURATION}}" data-width="1080" data-height="1920">
+      <div id="stage" style="position:absolute;inset:0"></div>
+      <audio id="vo" class="clip" src="vo/vo.wav" data-start="0" data-duration="{{VO_DURATION}}" data-track-index="2" data-volume="1"></audio>
+    </div>
+    <script>
+      const fr = FR.mount(document.getElementById("stage"), window.__FR_DATA);
+      window.__frRender = fr.render;
+      let ready = document.fonts ? document.fonts.ready.then(() => fr.measure()) : Promise.resolve();
+      window.addEventListener("hf-seek", (e) => {
+        if (ready) { e.detail.waitUntil(ready.then(() => fr.render(e.detail.time))); ready = null; }
+        else fr.render(e.detail.time);
+      });
+      fr.render(0);
+    </script>
+  </body>
+</html>

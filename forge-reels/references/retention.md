@@ -24,7 +24,8 @@ here, kept apart on purpose:
 | ~70-80% | Climax | The payoff, the most surprising true fact | Built up (riser, slow-down, freeze), then released (number slam, hit SFX, colour shift) |
 | last 2-4 s | Share + loop | Earn the send, restart cleanly | Share prompt tied to a person ("send this to the friend who…"), the last frame matches frame 1 so the replay is seamless |
 
-Length: aim for the shortest cut that still lands the climax. 20-35 s is the default
+Length: aim for the shortest cut that still lands the climax (visual explainers may run 60-110 s when every line
+shows something new: `visual-explainer.md`). 20-35 s is the default
 sweet spot for explainers. Go longer only when every 5 s still earns its place.
 
 ## 2. Hooks

@@ -81,7 +81,15 @@ def resolve(plan, words, parts, dur):
         if action not in dur:
             errors.append(f"{tag}: unknown action '{action}'; use one of {', '.join(sorted(dur))}")
             continue
-        if action == "wide" and obj is None:
+        if isinstance(obj, list):
+            if action not in ("focus", "wide"):
+                errors.append(f"{tag}: only focus and wide take a list of objects (the camera frames the group)")
+                continue
+            bad = [o for o in obj if o not in parts]
+            if bad:
+                errors.append(f"{tag}: no object {', '.join(map(repr, bad))} in scene.json")
+                continue
+        elif action == "wide" and obj is None:
             pass
         elif obj not in parts:
             close = difflib.get_close_matches(str(obj), parts, n=3)
