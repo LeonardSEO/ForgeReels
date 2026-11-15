@@ -151,6 +151,28 @@
     return [w, c.h || 96, `<div class="line"></div>${st}`];
   };
 
+  // a captured image sequence (screen recording of a real product), optionally inside a phone bezel
+  B.frames = (c) => {
+    const w = c.w || 520, h = c.h || Math.round(w * (c.device === "phone" ? 2.05 : 16 / 9));
+    const first = FR.frameSrc(c, 0);
+    return [w, h, c.device === "phone"
+      ? `<div class="bezel"><img data-frames src="${esc(first)}" alt=""></div>`
+      : `<img data-frames src="${esc(first)}" alt="">`, c.device === "phone" ? "phone-frame" : "fr-card"];
+  };
+
+  // cross-section of a glass edge: rays pass straight through the flat centre and bend at the curved rim
+  B.lens = (c) => {
+    const w = c.w || 900, h = c.h || 620, id = c.id, top = h * 0.62, rim = w * 0.2;
+    const prof = `M0 ${h} L0 ${top + 40} C0 ${top - 40} ${rim * 0.35} ${top - 70} ${rim} ${top - 72} L${w - rim} ${top - 72} C${w - rim * 0.35} ${top - 70} ${w} ${top - 40} ${w} ${top + 40} L${w} ${h} Z`;
+    const ray = (x, bend) => `M${x} 0 L${x} ${top - 72 + (Math.abs(bend) > 0 ? 40 : 0)} L${x + bend} ${h}`;
+    const centre = [0.38, 0.5, 0.62].map((f) => `<path pathLength="1" d="${ray(w * f, 0)}"/>`).join("");
+    const rims = [[0.06, 70], [0.12, 46], [0.88, -46], [0.94, -70]].map(([f, b]) => `<path pathLength="1" d="${ray(w * f, b)}"/>`).join("");
+    return [w, h, `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+      <path data-obj="${id}.glass" class="glass" pathLength="1" d="${prof}"/>
+      <g data-obj="${id}.centre" class="centre">${centre}</g><g data-obj="${id}.rim" class="rim">${rims}</g></svg>
+      <div data-obj="${id}.label" class="label">${esc(c.label || "flat centre: straight through · curved rim: bent")}</div>`];
+  };
+
   B.image = (c) => [c.w || 900, c.h || 600, `<img src="${esc(c.src)}" alt="">`, "fr-image" + (c.card === false ? "" : " fr-card")];
 
   // ---------- mount + render
@@ -211,6 +233,7 @@
       el.style.setProperty("--grow", s.grow.toFixed(4));
       el.style.setProperty("--hl", s.hl.toFixed(4));
       el.style.setProperty("--explode", s.explode.toFixed(4));
+      el.style.setProperty("--draw", s.draw.toFixed(4));
       // draw: SVG strokes trace in; anything else wipes in from the left
       const paths = el.matches("path[pathLength]") ? [el] : el.querySelectorAll("path[pathLength]");
       if (paths.length) paths.forEach((p) => { p.style.strokeDasharray = "1 1"; p.style.strokeDashoffset = (1 - s.draw).toFixed(4); });
@@ -229,6 +252,9 @@
       }
     }
 
+    const seqs = (scene.components || []).filter((c) => c.type === "frames")
+      .map((c) => ({ c, img: els[c.id].querySelector("[data-frames]"), shown: -1 }));
+
     let lastCap = "";
     function render(t) {
       const st = FR.stateAt(t, scene, events, boxes, view);
@@ -238,6 +264,13 @@
       // headline: words appear as they are spoken; the word that triggers an animation gets the selection box
       const html = c ? '<div class="pill">' + c.words.map((w) => `<span class="${w.state}${w.key ? " key" : ""}">${esc(w.text)}</span>`).join("") + "</div>" : "";
       if (html !== lastCap) { cap.innerHTML = html; lastCap = html; }
+      // image sequences: swap to this frame's image; the returned promise lets HyperFrames wait for the decode
+      const loads = [];
+      for (const q of seqs) {
+        const k = FR.frameIndex(st.obj[q.c.id].play, q.c);
+        if (k !== q.shown) { q.shown = k; q.img.src = FR.frameSrc(q.c, k); loads.push(q.img.decode().catch(() => {})); }
+      }
+      st.ready = loads.length ? Promise.all(loads) : null;
       return st;
     }
     return { render, measure, boxes, els };

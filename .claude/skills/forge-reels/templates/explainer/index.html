@@ -25,8 +25,9 @@
       window.__frRender = fr.render;
       let ready = document.fonts ? document.fonts.ready.then(() => fr.measure()) : Promise.resolve();
       window.addEventListener("hf-seek", (e) => {
-        if (ready) { e.detail.waitUntil(ready.then(() => fr.render(e.detail.time))); ready = null; }
-        else fr.render(e.detail.time);
+        if (ready) { e.detail.waitUntil(ready.then(() => fr.render(e.detail.time).ready)); ready = null; return; }
+        const p = fr.render(e.detail.time).ready;            // image-sequence frames decode before capture
+        if (p) e.detail.waitUntil(p);
       });
       fr.render(0);
     </script>

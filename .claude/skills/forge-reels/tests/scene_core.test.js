@@ -71,7 +71,7 @@ test("every component draws exactly the parts core.js says it has", () => {
     nodes: { nodes: [{ id: "a", label: "A", x: 0, y: 0 }, { id: "b", label: "B", x: 300, y: 0 }], links: [["a", "b"]] },
     chart: { bars: [{ value: 1 }, { value: 3 }] }, document: { lines: ["one", "two"] }, chip: { traces: 6 },
     stack: { layers: [{ label: "Glass" }, { label: "Grid" }] }, text: { text: "Hi" }, counter: { value: 9 },
-    callout: { text: "Here" }, image: { src: "x.png" }, steps: { steps: ["Build", "Ship"] },
+    callout: { text: "Here" }, image: { src: "x.png" }, steps: { steps: ["Build", "Ship"] }, frames: { src: "s/%04d.jpg", count: 3 }, lens: {},
   };
   assert.deepEqual(Object.keys(samples).sort(), Object.keys(FR.COMPONENTS).sort());
   for (const [type, spec] of Object.entries(samples)) {
@@ -143,4 +143,25 @@ test("the view leaves room for headline captions at the top, or pill captions at
 test("steps: one part per step", () => {
   assert.deepEqual(FR.parts({ components: [{ type: "steps", id: "rail", steps: ["Build", "Deploy", "Serve"] }] }),
     ["rail", "rail.s1", "rail.s2", "rail.s3"]);
+});
+
+test("frames: a captured image sequence plays from its word and holds its last frame", () => {
+  const sc = { components: [{ type: "frames", id: "demo", src: "shots/%04d.jpg", count: 90, fps: 30 }] };
+  const evs = [ev(2, "play", "demo", 3)];
+  assert.equal(FR.stateAt(1, sc, evs, {}).obj.demo.play, 0);
+  assert.equal(FR.stateAt(3.5, sc, evs, {}).obj.demo.play, 1.5);
+  assert.equal(FR.stateAt(9, sc, evs, {}).obj.demo.play, 3);
+  assert.equal(FR.frameIndex(1.5, sc.components[0]), 45);
+  assert.equal(FR.frameIndex(99, sc.components[0]), 89);
+});
+
+test("lens: parts for the glass profile and the two sets of light rays", () => {
+  assert.deepEqual(FR.parts({ components: [{ type: "lens", id: "lens" }] }).sort(),
+    ["lens", "lens.centre", "lens.glass", "lens.label", "lens.rim"]);
+});
+
+test("frames: file names follow ffmpeg's numbering, which starts at 1 unless the scene says otherwise", () => {
+  assert.equal(FR.frameSrc({ src: "seq/%04d.jpg" }, 0), "seq/0001.jpg");
+  assert.equal(FR.frameSrc({ src: "seq/%04d.jpg" }, 149), "seq/0150.jpg");
+  assert.equal(FR.frameSrc({ src: "seq/f_%03d.png", first: 0 }, 7), "seq/f_007.png");
 });

@@ -74,8 +74,7 @@ down concrete upgrades per aspect. After delivery, record the new baseline in `l
 | Animate an SVG character rig (pivots, timelines, acting beats) | `/svg-character-animation` + `/gsap-core` + `/gsap-timeline` | Deterministic: one pure `render(t)` driven by a GSAP clock tween; never `.to()` or overlapping tweens on one property (frames render out of order) |
 | Hand-painted look: brush strokes, watercolour washes, hatching, ink, a brush wipe inside a reel | p5.brush standalone build in a HyperFrames canvas (`references/painted-animation.md`, route A) | MIT. No npm needed: `dist/brush.js` from the kit. Redraw from `t`, seed per element, boil 12x/s |
 | A short hand-painted cartoon (acted story beat, opener, loop) | ClaudeAnimationBase engine with OUR characters (`references/painted-animation.md`, route B) | MIT. Storyboard with reads first; contact sheet / strip / crop review loop. Clawd is Anthropic's mascot: see the trademark note in the reference |
-| Editorial paper-collage b-roll that assembles from empty under one VO line | `references/visual-explainer.md` | The visual-explainer format: rules, scene library components and parts, word-tied visual plan, build + sync gates |
-| `references/collage-broll.md` | Three gates: metaphor, still (`scripts/gen_image.py`, Codex), motion (HyperFrames assembly by default; Gemini Omni web optional) |
+| Editorial paper-collage b-roll that assembles from empty under one VO line | `references/collage-broll.md` | Three gates: metaphor, still (`scripts/gen_image.py`, Codex), motion (HyperFrames assembly by default; Gemini Omni web optional) |
 | AI-generated cinematic b-roll (optional garnish) | `references/ai-broll.md` + `references/browser-ai.md` | Gemini Omni via the Playwright MCP, the user presses Send, ~4 clips/day |
 | Still images: AI plates, backdrops, textures, collage stills | `scripts/gen_image.py` (Codex CLI image generation) | DEFAULT. One image per call (~1 min), `--ref` for brand/style frames, `--aspect 9:16`. Needs `codex` installed and logged in |
 | Character sheets and pose libraries (one character across many images) | ChatGPT image gen via the Playwright MCP (`references/browser-ai.md`) | Keeps one chat's character memory. One tab, new chat per prompt, sends >= 60 s apart |
@@ -157,6 +156,7 @@ skill), earshot's Gemini critique (uploads audio) and its forge search (needs li
 | `references/voice.md` | TTS options and how to pick; Hindi/Hinglish rules; voice bake-off; by-ear pick pages; Kokoro blending |
 | `references/avatars.md` | Cartoon avatar pipeline: pose library, face rig, mouths (Rhubarb + lip seal), placement, gestures, QC |
 | `references/browser-ai.md` | ChatGPT image gen + Gemini Omni through the Playwright MCP: queue, rate limits, saving, QA |
+| `references/visual-explainer.md` | The visual-explainer format: rules, scene library components and parts, word-tied visual plan, build + sync gates |
 | `references/collage-broll.md` | Halftone paper-collage b-roll: three approval gates, visual spec, colour-by-meaning, still prompt (Codex), HyperFrames assembly, Omni first/last-frame option, QA |
 | `references/ai-broll.md` | Gemini Omni clips: when, prompts, user-sends flow, saving, watermark scrub, vertical framing |
 | `references/platform-specs.md` | IG Reels / YT Shorts / TikTok specs, safe zones, covers, captions, export |

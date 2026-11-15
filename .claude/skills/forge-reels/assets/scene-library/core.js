@@ -25,7 +25,7 @@
 
   // default action lengths (s); "type" scales with the text length in visual_plan.py
   FR.DUR = { reveal: 0.5, hide: 0.35, focus: 0.9, wide: 1.0, draw: 0.8, type: 0.9, pulse: 0.7, highlight: 0.45,
-             count: 1.0, grow: 0.7, explode: 0.8, collapse: 0.6, flow: 1.2, move: 0.7, morph: 0.6 };
+             count: 1.0, grow: 0.7, explode: 0.8, collapse: 0.6, flow: 1.2, move: 0.7, morph: 0.6, play: 4.0 };
   FR.ACTIONS = Object.keys(FR.DUR);
   FR.CAMERA_ACTIONS = ["focus", "wide"];
 
@@ -48,8 +48,15 @@
     counter:  { parts: () => ["label"], hidden: () => [] },
     callout:  { parts: () => ["arrow", "label"], hidden: () => [] },
     steps:    { parts: (s) => n("s", (s.steps || []).length), hidden: () => [] },
+    frames:   { parts: () => [], hidden: () => [] },
+    lens:     { parts: () => ["glass", "centre", "rim", "label"], hidden: () => [] },
     image:    { parts: () => [], hidden: () => [] },
   };
+
+  // frames component: which image of the sequence shows after `play` seconds of playback
+  FR.frameIndex = (play, c) => Math.min((c.count || 1) - 1, Math.floor(play * (c.fps || 30) + 1e-6));
+  // file of frame k (0-based): "%04d" in src, numbered from c.first (default 1, as ffmpeg writes image sequences)
+  FR.frameSrc = (c, k) => c.src.replace(/%0(\d)d/, (_, d) => String(k + (c.first == null ? 1 : c.first)).padStart(+d, "0"));
 
   FR.parts = function (scene) {
     const out = [];
@@ -72,7 +79,7 @@
 
   // ---------- per-object state at t
   const BASE = () => ({ o: 1, s: 1, tx: 0, ty: 0, draw: 1, type: 1, pulse: 0, hl: 0, count: null, grow: 1,
-                        explode: 0, flow: -1, blur: 0 });
+                        explode: 0, flow: -1, blur: 0, play: 0 });
 
   function objectState(t, id, evs, hidden) {
     const st = BASE();
@@ -103,6 +110,7 @@
         case "flow": { const k = a.repeat || 1; st.flow = p < 1 ? (p * k) % 1 : -1; break; }
         case "move": st.tx += (a.dx || 0) * E.inOut(p); st.ty += (a.dy || 0) * E.inOut(p); break;
         case "morph": st.o *= 1 - q; st.s *= 1 + (a.scale == null ? 0.12 : a.scale) * q; break;
+        case "play": st.play = Math.round(clamp(t - e.t, 0, e.dur) * 1000) / 1000; break;
         default: break;
       }
     }

@@ -173,3 +173,17 @@
 .fr-callout .label { position: absolute; padding: 14px 24px; border-radius: 18px; background: var(--ink); color: var(--bg);
   font-size: 30px; font-weight: 760; white-space: nowrap; transform: translate(-50%, -50%); }
 .fr-image img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: inherit; }
+
+/* ---------- frames (captured sequence) and lens (cross-section) */
+.fr-frames img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: inherit; }
+.fr-frames.phone-frame .bezel { position: absolute; inset: 0; border-radius: calc(var(--w) * .15); padding: calc(var(--w) * .03);
+  background: linear-gradient(145deg, #2b2f38, #0c0e12 60%); box-shadow: inset 0 0 0 2px rgba(255,255,255,.08),
+  0 50px 90px -30px rgba(0,0,0,.6); }
+.fr-frames.phone-frame img { border-radius: calc(var(--w) * .12); }
+.fr-lens svg { position: absolute; inset: 0; overflow: visible; }
+.fr-lens .glass { fill: rgba(140, 190, 255, calc(var(--draw, 1) * .16)); stroke: rgba(170, 210, 255, .85); stroke-width: 4px; }   /* fills in as it is drawn */
+.fr-lens .centre path, .fr-lens .rim path { fill: none; stroke-width: 5px; stroke-linecap: round; stroke-linejoin: round; }
+.fr-lens .centre path { stroke: var(--accent2); }
+.fr-lens .rim path { stroke: var(--accent); }
+.fr-lens .label { position: absolute; left: 0; right: 0; bottom: -64px; text-align: center; font-size: 30px; font-weight: 700;
+  color: var(--muted); }

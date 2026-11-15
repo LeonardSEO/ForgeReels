@@ -79,6 +79,8 @@ token in `colors` (bg, ink, card, accent, accent2, marker, cap-bg, ...).
 | `callout` | text, to{dx,dy} | arrow (draw), label |
 | `image` | src, w, h, card | (the id itself): real screenshots and product photos |
 | `steps` | w, steps[] | s1..N: a chapter rail; `highlight` on sN marks that chapter reached |
+| `frames` | src ("seq/%04d.jpg"), count, fps, first (1), w, device ("phone") | (the id itself): a captured screen recording; `play` on its word (dur = count / fps) |
+| `lens` | w, h, label | glass, centre, rim, label: how a curved glass edge bends light (draw each) |
 
 Add a component: a `parts`/`hidden` entry in `core.js` FR.COMPONENTS and a builder in `renderer.js` FR.BUILD that
 marks every part with `data-obj`; `tests/scene_core.test.js` checks the two agree.
@@ -98,7 +100,7 @@ marks every part with `data-obj`; `tests/scene_core.test.js` checks the two agre
 - `at`: `start` (default) or `end` of the word; `offset`: seconds (stagger a group by 0.08-0.1 s).
 - Actions (default length): reveal 0.5, hide 0.35, focus 0.9, wide 1.0 (camera), draw 0.8, type 0.9, pulse 0.7,
   highlight 0.45, count 1.0 (`args.to` required), grow 0.7, explode 0.8, collapse 0.6, flow 1.2 (`args.repeat`),
-  move 0.7 (`args.dx/dy`), morph 0.6.
+  move 0.7 (`args.dx/dy`), morph 0.6, play 4.0 (frames).
 - An object whose first event is `reveal` or `count` is hidden until it; `draw`, `type`, `grow` start empty.
 - A camera move every 1-2 lines; a smaller event (pulse, flow, highlight) on most key words in between.
 

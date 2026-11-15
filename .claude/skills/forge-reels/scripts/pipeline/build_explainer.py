@@ -15,6 +15,7 @@ Steps: build_vo -> vo_check -> words --align -> visual_plan -> assemble index.ht
 import argparse
 import json
 import pathlib
+import re
 import shutil
 import subprocess
 import sys
@@ -54,6 +55,32 @@ def assemble(pj):
     print(f"assembled {pj / 'index.html'} ({data['duration']:.2f} s)")
 
 
+def slug(name):
+    """reels/2026-11-15-liquid-glass-react -> liquid-glass-react (the output file has no date prefix)."""
+    return re.sub(r"^\d{4}-\d{2}-\d{2}-", "", name)
+
+
+def hf_check(pj):
+    """HyperFrames' own check (lint + the page running in Chromium): a missing image or a script error stops the build."""
+    print("\n==> hyperframes check", flush=True)
+    r = subprocess.run(["npx", "hyperframes", "check", "--json"], cwd=pj, capture_output=True, text=True)
+    try:
+        rep = json.loads(r.stdout)
+    except json.JSONDecodeError:
+        sys.exit(f"STOP at hyperframes check: no report ({r.stderr[-400:]})")
+    bad = [f"{k}: {f.get('code')} {str(f.get('message'))[:160]}" for k in ("lint", "runtime")
+           for f in (rep.get(k) or {}).get("findings") or [] if f.get("severity") == "error"]
+    if bad:
+        sys.exit("STOP at hyperframes check:\n  " + "\n  ".join(dict.fromkeys(bad)))
+    print("hyperframes check: no lint or runtime errors")
+
+
+def master(src, dst):
+    """Delivery audio: loudness-normalised to -14 LUFS, true peak -1.5 dBTP (references/qc.md); the picture is copied."""
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(src), "-c:v", "copy", "-af",
+                    "loudnorm=I=-14:TP=-1.5:LRA=11", "-ar", "48000", "-c:a", "aac", "-b:a", "192k", str(dst)], check=True)
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--project", required=True)
@@ -77,6 +104,7 @@ def main():
     print("\n==> assemble")
     assemble(pj)
     run("semantic sync", py(HERE / "semantic_sync.py", "--project", str(pj)))
+    hf_check(pj)
     if a.render:
         out = pj / "out" / f"{pj.name}.mp4"
         out.parent.mkdir(exist_ok=True)
@@ -84,8 +112,8 @@ def main():
             cwd=pj)
         if a.frames:
             run("semantic sync (frames)", py(HERE / "semantic_sync.py", "--project", str(pj), "--frames", str(out)))
-        final = _paths.output_dir() / out.name                       # the workspace's output/ folder
-        shutil.copy2(out, final)
+        final = _paths.output_dir() / f"{slug(pj.name)}.mp4"          # the workspace's output/ folder
+        master(out, final)
         print(f"\nDONE: {final}  (draft and QC sheets in {out.parent})")
 
 

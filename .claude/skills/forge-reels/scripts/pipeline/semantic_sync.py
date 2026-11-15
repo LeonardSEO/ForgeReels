@@ -82,8 +82,10 @@ def frame_diff(a, b):
 def check_frames(events, mp4, out_dir):
     """-> (errors, sheet path). Before = 0.1 s before the event, after = 0.15 s after it ends."""
     errors, tiles = [], []
+    end = float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(mp4)],
+                               capture_output=True, text=True, check=True).stdout) - 0.1     # last full frame
     for e in events:
-        before, after = grab(mp4, e["t"] - 0.1), grab(mp4, e["t"] + e["dur"] + 0.15)
+        before, after = grab(mp4, min(e["t"] - 0.1, end)), grab(mp4, min(e["t"] + e["dur"] + 0.15, end))
         d = frame_diff(before, after)
         label = f"{e['t']:.2f}s '{e['word']}' {e['action']} {e['object'] or 'all'}  change {d:.1f}"
         if d < MIN_CHANGE:

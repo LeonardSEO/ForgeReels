@@ -69,6 +69,15 @@ class FramesTest(unittest.TestCase):
         self.assertTrue(sheet.exists())
         self.assertEqual(Image.open(sheet).size[1] > 0, True)
 
+    @unittest.skipUnless(shutil.which("ffmpeg"), "needs ffmpeg")
+    def test_event_running_past_the_end_of_the_video_is_checked_not_crashed(self):
+        tmp = pathlib.Path(tempfile.mkdtemp()); mp4 = tmp / "v.mp4"
+        subprocess.run(["ffmpeg", "-v", "error", "-f", "lavfi", "-i", "color=c=red:s=270x480:d=1:r=30", "-f", "lavfi",
+                        "-i", "color=c=blue:s=270x480:d=1:r=30", "-filter_complex", "[0][1]concat=n=2:v=1",
+                        "-pix_fmt", "yuv420p", str(mp4)], check=True)
+        errors, _ = ss.check_frames([{"t": 0.9, "dur": 3.0, "action": "play", "object": "a", "word": "end"}], mp4, tmp)
+        self.assertEqual(errors, [])
+
 
 if __name__ == "__main__":
     unittest.main()
