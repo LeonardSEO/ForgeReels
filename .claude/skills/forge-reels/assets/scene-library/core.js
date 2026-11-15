@@ -186,7 +186,7 @@
       if (t < e.t) break;
       const from = moving ? cam : drift(cam, e.t - lastEnd);
       const to = target(e.action === "wide" ? (e.object || "all") : e.object, e.args);
-      const raw = clamp((t - e.t) / Math.max(e.dur, 1e-6), 0, 1), p = E.inOut(raw);
+      const raw = clamp((t - e.t) / Math.max(e.dur, 1e-6), 0, 1), p = (E[e.args && e.args.ease] || E.inOut)(raw);
       // zoom in log space so pushes feel even; centre follows the screen-space path
       cam = { x: lerp(from.x, to.x, p), y: lerp(from.y, to.y, p), s: Math.exp(lerp(Math.log(from.s), Math.log(to.s), p)) };
       moving = raw < 1;

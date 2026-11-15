@@ -57,6 +57,17 @@ test("focus moves the camera onto the object and wide returns to the whole world
   assert.deepEqual(wide, start);
 });
 
+test("a camera move with ease 'out' starts at full speed (the hook moves from frame 1)", () => {
+  const dt = 1 / 30;
+  const zoomAt = (args, t) => FR.stateAt(t, scene, [ev(0, "focus", "phone.glass", 1.5, args)], boxes).camera.s;
+  const s0 = zoomAt({}, 0);
+  const firstStep = (args) => Math.log(zoomAt(args, dt) / s0);
+  const lastStep = (args) => Math.log(zoomAt(args, 1.5) / zoomAt(args, 1.5 - dt));
+  assert.ok(firstStep({ ease: "out" }) > 20 * firstStep({}), "ease out moves much more in frame 1 than the default");
+  assert.ok(firstStep({ ease: "out" }) > lastStep({ ease: "out" }));
+  assert.equal(zoomAt({ ease: "out" }, 1.5), zoomAt({}, 1.5));               // same landing framing
+});
+
 test("captions mark the spoken word as now", () => {
   const g = [[{ text: "Glass", start: 1, end: 1.4 }, { text: "first.", start: 1.5, end: 1.9 }]];
   const c = FR.captionAt(1.6, g);

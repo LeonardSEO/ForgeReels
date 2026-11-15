@@ -90,6 +90,8 @@ def main():
     ap.add_argument("--render", action="store_true", help="draft render to <project>/out/<name>.mp4")
     ap.add_argument("--frames", action="store_true", help="after the render: before/after frames of every event")
     ap.add_argument("--skip-voice", action="store_true", help="reuse vo/ as it is (no TTS, no voice check)")
+    ap.add_argument("--deliver", action="store_true",
+                    help="write the mastered render to output/<slug>.mp4 (a finished video; drafts stay in <project>/out/)")
     a = ap.parse_args()
     pj = pathlib.Path(a.project).resolve()
     if not a.skip_voice:
@@ -112,7 +114,8 @@ def main():
             cwd=pj)
         if a.frames:
             run("semantic sync (frames)", py(HERE / "semantic_sync.py", "--project", str(pj), "--frames", str(out)))
-        final = _paths.output_dir() / f"{slug(pj.name)}.mp4"          # the workspace's output/ folder
+        # only a delivery goes to the workspace's output/ folder (the Stop hook holds every video there to QC)
+        final = _paths.output_dir() / f"{slug(pj.name)}.mp4" if a.deliver else out.with_name(out.stem + "-master.mp4")
         master(out, final)
         print(f"\nDONE: {final}  (draft and QC sheets in {out.parent})")
 

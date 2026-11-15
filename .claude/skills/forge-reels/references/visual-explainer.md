@@ -31,8 +31,8 @@ Proven projects (they double as regression tests), in the workspace: `references
   facts.md            claim -> source, written before the script is final
   scene.json          the world: theme, world size, camera start, components
   visual_plan.json    the events, each tied to a word
-  (built) vo/  assets/events.js  fr/  index.html  out/<project>.mp4  out/sync_sheet.jpg
-  (final) <workspace>/output/<project>.mp4
+  (built) vo/  assets/events.js  fr/  index.html  out/<project>.mp4  out/<project>-master.mp4  out/sync_sheet.jpg
+  (final) <workspace>/output/<slug>.mp4   (--deliver, or the sound pass's final mix copied there; then qc_reel.py)
 ```
 
 Build, check and render in one command (re-run after every edit; unchanged voice lines are reused):
@@ -40,6 +40,9 @@ Build, check and render in one command (re-run after every edit; unchanged voice
 ```
 python -I .claude/skills/forge-reels/scripts/pipeline/build_explainer.py --project reels/<date>-<slug> [--lang nl --engine pocket] --render --frames
 ```
+
+Drafts stay in `out/`. `output/` is for finished videos only: the Stop hook holds each new one there until
+`qc_reel.py` passes on it (`<video>.qc-pass`). An explainer without a sound pass: add `--deliver`.
 
 Sound after the picture is approved: `scripts/pipeline/explainer_cues.py --project <p> --anchors <hook word> <turn word>`
 (events -> cues.json on the same words), then beatgrid / score / beatmix as in `sound.md`.
@@ -106,6 +109,9 @@ marks every part with `data-obj`; `tests/scene_core.test.js` checks the two agre
   highlight 0.45, count 1.0 (`args.to` required), grow 0.7, explode 0.8, collapse 0.6, flow 1.2 (`args.repeat`),
   move 0.7 (`args.dx/dy`), morph 0.6, play 4.0 (frames), strike 0.4 (a red cross over a component: "no templates"),
   scan 0.6 (a bright line sweeps across and leaves the object behind: "all of this is code").
+- Camera args (focus / wide): `pad`, `zoom`, `max`, and `ease`: `inOut` (default), `out` (full speed on frame 1,
+  then settles: the hook's first move and any "look at this" snap), `linear`, `back`. The first camera move of a
+  reel uses `"ease": "out"` with `"offset"` pulling it to t = 0, so the opening frame is already moving.
 - A counting number rolls like an odometer: digits lock from the left, only the ones still rolling are blurred;
   counters size their font to the landed number.
 - Ambient particles drift behind the world on every frame (`"ambient": "none"` to switch off, `"particles": 70`).

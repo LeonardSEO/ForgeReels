@@ -137,14 +137,14 @@ references/examples/touchscreen/
 ```
 
 ```bash
-python -I .claude/skills/forge-reels/scripts/pipeline/build_explainer.py --project references/examples/touchscreen --render --frames
+python -I .claude/skills/forge-reels/scripts/pipeline/build_explainer.py --project references/examples/touchscreen --render --frames --deliver
 ```
 
 Voice → spoken-equals-script check → word alignment → events resolved onto their words → render →
 a frame-by-frame check that every event visibly changes the picture. Re-record the voice and every animation
-re-times itself. A scene library of 12 components (phone, browser, terminal, AI flow, chart, document, chip,
-exploded stack, text, counter, callout, screenshot) and 15 actions (reveal, focus, draw, type, pulse, flow, grow,
-count, highlight, explode, ...) covers hardware, software and AI topics. The runtime is offline and seek-exact.
+re-times itself. A scene library of 16 components (phone, browser, terminal, AI flow, chart, document, chip,
+exploded stack, text, counter, callout, screenshot, chapter rail, screen recording, glass lens, coding agent) and
+18 actions (reveal, focus, draw, type, pulse, flow, grow, count, highlight, strike, scan, play, ...) covers hardware, software and AI topics. The runtime is offline and seek-exact.
 
 ## Voices
 
