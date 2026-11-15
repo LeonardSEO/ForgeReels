@@ -84,7 +84,9 @@ def main():
             cwd=pj)
         if a.frames:
             run("semantic sync (frames)", py(HERE / "semantic_sync.py", "--project", str(pj), "--frames", str(out)))
-        print(f"\nDONE: {out}")
+        final = _paths.output_dir() / out.name                       # the workspace's output/ folder
+        shutil.copy2(out, final)
+        print(f"\nDONE: {final}  (draft and QC sheets in {out.parent})")
 
 
 if __name__ == "__main__":

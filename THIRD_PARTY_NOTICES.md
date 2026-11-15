@@ -11,16 +11,16 @@ distributed under the MIT License, reproduced once at the end of this file, with
 
 | Project | Copyright notice | Where |
 |---|---|---|
-| Video Studio skill | Copyright (c) 2026 the Video Studio skill authors | parts of `forge-reels/scripts/` and `forge-reels/references/` |
-| bang-motion | Copyright (c) 2026 Bang Tutorial | `forge-reels/references/visual-grammar.md` ("Video, not slides") |
-| gbro-collage-broll | Copyright (c) 2026 狗哥笔记 | `forge-reels/references/collage-broll.md` (gates, visual spec, prompts) |
-| ClaudeAnimationBase | Copyright (c) 2026 John Heibel | `forge-reels/references/painted-animation.md` (animation guide) |
+| Video Studio skill | Copyright (c) 2026 the Video Studio skill authors | parts of `.claude/skills/forge-reels/scripts/` and `.claude/skills/forge-reels/references/` |
+| bang-motion | Copyright (c) 2026 Bang Tutorial | `.claude/skills/forge-reels/references/visual-grammar.md` ("Video, not slides") |
+| gbro-collage-broll | Copyright (c) 2026 狗哥笔记 | `.claude/skills/forge-reels/references/collage-broll.md` (gates, visual spec, prompts) |
+| ClaudeAnimationBase | Copyright (c) 2026 John Heibel | `.claude/skills/forge-reels/references/painted-animation.md` (animation guide) |
 | lemo-opuscar | Copyright (c) 2026 Lemomo (LemoLab) | directing rules in `visual-grammar.md`, `qc.md`, `sound.md`; style index in `film-styles.md` |
 
 ## Bundled fonts (SIL Open Font License 1.1)
 
-Inter, Mukta, Noto Sans Devanagari (`forge-reels/assets/fonts/`) and Archivo, IBM Plex Mono, Instrument Serif
-(`forge-reels/templates/screen-walkthrough/assets/fonts/`). Each font's licence file sits beside it and must stay
+Inter, Mukta, Noto Sans Devanagari (`.claude/skills/forge-reels/assets/fonts/`) and Archivo, IBM Plex Mono, Instrument Serif
+(`.claude/skills/forge-reels/templates/screen-walkthrough/assets/fonts/`). Each font's licence file sits beside it and must stay
 with it.
 
 ## Tools and models ForgeReels runs (not bundled)
@@ -31,7 +31,7 @@ with it.
 | Motion skills: charlie947/motion-graphics-skills, Barty-Bart/motion-graphics | MIT |
 | GSAP skills (greensock/gsap-skills), GSAP | GSAP standard licence |
 | Kokoro-82M, kokoro-onnx | Apache 2.0, MIT |
-| Pocket TTS (kyutai-labs/pocket-tts) | MIT code, CC BY 4.0 weights; built-in voices per `forge-reels/references/voice.md` |
+| Pocket TTS (kyutai-labs/pocket-tts) | MIT code, CC BY 4.0 weights; built-in voices per `.claude/skills/forge-reels/references/voice.md` |
 | VoxCPM2 (OpenBMB), mlx-audio | Apache 2.0, MIT |
 | Parakeet TDT 0.6B v3 (NVIDIA) | CC BY 4.0 |
 | wav2vec2-large-xlsr-53 English / Dutch (jonatasgrosman) | Apache 2.0 |

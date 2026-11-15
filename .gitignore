@@ -26,3 +26,4 @@ references/examples/*/hyperframes.json
 .claude/skills/*
 !.claude/skills/forge-reels/
 .claude/settings.local.json
+skills-lock.json

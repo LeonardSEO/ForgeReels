@@ -9,6 +9,14 @@ The single entry point for video work. Read this file first in every video chat,
 then `lessons-learned.md` and `lessons.md`. Everything else loads on demand. macOS only (Apple Silicon recommended);
 every script finds its tools through `scripts/_paths.py` (see `references/toolchain.md`).
 
+**Workspace.** ForgeReels is a folder the user cloned and works in (see `CLAUDE.md` at its root):
+- each video gets `reels/<yyyy-mm-dd>-<slug>/` and every file for it stays there (brief, sources, script, voice,
+  scenes, drafts, QC);
+- the finished video goes to `output/<slug>.mp4`;
+- brand packs are in `brand/<name>/`; reference reels and the three example explainers in `references/`;
+- scripts run as `~/forge-reels/venv/bin/python -I .claude/skills/forge-reels/scripts/<script>` from the workspace
+  root (`scripts/_paths.py` finds the workspace, the output folder and the other skills).
+
 **Standing rule: this skill gets better after every video, for its whole lifetime.** See "Self-improvement" at
 the bottom. A video is not done until that step is done.
 
@@ -20,7 +28,7 @@ down concrete upgrades per aspect. After delivery, record the new baseline in `l
 
 1. Read `lessons-learned.md` (distilled rules) and `lessons.md` (your own dated entries, newest first;
    they override older text in the references).
-2. Find the brand pack: a skill named `<brand>-reels`, or a folder with `brand.md` + `MOTION.md`. No pack and a
+2. Find the brand pack: `brand/<name>/` in the workspace (or a skill named `<brand>-reels`), with `brand.md` + `MOTION.md`. No pack and a
    new brand: make one with `references/brand-packs.md` (template in `templates/brand-pack-template/`) before
    designing anything.
 3. Check the machine (`references/machine-limits.md`). On a small laptop: one render at a time, `--workers 2`,
@@ -43,7 +51,7 @@ down concrete upgrades per aspect. After delivery, record the new baseline in `l
 | Premium effects (chart morph, masked type, particles, glass focus, perspective shift, flowing paths) | `/motion-effects` | 16 effects, seek-exact |
 | Cinematic 3D opener / hook | `/title-sequence-3d` | Three.js camera through a lit scene |
 | Documentary explainer look | `/vox-explainer` | Torn paper, halftone, condensed type |
-| Explain how something works (a device, a process, software, AI): one world, every key word animated on its word | **Visual explainer**: `references/visual-explainer.md` + `scripts/pipeline/build_explainer.py` | DEFAULT for explainers. scene.json + visual_plan.json, voice first, `semantic_sync.py` gate. Examples: `examples/` |
+| Explain how something works (a device, a process, software, AI): one world, every key word animated on its word | **Visual explainer**: `references/visual-explainer.md` + `scripts/pipeline/build_explainer.py` | DEFAULT for explainers. scene.json + visual_plan.json, voice first, `semantic_sync.py` gate. Examples: `references/examples/` |
 | Product UI / app demo: the real interface rebuilt and used up close (typing, clicks, results, zooms) | `/explainer-default` (calm 45-90 s demo), `/explainer-engaging` (10-30 s one-take) | FIRST choice for showing a product working; 9:16 via its vertical size or `/reel-export`. Real screenshots instead: `templates/screen-walkthrough/` |
 | One-take story explainer (camera follows a hero element) | `/explainer-engaging`, or `templates/reel-project/` (a proven 80 s one-take world with a talking avatar) | |
 | Hype / teaser, beat-locked kinetic type | `/explainer-high-energy` | |

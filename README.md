@@ -98,9 +98,10 @@ cd ForgeReels
 bash setup/setup-mac.sh
 ```
 
-The setup installs ffmpeg, Node and Python, creates a venv in `~/forge-reels`, installs the skill and the motion
-skills it routes to, and ends with a smoke test that must print `SMOKE PASS`. Use `--minimal` for the core skills
-only.
+ForgeReels is not a skill you install somewhere: **this folder is your studio.** Clone it once and make every
+video inside it. The setup installs ffmpeg, Node and Python, creates a venv and model cache in `~/forge-reels`,
+installs the motion skills ForgeReels routes to into this folder's `.claude/skills/`, and ends with a smoke test
+that must print `SMOKE PASS`. Use `--minimal` for the core skills only.
 
 Optional extras:
 
@@ -110,14 +111,25 @@ sh setup/setup-audio.sh    # original scores and pro sound effects
 npm i -g @openai/codex && codex login   # AI still images through your Codex account
 ```
 
-Then open Claude Code anywhere and type `/forge-reels` followed by what you want.
+Then open **this folder** in Claude Code (desktop app: Code tab, pick the folder; terminal: `claude` inside it) and
+type `/forge-reels` followed by what you want. Claude picks up the project's skills automatically.
+
+```text
+ForgeReels/
+  .claude/skills/   forge-reels (the studio) + the motion skills setup installs here
+  CLAUDE.md         how Claude works in this folder
+  reels/            one folder per video: script, voice, scenes, drafts, QC        (stays local)
+  output/           finished videos, ready to post                                 (stays local)
+  brand/            your brand packs: brand.md, MOTION.md, logos                   (stays local)
+  references/       reels you want to learn from + three example explainers
+```
 
 ## Visual explainers
 
 The format for "how does X work" reels. You write the script and two small JSON files, ForgeReels does the rest:
 
 ```text
-examples/touchscreen/
+references/examples/touchscreen/
   script.txt          the voice-over, one line per row
   facts.md            a source for every claim
   scene.json          the world: a phone, its sensor grid, a touch chip, callouts
@@ -125,7 +137,7 @@ examples/touchscreen/
 ```
 
 ```bash
-python -I scripts/pipeline/build_explainer.py --project examples/touchscreen --render --frames
+python -I .claude/skills/forge-reels/scripts/pipeline/build_explainer.py --project references/examples/touchscreen --render --frames
 ```
 
 Voice → spoken-equals-script check → word alignment → events resolved onto their words → render →
@@ -145,8 +157,8 @@ English is the default. Dutch is fully supported: voice, word timing and checks.
 | `voxcpm` | 30 languages incl. Dutch | 0.3–0.7× real time | Premium: design a voice from a description, 48 kHz |
 
 ```bash
-python -I scripts/pipeline/build_vo.py --lines vo/lines.txt --out vo                       # English
-python -I scripts/pipeline/build_vo.py --lines vo/lines.txt --out vo --engine pocket --lang nl   # Dutch
+python -I .claude/skills/forge-reels/scripts/pipeline/build_vo.py --lines vo/lines.txt --out vo                       # English
+python -I .claude/skills/forge-reels/scripts/pipeline/build_vo.py --lines vo/lines.txt --out vo --engine pocket --lang nl   # Dutch
 ```
 
 Pronunciation fixes go in a `say.json` (`{"AI": "A.I."}`); captions keep the written word. Prefix a line with
@@ -167,15 +179,15 @@ every engine and builds a blind listening page.
 ## What is inside
 
 ```text
-setup/              setup-mac.sh, setup-voxcpm.sh, setup-audio.sh, pinned requirements, skill list
-forge-reels/        the skill (installed into ~/.claude/skills/forge-reels)
-  SKILL.md          entry point: routing table, pipeline, hard rules
-  references/       voice, visual grammar, retention, sound, QC, toolchain, machine limits, film styles
-  scripts/          voice engines, alignment, visual plan + semantic sync, QC gates, render, sound, images
-  assets/           scene library (offline explainer runtime + components), fonts
-  templates/        reel project, visual explainer, screen walkthrough, brand pack, cartoon avatar
-  examples/         three reference explainers (hardware, software UI, AI), also regression tests
-  tests/            unit and integration tests (python -I -m unittest discover -s forge-reels/tests)
+setup/                    setup-mac.sh, setup-voxcpm.sh, setup-audio.sh, pinned requirements, skill list
+.claude/skills/forge-reels/
+  SKILL.md                entry point: routing table, pipeline, hard rules
+  references/             voice, visual grammar, visual explainer, retention, sound, QC, toolchain, film styles
+  scripts/                voice engines, alignment, visual plan + semantic sync, QC gates, render, sound, images
+  assets/                 scene library (offline explainer runtime + components), fonts
+  templates/              reel project, visual explainer, screen walkthrough, brand pack, cartoon avatar
+  tests/                  python -I -m unittest discover -s .claude/skills/forge-reels/tests
+references/examples/      three reference explainers (hardware, software UI, AI), also regression tests
 ```
 
 ## Principles

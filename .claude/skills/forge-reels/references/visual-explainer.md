@@ -4,8 +4,8 @@ The format for "explain how X works" reels. The voice is written and recorded FI
 tied to a spoken word in a machine-readable plan, so the picture changes exactly when the word is said, and a
 re-recorded voice re-times every animation with one command. One continuous world, one camera, no slide cuts.
 
-Proven projects (they double as regression tests): `examples/touchscreen/` (hardware), `examples/web-cookies/`
-(software UI), `examples/ai-tokens/` (AI process, dark theme).
+Proven projects (they double as regression tests), in the workspace: `references/examples/touchscreen/`
+(hardware), `references/examples/web-cookies/` (software UI), `references/examples/ai-tokens/` (AI process, dark theme).
 
 ## The rules (non-negotiable in this format)
 
@@ -22,7 +22,7 @@ Proven projects (they double as regression tests): `examples/touchscreen/` (hard
    1135-1310 px; below is decoration only (`platform-specs.md`).
 7. **Facts first.** Every claim and number in `facts.md` with a source; illustrations are labelled as such.
 
-## Project folder
+## Project folder (`reels/<yyyy-mm-dd>-<slug>/` in the workspace)
 
 ```
 <project>/
@@ -31,12 +31,13 @@ Proven projects (they double as regression tests): `examples/touchscreen/` (hard
   scene.json          the world: theme, world size, camera start, components
   visual_plan.json    the events, each tied to a word
   (built) vo/  assets/events.js  fr/  index.html  out/<project>.mp4  out/sync_sheet.jpg
+  (final) <workspace>/output/<project>.mp4
 ```
 
 Build, check and render in one command (re-run after every edit; unchanged voice lines are reused):
 
 ```
-python -I scripts/pipeline/build_explainer.py --project <project> [--lang nl --engine pocket] --render --frames
+python -I .claude/skills/forge-reels/scripts/pipeline/build_explainer.py --project reels/<date>-<slug> [--lang nl --engine pocket] --render --frames
 ```
 
 Steps it runs: `build_vo` -> `vo_check` -> `words --align` -> `visual_plan` -> assemble -> `semantic_sync`
