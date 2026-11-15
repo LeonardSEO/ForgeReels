@@ -24,31 +24,10 @@ import pathlib
 import re
 
 
-def main():
-    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--words", required=True); ap.add_argument("--cues", required=True)
-    ap.add_argument("--hf", required=True, help="HyperFrames project folder")
-    ap.add_argument("--end", type=float, required=True, help="reel length (s)")
-    ap.add_argument("--key"); ap.add_argument("--fixtxt")
-    ap.add_argument("--box", default="48,894,542"); ap.add_argument("--size", type=int, default=52)
-    ap.add_argument("--font", default="Inter"); ap.add_argument("--font-file", default="InterVariable.woff2")
-    ap.add_argument("--pill", default="rgba(10,18,34,.86)"); ap.add_argument("--accent", default="#f4d049")
-    ap.add_argument("--maxc", type=int, default=30); ap.add_argument("--maxw", type=int, default=4)
-    a = ap.parse_args()
-    W = json.loads(pathlib.Path(a.words).read_text())
-    cues = json.loads(pathlib.Path(a.cues).read_text())
-    at = lambda line, i: next(w for w in W if w["line"] == line and w["i"] == i)
-    T = {k: at(*v)["start"] for k, v in cues.items()}
-    vo_end = max(w["end"] for w in W)
-    T["voEnd"] = round(vo_end, 3)
-    hf = pathlib.Path(a.hf)
-    (hf / "assets").mkdir(parents=True, exist_ok=True); (hf / "compositions").mkdir(parents=True, exist_ok=True)
-    (hf / "assets" / "timing.js").write_text("window.__T = " + json.dumps({"w": T}) + ";\n")
-
-    KEY = set(l.strip() for l in pathlib.Path(a.key).read_text(encoding="utf-8").splitlines() if l.strip()) if a.key else set()
-    FIX = {tuple(int(x) for x in k.split(".")): v for k, v in json.loads(pathlib.Path(a.fixtxt).read_text()).items()} if a.fixtxt else {}
-    words = [dict(w, text=FIX.get((w["line"], w["i"]), w["text"])) for w in W]
-    MAXC, MAXW = a.maxc, a.maxw
+def caption_groups(words, maxc=30, maxw=4):
+    """Words -> caption groups: follow the sentence, split at punctuation and pauses over 0.35 s, balanced 2-4 word
+    groups, a number stays with its unit, a lone word folds back or forward, max ~maxc characters."""
+    MAXC, MAXW = maxc, maxw
     txt = lambda g: " ".join(x["text"] for x in g)
     clauses, cur = [], []
     for k, w in enumerate(words):
@@ -87,6 +66,34 @@ def main():
         else:
             fixed.append(g)
     groups = fixed
+    return groups
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--words", required=True); ap.add_argument("--cues", required=True)
+    ap.add_argument("--hf", required=True, help="HyperFrames project folder")
+    ap.add_argument("--end", type=float, required=True, help="reel length (s)")
+    ap.add_argument("--key"); ap.add_argument("--fixtxt")
+    ap.add_argument("--box", default="48,894,542"); ap.add_argument("--size", type=int, default=52)
+    ap.add_argument("--font", default="Inter"); ap.add_argument("--font-file", default="InterVariable.woff2")
+    ap.add_argument("--pill", default="rgba(10,18,34,.86)"); ap.add_argument("--accent", default="#f4d049")
+    ap.add_argument("--maxc", type=int, default=30); ap.add_argument("--maxw", type=int, default=4)
+    a = ap.parse_args()
+    W = json.loads(pathlib.Path(a.words).read_text())
+    cues = json.loads(pathlib.Path(a.cues).read_text())
+    at = lambda line, i: next(w for w in W if w["line"] == line and w["i"] == i)
+    T = {k: at(*v)["start"] for k, v in cues.items()}
+    vo_end = max(w["end"] for w in W)
+    T["voEnd"] = round(vo_end, 3)
+    hf = pathlib.Path(a.hf)
+    (hf / "assets").mkdir(parents=True, exist_ok=True); (hf / "compositions").mkdir(parents=True, exist_ok=True)
+    (hf / "assets" / "timing.js").write_text("window.__T = " + json.dumps({"w": T}) + ";\n")
+
+    KEY = set(l.strip() for l in pathlib.Path(a.key).read_text(encoding="utf-8").splitlines() if l.strip()) if a.key else set()
+    FIX = {tuple(int(x) for x in k.split(".")): v for k, v in json.loads(pathlib.Path(a.fixtxt).read_text()).items()} if a.fixtxt else {}
+    words = [dict(w, text=FIX.get((w["line"], w["i"]), w["text"])) for w in W]
+    groups = caption_groups(words, a.maxc, a.maxw)
 
     def html(g):
         return " ".join(f"<em>{x['text']}</em>" if x["text"] in KEY or x["text"].rstrip(".,?!") in KEY else x["text"] for x in g)
