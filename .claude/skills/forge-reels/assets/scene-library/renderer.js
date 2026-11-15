@@ -264,9 +264,14 @@
       });
       const cnt = el.matches("[data-count]") ? el : el.querySelector(":scope > [data-count]");
       if (cnt && s.count != null) {
-        cnt.textContent = fmt(cnt, s.count);
-        cnt.style.filter = s.roll > 0.02 ? `blur(${(6 * s.roll).toFixed(2)}px)` : "";
+        // odometer: digits that already show their final value are sharp, the ones still rolling are blurred
+        const finalText = cnt.dataset.final || (cnt.dataset.final = cnt.textContent), now = fmt(cnt, s.count);
+        cnt.innerHTML = s.roll > 0.02 ? FR.odometer(now, finalText).map((d) =>
+          d.settled ? esc(d.ch) : `<span class="roll">${esc(d.ch)}</span>`).join("") : esc(now);
       }
+      el.style.setProperty("--scan", s.scan.toFixed(4));
+      el.classList.toggle("fr-scanning", s.scan > 0 && s.scan < 1);
+      if (s.scan < 1) el.style.clipPath = `inset(0 ${((1 - s.scan) * 100).toFixed(2)}% 0 0)`;
       el.style.setProperty("--strike", s.strike.toFixed(4));
       el.classList.toggle("fr-struck", s.strike > 0);          // off again when seeking back
       const f = flows[id];

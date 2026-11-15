@@ -198,3 +198,20 @@ test("a counter's landed number fits its width", () => {
   const size = +html.match(/font-size:(\d+)px/)[1];
   assert.ok(size * 0.6 * "39,213,786".length <= w, `font ${size}px`);
 });
+
+test("odometer: digits lock from the left; only the digits still rolling are marked", () => {
+  const d = FR.odometer("4,317", "5,070");
+  assert.deepEqual(d.map((x) => x.settled), [false, false, false, false, false]);
+  const e = FR.odometer("5,061", "5,070");
+  assert.deepEqual(e.map((x) => [x.ch, x.settled]), [["5", true], [",", true], ["0", true], ["6", false], ["1", false]]);
+  assert.ok(FR.odometer("5,070", "5,070").every((x) => x.settled));
+});
+
+test("scan reveals an object behind a moving line", () => {
+  const evs = [ev(1, "scan", "c")];
+  assert.equal(FR.stateAt(0.5, scene, evs, boxes).obj.c.scan, 0);
+  assert.equal(FR.stateAt(0.5, scene, evs, boxes).obj.c.o, 0);           // hidden until its scan
+  const mid = FR.stateAt(1 + FR.DUR.scan / 2, scene, evs, boxes).obj.c;
+  assert.ok(mid.scan > 0.2 && mid.scan < 0.9 && mid.o === 1);
+  assert.equal(FR.stateAt(3, scene, evs, boxes).obj.c.scan, 1);
+});

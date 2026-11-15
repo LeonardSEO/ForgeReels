@@ -25,7 +25,7 @@
 
   // default action lengths (s); "type" scales with the text length in visual_plan.py
   FR.DUR = { reveal: 0.5, hide: 0.35, focus: 0.9, wide: 1.0, draw: 0.8, type: 0.9, pulse: 0.7, highlight: 0.45,
-             count: 1.0, grow: 0.7, explode: 0.8, collapse: 0.6, flow: 1.2, move: 0.7, morph: 0.6, play: 4.0, strike: 0.4 };
+             count: 1.0, grow: 0.7, explode: 0.8, collapse: 0.6, flow: 1.2, move: 0.7, morph: 0.6, play: 4.0, strike: 0.4, scan: 0.6 };
   FR.ACTIONS = Object.keys(FR.DUR);
   FR.CAMERA_ACTIONS = ["focus", "wide"];
 
@@ -72,6 +72,13 @@
     });
   };
 
+  // odometer: which characters of a rolling number already show their final digit (they lock from the left)
+  FR.odometer = function (cur, fin) {
+    cur = String(cur).padStart(fin.length, " ");
+    let locked = true;
+    return Array.from(cur).map((ch, i) => { locked = locked && ch === fin[i]; return { ch, settled: locked }; });
+  };
+
   FR.parts = function (scene) {
     const out = [];
     for (const c of scene.components || []) {
@@ -93,14 +100,15 @@
 
   // ---------- per-object state at t
   const BASE = () => ({ o: 1, s: 1, tx: 0, ty: 0, draw: 1, type: 1, pulse: 0, hl: 0, count: null, grow: 1,
-                        explode: 0, flow: -1, blur: 0, play: 0, strike: 0, roll: 0 });
+                        explode: 0, flow: -1, blur: 0, play: 0, strike: 0, roll: 0, scan: 1 });
 
   function objectState(t, id, evs, hidden) {
     const st = BASE();
     const first = {};
     for (const e of evs) if (!(e.action in first)) first[e.action] = e;
     // hidden until its first event: a reveal, or a value that counts up (no "0.00" floating before its moment)
-    if (hidden.has(id) || (evs[0] && (evs[0].action === "reveal" || evs[0].action === "count"))) st.o = 0;
+    if (hidden.has(id) || (evs[0] && ["reveal", "count", "scan"].indexOf(evs[0].action) >= 0)) st.o = 0;
+    if (first.scan) st.scan = 0;
     if (first.draw) st.draw = 0;
     if (first.type) st.type = 0;
     if (first.grow) st.grow = 0;
@@ -119,6 +127,7 @@
         case "count": st.count = lerp(a.from || 0, a.to, q); st.o = Math.max(st.o, clamp(p * 4, 0, 1));
           st.roll = p < 1 ? 1 - q : 0; break;                       // digits blur while they roll
         case "strike": st.strike = q; break;
+        case "scan": st.scan = E.inOut(p); st.o = 1; break;       // a bright line sweeps across and leaves the object behind
         case "highlight": st.hl = q; break;
         case "explode": st.explode = q; break;
         case "collapse": st.explode = 1 - q; break;

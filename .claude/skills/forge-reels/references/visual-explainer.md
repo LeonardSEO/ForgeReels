@@ -101,8 +101,10 @@ marks every part with `data-obj`; `tests/scene_core.test.js` checks the two agre
 - `at`: `start` (default) or `end` of the word; `offset`: seconds (stagger a group by 0.08-0.1 s).
 - Actions (default length): reveal 0.5, hide 0.35, focus 0.9, wide 1.0 (camera), draw 0.8, type 0.9, pulse 0.7,
   highlight 0.45, count 1.0 (`args.to` required), grow 0.7, explode 0.8, collapse 0.6, flow 1.2 (`args.repeat`),
-  move 0.7 (`args.dx/dy`), morph 0.6, play 4.0 (frames), strike 0.4 (a red cross over a component: "no templates").
-- A counting number blurs while it rolls and lands sharp; counters size their font to the landed number.
+  move 0.7 (`args.dx/dy`), morph 0.6, play 4.0 (frames), strike 0.4 (a red cross over a component: "no templates"),
+  scan 0.6 (a bright line sweeps across and leaves the object behind: "all of this is code").
+- A counting number rolls like an odometer: digits lock from the left, only the ones still rolling are blurred;
+  counters size their font to the landed number.
 - Ambient particles drift behind the world on every frame (`"ambient": "none"` to switch off, `"particles": 70`).
 - An object whose first event is `reveal` or `count` is hidden until it; `draw`, `type`, `grow` start empty.
 - A camera move every 1-2 lines; a smaller event (pulse, flow, highlight) on most key words in between.
@@ -141,6 +143,11 @@ Measured: 3.4 words/s, picture moving 75 % of the time, a big change every 0.7 s
   three icons, each struck on its word (`strike`).
 - **Scale made human**: "18 million views, like 180 full stadiums" = a grid of 180 stadiums with a counter.
 - **Show the checking**: a wall of frame thumbnails, a magnifier, a red box on the error, then a green check.
+- **How such a system is built** (read from the code on screen): every scene is bespoke code, a pure function of the
+  frame and a typed object of NAMED WORD CUES (a word not said yet = never); motion comes from small physics-like
+  functions (follow, squeeze, smear) of those cues; particles have depth (speed, size and opacity scale with it) and
+  do not move with the hero, so the eye measures the hero's motion against them; the plan is long (hundreds of lines
+  for one reel): one decision per spoken phrase.
 - **CTA as real UI**: "Comment FOLDER" big, then a share sheet picking a friend and "Sent"; the last frame returns
   to the opening shot so the loop is seamless.
 
