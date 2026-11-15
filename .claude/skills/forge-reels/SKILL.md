@@ -68,7 +68,7 @@ down concrete upgrades per aspect. After delivery, record the new baseline in `l
 | Remake a reference video as an editable project, checked frame by frame | `/reverse-any-video` | HyperFrames' own; only footage the user may reuse |
 | A new episode in a proven style (collage, finance, science, 3D brand, true-crime explainer) | `/style-sampling` | |
 | Use a Figma design, frame, logo or tokens in a video | `/figma` | |
-| Study a reference reel (frames, transcript, timing) | video-analyzer MCP | Instagram needs `YTDLP_COOKIES_FROM_BROWSER=chrome` |
+| Study a reference reel (frames, transcript, timing) | `scripts/study_reference.py` + `references/reference-study.md` (video-analyzer MCP or /watch to fetch one) | Writes sheet, cuts, dark/light switches, timed transcript, a NOTES template. Instagram needs `YTDLP_COOKIES_FROM_BROWSER=chrome` |
 | Cartoon avatar presenter that talks | `references/avatars.md` | Recommended: the ChatGPT pose library (image avatar, `scripts/avatar_track.py`). The HTML/SVG drawn character animated by GSAP works and is kept as an alternative. The video avatar (AI video body + our face, AI lip-sync) is dropped |
 | Make character / avatar motion feel alive (acting, anticipation, overlap, weight) | `/disney-animation-rule-skill` (block event poses, pick the few principles that fix it) + `/animation-principles` (concrete durations, curves, springs, stagger) | Read both before animating any avatar gesture |
 | Animate an SVG character rig (pivots, timelines, acting beats) | `/svg-character-animation` + `/gsap-core` + `/gsap-timeline` | Deterministic: one pure `render(t)` driven by a GSAP clock tween; never `.to()` or overlapping tweens on one property (frames render out of order) |
@@ -91,8 +91,11 @@ skill), earshot's Gemini critique (uploads audio) and its forge search (needs li
 1. **Brief**: topic, audience, one-line promise, platform, language, length. Every number that will appear on
    screen gets a source in `sources.md` before scripting. No source, no number (illustrative values are labelled
    "illustrative" on screen).
-2. **Benchmark + hook + structure**: name 1-2 reference works that set the bar for THIS topic and look (what to
-   learn / what not to take). Pick a hook archetype, fill the retention grid (`references/retention.md`), write
+2. **Learn from the references, then benchmark + hook + structure** (`references/reference-study.md`): any reel in
+   the workspace's `references/` without a `<reel>.study/` folder gets `scripts/study_reference.py` first; read the
+   `NOTES.md` files. Write `brief.md` with a "## Learned from references" table: at least 3 techniques, each with
+   its source reel + time and OUR own version (from 2+ references, not the last video's three), plus "Not taken".
+   `build_explainer.py` will not build without it. Learn the why, never copy the look. Pick a hook archetype, fill the retention grid (`references/retention.md`), write
    three hook options and three candidate structures; choose by the rubric. A strong look (cinematic, 3D, a brand
    style): choose from `references/film-styles.md` and the engine from `toolchain.md` "Engine chooser".
 3. **Script**: spoken lines with beat timestamps. Dutch: numbers as words. Hindi: Devanagari, acronyms spelled phonetically for TTS
@@ -161,6 +164,7 @@ skill), earshot's Gemini critique (uploads audio) and its forge search (needs li
 | `references/ai-broll.md` | Gemini Omni clips: when, prompts, user-sends flow, saving, watermark scrub, vertical framing |
 | `references/platform-specs.md` | IG Reels / YT Shorts / TikTok specs, safe zones, covers, captions, export |
 | `references/qc.md` | The QC gate checklist and the self-score rubric |
+| `references/reference-study.md` | Learning from reference reels: study tool, the brief table and its gate, techniques learned so far |
 | `references/brand-packs.md` | How to make a brand pack for a new brand or project |
 | `lessons-learned.md` | Distilled rules from many real videos, by topic. Read at start |
 | `references/reference-ranges.json` | Measured ranges per format from 71 reference reels; read by `motion_score.py` |

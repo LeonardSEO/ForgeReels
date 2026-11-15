@@ -27,6 +27,35 @@ sys.path.insert(0, str(SKILL / "scripts"))
 import _paths  # noqa: E402
 
 
+REF_SECTION = "## Learned from references"
+
+
+def reference_rows(brief):
+    """Rows of the brief's 'Learned from references' table that name a source reel and fill in our own version."""
+    if REF_SECTION not in brief:
+        return 0
+    rows = 0
+    for line in brief.split(REF_SECTION, 1)[1].splitlines()[1:]:
+        if line.startswith("## "):
+            break
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        if len(cells) < 3 or set(cells[0]) <= set("-: ") or cells[0].lower() == "technique":
+            continue
+        if re.search(r"\.(mp4|mov|webm|md)\b", cells[1]) and cells[2]:
+            rows += 1
+    return rows
+
+
+def reference_problems(brief):
+    """Why this brief may not be built yet (references/reference-study.md): learn from at least 3 techniques."""
+    if REF_SECTION not in brief:
+        return [f"brief.md has no '{REF_SECTION}' section (references/reference-study.md)"]
+    n = reference_rows(brief)
+    if n < 3:
+        return [f"'{REF_SECTION}' has {n} complete rows; need 3 (technique | source reel file + time | our own version)"]
+    return []
+
+
 def run(name, cmd, cwd=None):
     print(f"\n==> {name}", flush=True)
     r = subprocess.run(cmd, cwd=cwd)
@@ -94,6 +123,11 @@ def main():
                     help="write the mastered render to output/<slug>.mp4 (a finished video; drafts stay in <project>/out/)")
     a = ap.parse_args()
     pj = pathlib.Path(a.project).resolve()
+    if pj.parent == _paths.reels_dir().resolve():     # a new video (not a reference example): it must learn first
+        brief = pj / "brief.md"
+        problems = reference_problems(brief.read_text(encoding="utf-8") if brief.exists() else "")
+        if problems:
+            sys.exit("STOP before building: " + "; ".join(problems))
     if not a.skip_voice:
         vo = ["--lines", str(pj / "script.txt"), "--out", str(pj / "vo"), "--engine", a.engine, "--lang", a.lang]
         vo += ["--voice", a.voice] if a.voice else []

@@ -16,6 +16,16 @@ Format for each entry:
 
 When a lesson appears twice, promote it into the right reference file (or a script) and say so here ("promoted").
 
+## 2026-11-15 · Learning from references (method, no video)
+- The user: "het moet beter leren van de reference video's (Leren, niet kopiëren (wees uniek))". Before this, the
+  briefs named a benchmark in one line and nothing checked it. Now: `scripts/study_reference.py` studies each
+  reference the same way, `references/reference-study.md` is the method, and `build_explainer.py` refuses to build a
+  reel whose brief.md lacks a "Learned from references" table (3+ techniques, source reel + time, OUR version).
+- Three new style references in `references/styles/` (local): a paper-white isometric line-art explainer (145 s, one
+  persistent world, progress HUD) and two dark/light "Day 01" repo reels (no hard cuts, blur dissolves, preview
+  captions, serif italic emphasis). The measurement that matters: their dark <-> light flips sit exactly on the
+  turns of the argument (series slot, problem, benefit): a re-hook that means something.
+
 ## 2026-11-15 · ForgeReels promo (EN, 37.8 s, visual explainer + real output footage)
 - Hook: meta before/after ("Claude Code made this entire video") over real ForgeReels output; three hook options
   and three structures written in `brief.md` before the script (chosen by the rubric, not skipped this time).

@@ -26,6 +26,27 @@ class BuildExplainerTest(unittest.TestCase):
         lufs = float(r.stderr.rsplit("I:", 1)[1].split("LUFS")[0])
         self.assertAlmostEqual(lufs, -14, delta=1.5)
 
+    def test_brief_must_cite_three_reference_techniques_with_our_own_version(self):
+        ok = """# Brief
+## Learned from references
+| Technique | From (file, time) | Our own version in this video |
+|---|---|---|
+| Theme flip | day01-karpathy-skills.mp4, 30.5 s | light section on "Instead" |
+| Preview words | day01-modern-web-guidance.mp4, captions | coming words at 35% |
+| Persistent world | paper-isometric-rederive.mp4, whole reel | the chip returns ghosted |
+
+Not taken: their series format.
+"""
+        self.assertEqual(be.reference_rows(ok), 3)
+        self.assertEqual(be.reference_problems(ok), [])
+        two = ok.replace('| Persistent world | paper-isometric-rederive.mp4, whole reel | the chip returns ghosted |\n', "")
+        self.assertTrue(be.reference_problems(two))
+        empty_ours = ok.replace("light section on \"Instead\"", " ")
+        self.assertTrue(be.reference_problems(empty_ours))
+        self.assertTrue(be.reference_problems("# Brief\nno table\n"))
+        no_source = ok.replace("day01-karpathy-skills.mp4, 30.5 s", "somewhere")
+        self.assertTrue(be.reference_problems(no_source))
+
 
 if __name__ == "__main__":
     unittest.main()
