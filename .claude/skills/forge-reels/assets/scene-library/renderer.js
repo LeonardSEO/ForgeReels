@@ -137,8 +137,13 @@
   B.text = (c) => [c.w || 900, c.h || Math.round((c.size || 96) * 1.15 * (c.linesHint || 1)),
     `<div style="font-size:${c.size || 96}px;font-weight:${c.weight || 830};color:${c.color || "var(--ink)"};text-align:${c.align || "left"}"><span data-text="${esc(c.text)}">${esc(c.text)}</span></div>`, "fr-text"];
 
-  B.counter = (c) => [c.w || 700, c.h || 300,
-    `<div class="num" data-count data-decimals="${c.decimals || 0}" data-prefix="${esc(c.prefix || "")}" data-suffix="${esc(c.suffix || "")}">${esc((c.prefix || "") + c.value + (c.suffix || ""))}</div><div data-obj="${c.id}.label" class="label">${esc(c.label || "")}</div>`, "fr-counter"];
+  B.counter = (c) => {
+    const w = c.w || 700, final = (c.prefix || "") + Number(c.value).toLocaleString("en-US", { minimumFractionDigits: c.decimals || 0,
+      maximumFractionDigits: c.decimals || 0 }) + (c.suffix || "");
+    const size = Math.min(190, Math.floor(w / (final.length * 0.6)));     // the landed number always fits the width
+    return [w, c.h || Math.round(size * 1.6),
+    `<div class="num" style="font-size:${size}px" data-count data-decimals="${c.decimals || 0}" data-prefix="${esc(c.prefix || "")}" data-suffix="${esc(c.suffix || "")}">${esc(final)}</div><div data-obj="${c.id}.label" class="label">${esc(c.label || "")}</div>`, "fr-counter"];
+  };
 
   B.callout = (c) => {
     const to = c.to || { dx: 0, dy: 160 };
@@ -173,6 +178,17 @@
       <div data-obj="${id}.label" class="label">${esc(c.label || "flat centre: straight through · curved rim: bent")}</div>`];
   };
 
+  // a coding-agent panel: the folder, a prompt typed into the input, then the steps it took, one per line
+  B.agent = (c) => {
+    const w = c.w || 900, id = c.id, steps = c.steps || [], h = c.h || 300 + steps.length * 50;
+    const st = steps.map((t, i) => `<div data-obj="${id}.s${i + 1}" class="step">${esc(t)}</div>`).join("");
+    return [w, h, `<div class="panel fr-card">
+      <div class="head">▢ ${esc(c.folder || "forge-reels")}</div>
+      <div data-obj="${id}.prompt" class="prompt"><span data-text="${esc(c.prompt || "")}">${esc(c.prompt || "")}</span></div>
+      <div class="steps">${st}</div>
+      <div data-obj="${id}.input" class="input">+ Write / for commands<span class="model">${esc(c.model || "Claude")}</span></div></div>`];
+  };
+
   B.image = (c) => [c.w || 900, c.h || 600, `<img src="${esc(c.src)}" alt="">`, "fr-image" + (c.card === false ? "" : " fr-card")];
 
   // ---------- mount + render
@@ -196,6 +212,9 @@
       world.appendChild(el);
     }
     stage.appendChild(world);
+    // ambient particles behind everything: the frame never sits still (scene.ambient: "none" switches them off)
+    const amb = scene.ambient === "none" ? null : document.createElement("canvas");
+    if (amb) { amb.width = 1080; amb.height = 1920; amb.className = "fr-ambient"; stage.insertBefore(amb, world); }
     const vig = document.createElement("div"); vig.className = "fr-vignette"; stage.appendChild(vig);
     const headline = scene.captions !== "pill";
     const cap = document.createElement("div"); cap.className = "fr-captions " + (headline ? "headline" : "pill-style");
@@ -244,7 +263,12 @@
         t.textContent = s.type >= 1 ? full : full.slice(0, Math.round(full.length * s.type));
       });
       const cnt = el.matches("[data-count]") ? el : el.querySelector(":scope > [data-count]");
-      if (cnt && s.count != null) cnt.textContent = fmt(cnt, s.count);
+      if (cnt && s.count != null) {
+        cnt.textContent = fmt(cnt, s.count);
+        cnt.style.filter = s.roll > 0.02 ? `blur(${(6 * s.roll).toFixed(2)}px)` : "";
+      }
+      el.style.setProperty("--strike", s.strike.toFixed(4));
+      el.classList.toggle("fr-struck", s.strike > 0);          // off again when seeking back
       const f = flows[id];
       if (f && f.dot) {
         if (s.flow < 0) f.dot.style.opacity = 0;
@@ -258,6 +282,14 @@
     let lastCap = "";
     function render(t) {
       const st = FR.stateAt(t, scene, events, boxes, view);
+      if (amb) {
+        const g = amb.getContext("2d"); g.clearRect(0, 0, 1080, 1920);
+        g.fillStyle = theme.particle || theme.accent;
+        for (const q of FR.particles(t, scene.particles || 70, 7)) {
+          g.globalAlpha = q.a * 0.55; g.beginPath(); g.arc(q.x * 1080, q.y * 1920, q.r, 0, 6.2832); g.fill();
+        }
+        g.globalAlpha = 1;
+      }
       world.style.transform = FR.cameraTransform(st.camera, view);
       for (const id in st.obj) apply(id, st.obj[id]);
       const c = FR.captionAt(t, data.captions);

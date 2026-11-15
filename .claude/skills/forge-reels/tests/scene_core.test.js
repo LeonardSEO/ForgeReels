@@ -71,7 +71,7 @@ test("every component draws exactly the parts core.js says it has", () => {
     nodes: { nodes: [{ id: "a", label: "A", x: 0, y: 0 }, { id: "b", label: "B", x: 300, y: 0 }], links: [["a", "b"]] },
     chart: { bars: [{ value: 1 }, { value: 3 }] }, document: { lines: ["one", "two"] }, chip: { traces: 6 },
     stack: { layers: [{ label: "Glass" }, { label: "Grid" }] }, text: { text: "Hi" }, counter: { value: 9 },
-    callout: { text: "Here" }, image: { src: "x.png" }, steps: { steps: ["Build", "Ship"] }, frames: { src: "s/%04d.jpg", count: 3 }, lens: {},
+    callout: { text: "Here" }, image: { src: "x.png" }, steps: { steps: ["Build", "Ship"] }, frames: { src: "s/%04d.jpg", count: 3 }, lens: {}, agent: { steps: ["a", "b"] },
   };
   assert.deepEqual(Object.keys(samples).sort(), Object.keys(FR.COMPONENTS).sort());
   for (const [type, spec] of Object.entries(samples)) {
@@ -164,4 +164,37 @@ test("frames: file names follow ffmpeg's numbering, which starts at 1 unless the
   assert.equal(FR.frameSrc({ src: "seq/%04d.jpg" }, 0), "seq/0001.jpg");
   assert.equal(FR.frameSrc({ src: "seq/%04d.jpg" }, 149), "seq/0150.jpg");
   assert.equal(FR.frameSrc({ src: "seq/f_%03d.png", first: 0 }, 7), "seq/f_007.png");
+});
+
+// ---------- learned from a professional promo reel (2026-11-15)
+test("strike crosses an object out on its word (negation: 'no templates')", () => {
+  const evs = [ev(1, "strike", "c")];
+  assert.equal(FR.stateAt(0.5, scene, evs, boxes).obj.c.strike, 0);
+  assert.equal(FR.stateAt(1 + FR.DUR.strike, scene, evs, boxes).obj.c.strike, 1);
+});
+
+test("a counting number blurs while it rolls and is sharp when it lands", () => {
+  const evs = [ev(1, "count", "c.v1", 1, { from: 0, to: 39213786 })];
+  assert.ok(FR.stateAt(1.2, scene, evs, boxes).obj["c.v1"].roll > 0.5);
+  assert.equal(FR.stateAt(2.5, scene, evs, boxes).obj["c.v1"].roll, 0);
+});
+
+test("agent: a prompt and one part per step", () => {
+  assert.deepEqual(FR.parts({ components: [{ type: "agent", id: "a", steps: ["Read 3 pages", "Made voice.mp3"] }] }).sort(),
+    ["a", "a.input", "a.prompt", "a.s1", "a.s2"].sort());
+});
+
+test("ambient particles are a pure function of time and seed", () => {
+  const a = FR.particles(3.2, 40, 7), b = FR.particles(3.2, 40, 7), c = FR.particles(3.3, 40, 7);
+  assert.equal(a.length, 40);
+  assert.deepEqual(a, b);
+  assert.notDeepEqual(a, c);
+  assert.ok(a.every((p) => p.x >= 0 && p.x <= 1 && p.y >= 0 && p.y <= 1 && p.a >= 0 && p.a <= 1));
+});
+
+test("a counter's landed number fits its width", () => {
+  require("../assets/scene-library/renderer.js");
+  const [w, , html] = FR.BUILD.counter({ id: "v", value: 39213786, w: 700 });
+  const size = +html.match(/font-size:(\d+)px/)[1];
+  assert.ok(size * 0.6 * "39,213,786".length <= w, `font ${size}px`);
 });

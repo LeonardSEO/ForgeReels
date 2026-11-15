@@ -81,6 +81,7 @@ token in `colors` (bg, ink, card, accent, accent2, marker, cap-bg, ...).
 | `steps` | w, steps[] | s1..N: a chapter rail; `highlight` on sN marks that chapter reached |
 | `frames` | src ("seq/%04d.jpg"), count, fps, first (1), w, device ("phone") | (the id itself): a captured screen recording; `play` on its word (dur = count / fps) |
 | `lens` | w, h, label | glass, centre, rim, label: how a curved glass edge bends light (draw each) |
+| `agent` | w, folder, prompt, steps[], model | prompt (type), input, s1..N (start hidden; reveal one per word): a coding agent at work |
 
 Add a component: a `parts`/`hidden` entry in `core.js` FR.COMPONENTS and a builder in `renderer.js` FR.BUILD that
 marks every part with `data-obj`; `tests/scene_core.test.js` checks the two agree.
@@ -100,7 +101,9 @@ marks every part with `data-obj`; `tests/scene_core.test.js` checks the two agre
 - `at`: `start` (default) or `end` of the word; `offset`: seconds (stagger a group by 0.08-0.1 s).
 - Actions (default length): reveal 0.5, hide 0.35, focus 0.9, wide 1.0 (camera), draw 0.8, type 0.9, pulse 0.7,
   highlight 0.45, count 1.0 (`args.to` required), grow 0.7, explode 0.8, collapse 0.6, flow 1.2 (`args.repeat`),
-  move 0.7 (`args.dx/dy`), morph 0.6, play 4.0 (frames).
+  move 0.7 (`args.dx/dy`), morph 0.6, play 4.0 (frames), strike 0.4 (a red cross over a component: "no templates").
+- A counting number blurs while it rolls and lands sharp; counters size their font to the landed number.
+- Ambient particles drift behind the world on every frame (`"ambient": "none"` to switch off, `"particles": 70`).
 - An object whose first event is `reveal` or `count` is hidden until it; `draw`, `type`, `grow` start empty.
 - A camera move every 1-2 lines; a smaller event (pulse, flow, highlight) on most key words in between.
 
@@ -125,6 +128,21 @@ runtime now does by default:
   library parts on top (fields, labels, flows). The CSS components are the diagram layer.
 - **Pace**: visible change on most 0.1 s steps (46-94 % in theirs); a new visual idea every ~2 s; 80-150 s long
   when every line shows something new.
+
+### From a 34 s promo reel (same idea as ForgeReels: a folder where Claude makes videos), 2026-11-15
+Measured: 3.4 words/s, picture moving 75 % of the time, a big change every 0.7 s, no still over 0.4 s.
+- **Cold open on proof**: frame 0 is the best shot of their best reel plus its view count, with their code scrolling
+  behind it. Open on the finished result, explain after.
+- **A spoken number is a rolling counter**: "thirty-nine million" boxed in the captions while the digits roll
+  (blurred) to the exact figure. Every number still needs its source.
+- **Show the agent working**: the folder, the prompt being typed, then each step appearing with its file
+  (`facts.md`, `voice`, `scenes/...`, "Rendered ... 5,070 frames"). Use the `agent` component.
+- **Negation is a picture**: "no templates" = a template card crossed out; "no camera, no drawing, no editing" =
+  three icons, each struck on its word (`strike`).
+- **Scale made human**: "18 million views, like 180 full stadiums" = a grid of 180 stadiums with a counter.
+- **Show the checking**: a wall of frame thumbnails, a magnifier, a red box on the error, then a green check.
+- **CTA as real UI**: "Comment FOLDER" big, then a share sheet picking a friend and "Sent"; the last frame returns
+  to the opening shot so the loop is seamless.
 
 ## Rhythm and length
 

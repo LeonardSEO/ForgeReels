@@ -25,7 +25,7 @@
 
   // default action lengths (s); "type" scales with the text length in visual_plan.py
   FR.DUR = { reveal: 0.5, hide: 0.35, focus: 0.9, wide: 1.0, draw: 0.8, type: 0.9, pulse: 0.7, highlight: 0.45,
-             count: 1.0, grow: 0.7, explode: 0.8, collapse: 0.6, flow: 1.2, move: 0.7, morph: 0.6, play: 4.0 };
+             count: 1.0, grow: 0.7, explode: 0.8, collapse: 0.6, flow: 1.2, move: 0.7, morph: 0.6, play: 4.0, strike: 0.4 };
   FR.ACTIONS = Object.keys(FR.DUR);
   FR.CAMERA_ACTIONS = ["focus", "wide"];
 
@@ -50,6 +50,7 @@
     steps:    { parts: (s) => n("s", (s.steps || []).length), hidden: () => [] },
     frames:   { parts: () => [], hidden: () => [] },
     lens:     { parts: () => ["glass", "centre", "rim", "label"], hidden: () => [] },
+    agent:    { parts: (s) => ["prompt", "input", ...n("s", (s.steps || []).length)], hidden: (s) => n("s", (s.steps || []).length) },
     image:    { parts: () => [], hidden: () => [] },
   };
 
@@ -57,6 +58,19 @@
   FR.frameIndex = (play, c) => Math.min((c.count || 1) - 1, Math.floor(play * (c.fps || 30) + 1e-6));
   // file of frame k (0-based): "%04d" in src, numbered from c.first (default 1, as ffmpeg writes image sequences)
   FR.frameSrc = (c, k) => c.src.replace(/%0(\d)d/, (_, d) => String(k + (c.first == null ? 1 : c.first)).padStart(+d, "0"));
+
+  // ambient particles: n points drifting up through the frame, a pure function of t and seed (frames render in any order)
+  FR.particles = function (t, count, seed) {
+    let s = (seed || 1) >>> 0;
+    const rnd = () => { s = (s + 0x6D2B79F5) >>> 0; let x = s; x = Math.imul(x ^ (x >>> 15), x | 1);
+      x ^= x + Math.imul(x ^ (x >>> 7), x | 61); return ((x ^ (x >>> 14)) >>> 0) / 4294967296; };   // mulberry32
+    return Array.from({ length: count }, () => {
+      const x0 = rnd(), y0 = rnd(), speed = 0.006 + rnd() * 0.02, sway = rnd() * 6.28, size = rnd();
+      const y = (((y0 - t * speed) % 1) + 1) % 1;
+      return { x: clamp(x0 + 0.015 * Math.sin(t * 0.6 + sway), 0, 1), y, r: 1 + size * 2.5,
+               a: clamp(0.25 + 0.55 * size * (0.6 + 0.4 * Math.sin(t * 1.3 + sway)), 0, 1) };
+    });
+  };
 
   FR.parts = function (scene) {
     const out = [];
@@ -79,7 +93,7 @@
 
   // ---------- per-object state at t
   const BASE = () => ({ o: 1, s: 1, tx: 0, ty: 0, draw: 1, type: 1, pulse: 0, hl: 0, count: null, grow: 1,
-                        explode: 0, flow: -1, blur: 0, play: 0 });
+                        explode: 0, flow: -1, blur: 0, play: 0, strike: 0, roll: 0 });
 
   function objectState(t, id, evs, hidden) {
     const st = BASE();
@@ -102,7 +116,9 @@
         case "draw": st.draw = q; break;
         case "type": st.type = p; break;
         case "grow": st.grow = E.back(p); break;
-        case "count": st.count = lerp(a.from || 0, a.to, q); st.o = Math.max(st.o, clamp(p * 4, 0, 1)); break;
+        case "count": st.count = lerp(a.from || 0, a.to, q); st.o = Math.max(st.o, clamp(p * 4, 0, 1));
+          st.roll = p < 1 ? 1 - q : 0; break;                       // digits blur while they roll
+        case "strike": st.strike = q; break;
         case "highlight": st.hl = q; break;
         case "explode": st.explode = q; break;
         case "collapse": st.explode = 1 - q; break;
