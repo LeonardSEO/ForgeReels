@@ -25,9 +25,10 @@
 
   // default action lengths (s); "type" scales with the text length in visual_plan.py
   FR.DUR = { reveal: 0.5, hide: 0.35, focus: 0.9, wide: 1.0, draw: 0.8, type: 0.9, pulse: 0.7, highlight: 0.45,
-             count: 1.0, grow: 0.7, explode: 0.8, collapse: 0.6, flow: 1.2, move: 0.7, morph: 0.6, play: 4.0, strike: 0.4, scan: 0.6 };
+             count: 1.0, grow: 0.7, explode: 0.8, collapse: 0.6, flow: 1.2, move: 0.7, morph: 0.6, play: 4.0, strike: 0.4, scan: 0.6, theme: 0.45 };
   FR.ACTIONS = Object.keys(FR.DUR);
   FR.CAMERA_ACTIONS = ["focus", "wide"];
+  FR.STAGE = "stage";             // the whole frame: object of "theme" (dark <-> light on a turn word)
 
   // ---------- components: their animatable parts (pure). renderer.js draws them.
   const n = (k, count) => Array.from({ length: count }, (_, i) => k + (i + 1));
@@ -214,6 +215,18 @@
     return out;
   }
 
+  // theme at t: the last flip that started, as {from, to, p} (renderer mixes the two palettes by p)
+  FR.themeAt = function (t, scene, evs) {
+    let cur = scene.theme || "light", out = { from: cur, to: cur, p: 1 };
+    for (const e of evs) {
+      if (e.action !== "theme" || t < e.t) continue;
+      const to = (e.args && e.args.to) || (cur === "dark" ? "light" : "dark");
+      out = { from: cur, to, p: E.inOut(clamp((t - e.t) / Math.max(e.dur, 1e-6), 0, 1)) };
+      cur = to;
+    }
+    return out;
+  };
+
   FR.stateAt = function (t, scene, events, boxes, view) {
     view = view || FR.viewFor(scene);
     const evs = events.slice().sort((a, b) => a.t - b.t);
@@ -224,7 +237,7 @@
     for (const id of FR.parts(scene)) obj[id] = objectState(t, id, by[id] || [], hidden);
     const soft = blurAt(t, scene, evs.filter((e) => FR.CAMERA_ACTIONS.indexOf(e.action) >= 0));
     for (const id in soft) if (obj[id] && soft[id] > 0) { obj[id].blur = 9 * soft[id]; obj[id].o *= 1 - 0.5 * soft[id]; }
-    return { camera: cameraAt(t, scene, evs, boxes || {}, view), obj };
+    return { camera: cameraAt(t, scene, evs, boxes || {}, view), obj, theme: FR.themeAt(t, scene, evs) };
   };
 
   // camera {x, y, s} -> CSS transform for the world layer (world point x,y lands at the safe-area centre)

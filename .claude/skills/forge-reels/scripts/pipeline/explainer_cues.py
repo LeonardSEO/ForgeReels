@@ -5,7 +5,7 @@ the picture.
   python -I explainer_cues.py --project <explainer project> [--anchors Liquid Real] [--min-gap 0.3]
 
 Reads <project>/assets/events.js (visual_plan.py) and writes <project>/sound/cues.json:
-  focus / wide -> whoosh.short   reveal / scan of a whole component -> land.light   strike -> hit
+  focus / wide -> whoosh.short   reveal / scan of a whole component -> land.light   strike / theme -> hit
   type -> text   highlight / pulse -> tick   count -> tick   (play, draw, flow and parts of components: no sound)
 --anchors: spoken words that must also land on a beat (the hook word, the turn); the grid is fitted to them
 (lock "anchor"); every other cue follows its word (lock "word"). Cues closer than --min-gap are thinned (first wins)
@@ -17,7 +17,7 @@ import json
 import pathlib
 
 ROLE = {"focus": "whoosh.short", "wide": "whoosh.short", "reveal": "land.light", "scan": "whoosh.short",
-        "strike": "hit", "type": "text", "highlight": "tick", "pulse": "tick", "count": "tick"}
+        "strike": "hit", "theme": "hit", "type": "text", "highlight": "tick", "pulse": "tick", "count": "tick"}
 WHOLE_ONLY = {"reveal", "scan"}                         # a part appearing inside a component makes no sound of its own
 
 
@@ -28,7 +28,7 @@ def norm(w):
 def cues_from_events(events, anchors, min_gap=0.3):
     want = {norm(a) for a in anchors}
     out = []
-    for e in sorted(events, key=lambda e: e["t"]):
+    for e in sorted(events, key=lambda e: (e["t"], e["action"] != "theme")):   # a flip is the turn: it wins its word
         role = ROLE.get(e["action"])
         obj = e.get("object")
         if not role or (e["action"] in WHOLE_ONLY and isinstance(obj, str) and "." in obj):

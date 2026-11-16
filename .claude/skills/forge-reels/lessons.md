@@ -16,6 +16,32 @@ Format for each entry:
 
 When a lesson appears twice, promote it into the right reference file (or a script) and say so here ("promoted").
 
+## 2026-11-16 · Git at AI scale (Anthropic Scion vs OpenAI Pando), 66 s explainer
+- Facts: the Anthropic page was read with web tools; OpenAI's page sits behind a Cloudflare bot check (403 for
+  fetch, the browser pane stuck on "Just a moment..."). We do not pass bot checks: the user pasted the text. Two
+  corrections to the user's summary went into facts.md and the reel: Anthropic does not credit Claude Code for the
+  growth (the reel says "agents"), and OpenAI's -80% is the MEDIAN push, not the average.
+- Learned from references (first reel under the new gate): theme flip on the turn words ("But OpenAI", "So, is Git
+  finished?"), A/B as two diagrams built from the same parts (agents -> middle -> backend; only the middle differs),
+  number as an event (bar chart + odometer), limits line before a CTA that asks about the viewer. The A/B wide shot
+  at 59 s is the strongest frame of the reel (used as cover).
+- New runtime: `theme` action on object `stage` (FR.themeAt, colour-mix of the two palettes, 0.45 s); explainer_cues
+  maps it to a "hit" that wins its word, so score.py rests the drums before each turn. `nodes` takes `scale`.
+- Respellings break vo_check: it compares the ASR against the RESPELLED text ("Sy-on" vs heard "Sion", "Open A.I."
+  vs "OpenAI"). Kokoro said Scion, OpenAI and monorepo right without say.json; try without respellings first.
+- Draft 1 eye check (all gates passed): document cards at 450 px wide read at ~25 px on screen in the hook, and a
+  860 px quote card too. Fixed with big text components in the hook and a 560 px card for the quote (41 px lines).
+  Rule: text inside a component is fixed in world px, so its width decides the on-screen size.
+- Counters and big numbers slid under the headline captions while the camera left them: hide them 0.15 s before the
+  move (`hide` with a negative offset) on "But" and "So,".
+- Anchor only the turn words: 5 anchors (including a repeated "Anthropic") fitted 129 bpm with 108 ms off; the 3
+  turns alone fitted 91.25 bpm within 8 ms.
+- Numbers: 66.0 s VO at speed 1.08 (176 words), 2013 frames rendered in 46 s (2 workers), 44 SFX cues, voice gate
+  median 18.3 dB / p5 5.8 dB, qc_reel pass (-14 LUFS), pace 0 still frames, final-mix read-back WER 0.023
+  (Scion heard as "cyan").
+- New baseline: an argument with a turn shown by the whole frame, both answers comparable in one wide shot, an
+  honest limits line. Next reel: try the screen-pinned progress HUD or preview-blurred captions (not built yet).
+
 ## 2026-11-15 · Learning from references (method, no video)
 - The user: "het moet beter leren van de reference video's (Leren, niet kopiëren (wees uniek))". Before this, the
   briefs named a benchmark in one line and nothing checked it. Now: `scripts/study_reference.py` studies each

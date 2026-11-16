@@ -33,6 +33,12 @@ class CuesTest(unittest.TestCase):
         cues = ec.cues_from_events([dict(EV[2], t=1.0), dict(EV[2], t=1.1, object="x")], anchors=[], min_gap=0.3)
         self.assertEqual(len(cues), 1)
 
+    def test_a_theme_flip_is_a_hit_and_wins_over_a_camera_move_on_the_same_word(self):
+        evs = [{"t": 5.0, "action": "focus", "object": "a", "word": "But"},
+               {"t": 5.0, "action": "theme", "object": "stage", "word": "But"}]
+        cues = ec.cues_from_events(evs, anchors=["But"])
+        self.assertEqual([(c["t"], c["role"], c["lock"]) for c in cues], [(5.0, "hit", "anchor")])
+
 
 if __name__ == "__main__":
     unittest.main()

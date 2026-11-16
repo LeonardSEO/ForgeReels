@@ -75,7 +75,7 @@ token in `colors` (bg, ink, card, accent, accent2, marker, cap-bg, ...).
 | `phone` | w, title, items[], touch{x,y}, notification, rows, cols | body, screen, ui, grid, rows, cols, field, finger, glass, notification (grid, field, finger, notification start hidden) |
 | `browser` | w, h, tabs[], url, title, results[], cursor{x,y} | window, address, page, title, cursor, tab1..N, r1..N |
 | `terminal` | w, lines[] ("$ " = command, "✓" = success) | window, cursor, l1..N |
-| `nodes` | w, h, nodes[{id,label,sub,icon,x,y,color}], links[[a,b]] | n_<id>, l_<a>_<b> (flow sends a packet along the link) |
+| `nodes` | w, h, nodes[{id,label,sub,icon,x,y,color}], links[[a,b]], scale (node size, 1.5 = 45 px labels) | n_<id>, l_<a>_<b> (flow sends a packet along the link) |
 | `chart` | w, h, title, bars[{label,value,decimals,hot}], max, prefix, suffix | title, axis, b1..N (grow), v1..N (count) |
 | `document` | w, h, title, lines[], source | page, title, source, l1..N (highlight marks the line) |
 | `chip` | w, h, label, traces | chip, label, pins, t1..N (flow along each trace) |
@@ -109,6 +109,8 @@ marks every part with `data-obj`; `tests/scene_core.test.js` checks the two agre
   highlight 0.45, count 1.0 (`args.to` required), grow 0.7, explode 0.8, collapse 0.6, flow 1.2 (`args.repeat`),
   move 0.7 (`args.dx/dy`), morph 0.6, play 4.0 (frames), strike 0.4 (a red cross over a component: "no templates"),
   scan 0.6 (a bright line sweeps across and leaves the object behind: "all of this is code").
+- `theme` on object `stage` (`args.to`: `light` / `dark`, default the other one): the whole frame crossfades to
+  the other palette in 0.45 s. Put it on the turn word of the argument ("But", "Instead", "So"), at most 2-4 per reel.
 - Camera args (focus / wide): `pad`, `zoom`, `max`, and `ease`: `inOut` (default), `out` (full speed on frame 1,
   then settles: the hook's first move and any "look at this" snap), `linear`, `back`. The first camera move of a
   reel uses `"ease": "out"` with `"offset"` pulling it to t = 0, so the opening frame is already moving.

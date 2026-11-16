@@ -226,3 +226,14 @@ test("scan reveals an object behind a moving line", () => {
   assert.ok(mid.scan > 0.2 && mid.scan < 0.9 && mid.o === 1);
   assert.equal(FR.stateAt(3, scene, evs, boxes).obj.c.scan, 1);
 });
+
+test("theme flips the whole stage on its word (dark <-> light marks a turn in the argument)", () => {
+  const s = Object.assign({}, scene, { theme: "dark" });
+  assert.equal(FR.STAGE, "stage");
+  const evs = [ev(2, "theme", "stage", null, { to: "light" }), ev(6, "theme", "stage", null, { to: "dark" })];
+  assert.deepEqual(FR.stateAt(1, s, evs, boxes).theme, { from: "dark", to: "dark", p: 1 });
+  const mid = FR.stateAt(2 + FR.DUR.theme / 2, s, evs, boxes).theme;
+  assert.ok(mid.from === "dark" && mid.to === "light" && mid.p > 0.2 && mid.p < 0.8);
+  assert.deepEqual(FR.stateAt(4, s, evs, boxes).theme, { from: "dark", to: "light", p: 1 });
+  assert.deepEqual(FR.stateAt(9, s, evs, boxes).theme, { from: "light", to: "dark", p: 1 });
+});

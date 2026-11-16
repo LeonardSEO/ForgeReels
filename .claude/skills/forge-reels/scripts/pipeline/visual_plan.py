@@ -43,7 +43,7 @@ def norm(word):
 def runtime_info(scene_path):
     """(parts, default durations) from the JS runtime itself, so Python and the browser never disagree."""
     js = ("const FR=require(process.argv[1]);const s=JSON.parse(require('fs').readFileSync(process.argv[2],'utf8'));"
-          "console.log(JSON.stringify({parts:FR.parts(s),dur:FR.DUR}))")
+          "console.log(JSON.stringify({parts:FR.parts(s).concat(FR.STAGE),dur:FR.DUR}))")
     r = subprocess.run(["node", "-e", js, str(CORE), str(scene_path)], capture_output=True, text=True)
     if r.returncode != 0:
         raise SystemExit(f"scene.json rejected by the runtime: {r.stderr.strip().splitlines()[-1]}")

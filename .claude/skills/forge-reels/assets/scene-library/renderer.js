@@ -83,7 +83,7 @@
         : `M${p.x} ${p.y} C${p.x} ${(p.y + q.y) / 2} ${q.x} ${(p.y + q.y) / 2} ${q.x} ${q.y}`;
       return `<g data-obj="${id}.l_${a}_${b}"><path class="link" pathLength="1" data-flow-path d="${d}"/><circle class="packet" r="11" data-flow-dot/></g>`;
     }).join("");
-    const ns = nodes.map((x, i) => `<div data-obj="${id}.n_${x.id}" class="node" style="left:${x.x}px;top:${x.y}px"><i style="background:${x.color || COLORS[i % COLORS.length]}">${esc(x.icon || x.label[0])}</i><div>${esc(x.label)}${x.sub ? `<small>${esc(x.sub)}</small>` : ""}</div></div>`).join("");
+    const ns = nodes.map((x, i) => `<div data-obj="${id}.n_${x.id}" class="node" style="left:${x.x}px;top:${x.y}px${c.scale ? `;transform:translate(-50%,-50%) scale(${c.scale})` : ""}"><i style="background:${x.color || COLORS[i % COLORS.length]}">${esc(x.icon || x.label[0])}</i><div>${esc(x.label)}${x.sub ? `<small>${esc(x.sub)}</small>` : ""}</div></div>`).join("");
     return [w, h, `<svg width="${w}" height="${h}">${links}</svg>${ns}`];
   };
 
@@ -284,9 +284,23 @@
     const seqs = (scene.components || []).filter((c) => c.type === "frames")
       .map((c) => ({ c, img: els[c.id].querySelector("[data-frames]"), shown: -1 }));
 
+    // theme flips: every colour token is a mix of the two palettes (scene.colors overrides apply to both)
+    const palette = (name) => Object.assign({}, FR.THEMES[name] || FR.THEMES.light, scene.colors || {});
+    let lastTheme = "";
+    function applyTheme(th) {
+      const key = th.from + th.to + th.p.toFixed(3);
+      if (key === lastTheme) return;
+      lastTheme = key;
+      const a = palette(th.from), b = palette(th.to), pc = (th.p * 100).toFixed(1);
+      for (const k in b) stage.style.setProperty("--" + k, th.p >= 1 || a[k] === b[k] ? b[k] :
+        `color-mix(in srgb, ${a[k] || b[k]}, ${b[k]} ${pc}%)`);
+      theme.particle = b.particle || b.accent;
+    }
+
     let lastCap = "";
     function render(t) {
       const st = FR.stateAt(t, scene, events, boxes, view);
+      applyTheme(st.theme);
       if (amb) {
         const g = amb.getContext("2d"); g.clearRect(0, 0, 1080, 1920);
         g.fillStyle = theme.particle || theme.accent;
