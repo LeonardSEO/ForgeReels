@@ -52,7 +52,7 @@
     agent:    { parts: (s) => ["prompt", "input", ...n("s", (s.steps || []).length)], hidden: (s) => n("s", (s.steps || []).length) },
     image:    { parts: () => [], hidden: () => [] },
     // macro kit (renderer.js): lit close-ups that fill the frame
-    finger:   { parts: () => ["tip", "print", "ions", "glow"], hidden: () => ["ions", "glow"] },
+    finger:   { parts: () => ["tip", "ions", "glow"], hidden: () => ["ions", "glow"] },
     section:  { parts: () => ["glass", "field", "electrodes", "pull", "pixels", "charge", "loss", "labels"], hidden: () => ["pull", "loss"] },
     mesh:     { parts: () => ["rows", "cols", "nodes", "sweep", "hot"], hidden: () => ["hot"] },
     cutaway:  { parts: (s) => n("L", (s.layers || []).length), hidden: () => [] },
@@ -72,6 +72,9 @@
     code:     { parts: (s) => ["window", ...n("l", (s.lines || []).length), "stamp"], hidden: () => ["stamp"] },
     social:   { parts: () => ["card", "follow", "comment"], hidden: () => [] },
     calendar: { parts: () => ["page", "mark"], hidden: () => ["mark"] },
+    window:   { parts: (s) => ["frame", ...n("l", (s.lines || []).length)], hidden: () => [] },
+    macbook:  { parts: (s) => ["lid", "screen", "base", ...(s.title || (s.lines || []).length ? ["app", ...n("l", (s.lines || []).length)] : [])],
+                hidden: () => [] },
     logo:     { parts: () => ["tile", "mark", "label"], hidden: () => [] },   // a fetched brand logo (scripts/logo.py)
   };
 

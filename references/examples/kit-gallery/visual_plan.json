@@ -361,6 +361,46 @@
   {
    "word_ref": {
     "line": 12,
+    "expected": "laptop"
+   },
+   "action": "focus",
+   "object": "mac",
+   "args": {
+    "zoom": 1.12,
+    "pad": 0
+   }
+  },
+  {
+   "word_ref": {
+    "line": 12,
+    "expected": "opens"
+   },
+   "action": "reveal",
+   "object": "mac.app"
+  },
+  {
+   "word_ref": {
+    "line": 12,
+    "expected": "window"
+   },
+   "action": "focus",
+   "object": "win",
+   "args": {
+    "zoom": 1.15,
+    "pad": 0
+   }
+  },
+  {
+   "word_ref": {
+    "line": 12,
+    "expected": "buttons"
+   },
+   "action": "highlight",
+   "object": "win.l3"
+  },
+  {
+   "word_ref": {
+    "line": 13,
     "expected": "hand"
    },
    "action": "focus",
@@ -375,7 +415,7 @@
   },
   {
    "word_ref": {
-    "line": 12,
+    "line": 13,
     "expected": "phone"
    },
    "action": "pulse",
@@ -383,7 +423,7 @@
   },
   {
    "word_ref": {
-    "line": 12,
+    "line": 13,
     "expected": "card"
    },
    "action": "focus",
@@ -395,7 +435,7 @@
   },
   {
    "word_ref": {
-    "line": 12,
+    "line": 13,
     "expected": "card"
    },
    "action": "type",
@@ -403,7 +443,7 @@
   },
   {
    "word_ref": {
-    "line": 12,
+    "line": 13,
     "expected": "follow"
    },
    "action": "highlight",

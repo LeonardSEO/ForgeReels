@@ -166,31 +166,43 @@
   // ---------- macro kit: lit, close-up illustrations that fill the frame (light from the top left, rim light, glow)
   const glowDef = (id, sd) => `<filter id="${id}-glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="${sd || 6}" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>`;
 
-  // a fingertip pointing down, skin shaded like a cylinder, nail with gloss, ridges, free charges inside, contact glow
+  // skin shared by finger and hand: soft blur for shading, a fine grain so it is not plastic
+  const skinDefs = (g) => `<filter id="${g}-soft" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="7"/></filter>
+        <filter id="${g}-fine" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="1.6"/></filter>
+        <filter id="${g}-grain" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="4"/><feColorMatrix values="0 0 0 0 .35  0 0 0 0 .16  0 0 0 0 .1  0 0 0 .55 -.12"/></filter>
+        <linearGradient id="${g}-skin" x1="0" x2="1"><stop offset="0" stop-color="#c98d70"/><stop offset=".16" stop-color="#e7b092"/><stop offset=".42" stop-color="#f4cbb0"/><stop offset=".72" stop-color="#e0a384"/><stop offset="1" stop-color="#b87558"/></linearGradient>
+        <linearGradient id="${g}-nail" x1="0" y1="0" x2=".25" y2="1"><stop offset="0" stop-color="#f6ddd4"/><stop offset=".5" stop-color="#ecc0b3"/><stop offset=".86" stop-color="#e4ad9f"/><stop offset=".9" stop-color="#f7ece6"/><stop offset="1" stop-color="#f3e4dc"/></linearGradient>
+        <radialGradient id="${g}-flush" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#e6735c" stop-opacity=".42"/><stop offset="1" stop-color="#e6735c" stop-opacity="0"/></radialGradient>`;
+
+  // a fingertip pointing down, seen from the nail side: tapered, shaded as a soft cylinder, creased at the joint,
+  // nail with fold shadow, lunula and gloss; free charges inside and a contact glow arrive on their words
   B.finger = (c) => {
     const w = c.w || 420, h = Math.round(w * 1.25), id = c.id, g = id + "-f";
     const ions = Array.from({ length: 14 }, (_, i) => {
-      const x = 62 + (i * 37) % 78, y = 40 + ((i * 53) % 170), pos = i % 2 === 0;
-      return `<g transform="translate(${x} ${y})"><circle r="9" fill="${pos ? "var(--accent)" : "var(--accent2)"}" opacity=".9"/><path d="${pos ? "M-4.5 0H4.5M0 -4.5V4.5" : "M-4.5 0H4.5"}" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></g>`;
+      const x = 62 + (i * 37) % 78, y = 30 + ((i * 53) % 180), pos = i % 2 === 0;
+      return `<g transform="translate(${x} ${y})"><circle r="9" fill="${pos ? "var(--accent)" : "var(--accent2)"}" opacity=".92"/><path d="${pos ? "M-4.5 0H4.5M0 -4.5V4.5" : "M-4.5 0H4.5"}" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></g>`;
     }).join("");
-    const ridges = Array.from({ length: 9 }, (_, i) => `<path d="M${52 + i * 3} ${150 + i * 9} Q100 ${120 + i * 12} ${148 - i * 3} ${150 + i * 9}"/>`).join("");
-    const body = "M40 -40 L40 170 C40 216 70 242 100 242 C130 242 160 216 160 170 L160 -40 Z";
+    const body = "M38 -60 C36 30 40 86 42 118 C43 136 40 150 40 172 C40 214 68 242 100 242 C132 242 160 214 160 172 C160 150 157 136 158 118 C160 86 164 30 162 -60 Z";
+    const nail = "M70 152 C70 128 130 128 130 152 L132 198 C132 224 68 224 68 198 Z";
+    const crease = (y, k) => `<path d="M${48 + k} ${y} Q100 ${y + 12} ${152 - k} ${y}" stroke="#7a3a26" stroke-opacity=".34" stroke-width="1.7" fill="none"/><path d="M${48 + k} ${y + 2.4} Q100 ${y + 14.4} ${152 - k} ${y + 2.4}" stroke="#fff" stroke-opacity=".22" stroke-width="1.4" fill="none"/>`;
     return [w, h, `<svg viewBox="0 0 200 250" width="${w}" height="${h}" style="overflow:visible;transform:rotate(${c.angle || 0}deg);transform-origin:50% 96%">
-      <defs>${glowDef(g, 5)}
-        <linearGradient id="${g}-skin" x1="0" x2="1"><stop offset="0" stop-color="#9c5a42"/><stop offset=".2" stop-color="#d99a7c"/><stop offset=".42" stop-color="#f3c7ab"/><stop offset=".7" stop-color="#e2a586"/><stop offset="1" stop-color="#8d4f39"/></linearGradient>
-        <radialGradient id="${g}-tip" cx=".42" cy=".86" r=".5"><stop offset="0" stop-color="#ffe2cf" stop-opacity=".7"/><stop offset="1" stop-color="#ffe2cf" stop-opacity="0"/></radialGradient>
-        <linearGradient id="${g}-nail" x1="0" y1="0" x2=".3" y2="1"><stop offset="0" stop-color="#fbe9e2"/><stop offset=".55" stop-color="#e8b9ab"/><stop offset="1" stop-color="#d79c8c"/></linearGradient>
-        <linearGradient id="${g}-rim" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity=".75"/><stop offset=".25" stop-color="#fff" stop-opacity="0"/></linearGradient>
-        <clipPath id="${g}-clip"><path d="${body}"/></clipPath></defs>
+      <defs>${glowDef(g, 5)}${skinDefs(g)}<clipPath id="${g}-clip"><path d="${body}"/></clipPath><clipPath id="${g}-nc"><path d="${nail}"/></clipPath></defs>
       <ellipse data-obj="${id}.glow" cx="100" cy="244" rx="44" ry="10" fill="var(--accent)" filter="url(#${g}-glow)" opacity=".6"/>
-      <g data-obj="${id}.tip"><path d="${body}" fill="url(#${g}-skin)"/><path d="${body}" fill="url(#${g}-tip)"/>
-        <g clip-path="url(#${g}-clip)"><g data-obj="${id}.print" fill="none" stroke="#7a3f2c" stroke-opacity=".16" stroke-width="1.6">${ridges}</g>
-          <path d="M68 118 C68 92 132 92 132 118 L132 178 C132 206 68 206 68 178 Z" fill="url(#${g}-nail)" opacity=".95"/>
-          <path d="M76 124 C78 108 96 104 104 106" stroke="#fff" stroke-opacity=".8" stroke-width="5" stroke-linecap="round" fill="none"/>
-          <path d="M48 22 Q100 34 152 22 M52 36 Q100 46 148 36" stroke="#8a4a35" stroke-opacity=".35" stroke-width="2.4" fill="none"/>
-          <path d="M40 120 C60 190 140 190 160 120 L160 250 L40 250 Z" fill="#7a3f2c" opacity=".14"/>
-          <g data-obj="${id}.ions">${ions}</g></g>
-        <path d="${body}" fill="none" stroke="url(#${g}-rim)" stroke-width="3"/></g></svg>`];
+      <g data-obj="${id}.tip"><path d="${body}" fill="url(#${g}-skin)"/>
+        <g clip-path="url(#${g}-clip)">
+          <ellipse cx="100" cy="206" rx="64" ry="52" fill="url(#${g}-flush)"/>
+          <path d="M128 -60 L172 -60 L172 250 L118 250 C150 220 150 120 128 -60 Z" fill="#5e2616" opacity=".42" filter="url(#${g}-soft)"/>
+          <path d="M30 -60 H47 V190 C47 216 60 232 74 240 L30 250 Z" fill="#fff" opacity=".2" filter="url(#${g}-soft)"/>
+          <path d="M52 232 Q100 262 148 232 L148 262 L52 262 Z" fill="#5e2616" opacity=".5" filter="url(#${g}-soft)"/>
+          ${crease(70, 0)}${crease(84, 2)}${crease(97, 5)}
+          <path d="${nail}" fill="none" stroke="#6b2f1f" stroke-opacity=".55" stroke-width="7" filter="url(#${g}-fine)"/>
+          <path d="${nail}" fill="url(#${g}-nail)"/>
+          <g clip-path="url(#${g}-nc)"><ellipse cx="100" cy="134" rx="24" ry="13" fill="#fff" opacity=".34"/>
+            <rect x="77" y="146" width="11" height="58" rx="5" fill="#fff" opacity=".42" filter="url(#${g}-fine)"/>
+            <path d="M112 150 C122 160 124 190 120 210" stroke="#b9705c" stroke-opacity=".3" stroke-width="9" fill="none" filter="url(#${g}-fine)"/></g>
+          <path d="M72 150 C73 133 127 133 128 150" stroke="#fff" stroke-opacity=".5" stroke-width="1.6" fill="none"/>
+          <rect x="30" y="-60" width="140" height="310" filter="url(#${g}-grain)" opacity=".5" style="mix-blend-mode:multiply"/>
+          <g data-obj="${id}.ions">${ions}</g></g></g></svg>`];
   };
 
   // a magnified cross-section of a touchscreen: cover glass, sensor electrodes with their fringe field, display pixels,
@@ -274,17 +286,41 @@
     return [w, y - gap, `<svg width="${w}" height="${y - gap}" viewBox="0 0 ${w} ${y - gap}" style="overflow:visible"><defs>${defs}</defs>${out}</svg>`];
   };
 
-  // a hand around a phone: give it the phone's x, y and w and list it AFTER the phone (fingers and thumb lie over its edges)
+  // a hand around a phone: give it the phone's x, y and w and list it AFTER the phone. Seen from the front: four
+  // fingertips come round the right edge and throw a shadow on the glass, the thumb lies along the left edge
   B.hand = (c) => {
     const w = c.w || 440, h = Math.round(w * 2.05), id = c.id, g = id + "-h";
-    const finger = (y, len) => `<g transform="translate(0 ${y})"><rect x="${88 - len}" y="0" width="${60 + len}" height="19" rx="9.5" fill="url(#${g}-v)"/><path d="M${92 - len} 4 Q${98 - len} 2 ${104 - len} 4" stroke="#fff" stroke-opacity=".5" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M118 2 V17" stroke="#7a3f2c" stroke-opacity=".25" stroke-width="1.2"/></g>`;
+    const tip = (y, reach, t) => {
+      const x = 100 - reach, e = 108, d = `M${e} ${y - 0.6} C${e + 6} ${y} ${e + 6} ${y + t} ${e} ${y + t + 0.6} C104 ${y + t + 1} 96 ${y + t + 0.6} ${x + t * 0.55} ${y + t} C${x - 2} ${y + t - 1} ${x - 2} ${y + 1} ${x + t * 0.55} ${y} C96 ${y - 0.6} 104 ${y - 1} ${e} ${y - 0.6} Z`;
+      return `<path d="${d}" fill="#000" opacity=".38" transform="translate(-4 5)" filter="url(#${g}-fine)"/>
+        <path d="${d}" fill="url(#${g}-tip)"/>
+        <path d="M${x + 3} ${y + 3} Q${x + 12} ${y + 1.5} ${x + 22} ${y + 3}" stroke="#fff" stroke-opacity=".5" stroke-width="2" stroke-linecap="round" fill="none" filter="url(#${g}-tiny)"/>
+        <path d="M101 ${y + 2} Q99 ${y + t / 2} 101 ${y + t - 2}" stroke="#7a3a26" stroke-opacity=".4" stroke-width="1.1" fill="none"/>
+        <path d="M${x + 4} ${y + t - 3} Q${x + 14} ${y + t - 1} ${x + 24} ${y + t - 3}" stroke="#5e2616" stroke-opacity=".3" stroke-width="3" fill="none" filter="url(#${g}-tiny)"/>`;
+    };
+    const palm = "M-36 196 C-42 150 -30 118 -12 102 L8 102 L96 150 C112 156 122 190 116 236 L108 340 L-14 340 C-24 296 -32 246 -36 196 Z";
+    const thumb = "M-26 310 C-40 250 -40 176 -28 138 C-22 124 -16 118 -10 112 C-2 100 12 98 17 107 C22 116 16 127 9 138 C0 152 -4 200 10 310 Z";
     return [w, h, `<svg viewBox="0 0 100 205" width="${w}" height="${h}" style="overflow:visible">
-      <defs><linearGradient id="${g}-v" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f3c7ab"/><stop offset=".55" stop-color="#dc9f81"/><stop offset="1" stop-color="#a8654b"/></linearGradient>
-        <linearGradient id="${g}-p" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e9b394"/><stop offset="1" stop-color="#9c5a42"/></linearGradient>
-        <clipPath id="${g}-out"><path clip-rule="evenodd" d="M-90 -30 H200 V330 H-90 Z M16 0 H84 A16 16 0 0 1 100 16 V189 A16 16 0 0 1 84 205 H16 A16 16 0 0 1 0 189 V16 A16 16 0 0 1 16 0 Z"/></clipPath></defs>
-      <g data-obj="${id}.palm" clip-path="url(#${g}-out)"><path d="M-12 112 C-30 150 -24 214 6 262 L112 262 C132 222 136 150 126 96 L104 92 L104 206 L-4 206 Z" fill="url(#${g}-p)"/></g>
-      <g data-obj="${id}.fingers">${finger(64, 5)}${finger(88, 8)}${finger(112, 7)}${finger(136, 3)}</g>
-      <g data-obj="${id}.thumb"><path d="M-22 168 C-26 142 -8 118 12 112 C20 110 24 120 18 128 C8 142 2 158 0 176 Z" fill="url(#${g}-v)"/><path d="M6 118 Q14 114 16 122" stroke="#fff" stroke-opacity=".55" stroke-width="1.6" fill="none" stroke-linecap="round"/></g></svg>`];
+      <defs>${skinDefs(g)}<filter id="${g}-tiny" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation=".7"/></filter>
+        <linearGradient id="${g}-tip" x1="0" y1="0" x2="1" y2=".35"><stop offset="0" stop-color="#f6cfb5"/><stop offset=".5" stop-color="#e3a787"/><stop offset=".78" stop-color="#a9664a"/><stop offset="1" stop-color="#5e2f20"/></linearGradient>
+        <linearGradient id="${g}-p" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#eebb9d"/><stop offset=".6" stop-color="#d79a7b"/><stop offset="1" stop-color="#9c5a42"/></linearGradient>
+        <clipPath id="${g}-out"><path clip-rule="evenodd" d="M-120 -40 H230 V380 H-120 Z M16 0 H84 A16 16 0 0 1 100 16 V189 A16 16 0 0 1 84 205 H16 A16 16 0 0 1 0 189 V16 A16 16 0 0 1 16 0 Z"/></clipPath>
+        <clipPath id="${g}-th"><path d="${thumb}"/></clipPath><clipPath id="${g}-pc"><path d="${palm}"/></clipPath></defs>
+      <g data-obj="${id}.palm" clip-path="url(#${g}-out)">
+        <path d="${palm}" fill="url(#${g}-p)"/><g clip-path="url(#${g}-pc)">
+        <path d="M60 212 L130 212 L120 340 L40 340 Z" fill="#5e2616" opacity=".4" filter="url(#${g}-soft)"/>
+        <path d="M2 198 H100 V218 H2 Z" fill="#000" opacity=".5" filter="url(#${g}-soft)"/>
+        <path d="M-30 250 Q20 236 70 262" stroke="#7a3a26" stroke-opacity=".28" stroke-width="1.6" fill="none" filter="url(#${g}-tiny)"/>
+        <path d="M-14 300 Q40 292 104 304" stroke="#7a3a26" stroke-opacity=".25" stroke-width="1.4" fill="none" filter="url(#${g}-tiny)"/>
+        <rect x="-60" y="90" width="200" height="250" filter="url(#${g}-grain)" opacity=".45" style="mix-blend-mode:multiply"/></g></g>
+      <g data-obj="${id}.fingers">${tip(62, 15, 21)}${tip(86, 18, 22)}${tip(111, 16, 21)}${tip(135, 11, 18)}</g>
+      <g data-obj="${id}.thumb"><path d="${thumb}" fill="#000" opacity=".35" transform="translate(5 4)" filter="url(#${g}-fine)"/><path d="${thumb}" fill="url(#${g}-p)"/>
+        <g clip-path="url(#${g}-th)"><path d="M-6 96 L24 96 L24 214 L-2 214 C-4 176 0 150 10 134 Z" fill="#5e2616" opacity=".32" filter="url(#${g}-fine)"/>
+          <path d="M-36 214 C-40 176 -30 140 -12 114" stroke="#fff" stroke-opacity=".4" stroke-width="5" fill="none" filter="url(#${g}-fine)"/>
+          <path d="M-12 140 Q-2 146 6 142" stroke="#7a3a26" stroke-opacity=".4" stroke-width="1.2" fill="none"/><path d="M-13 146 Q-3 152 5 148" stroke="#7a3a26" stroke-opacity=".3" stroke-width="1.1" fill="none"/>
+          <path d="M-2 108 C2 101 12 101 14 108 C16 116 10 126 4 130 C-2 126 -5 116 -2 108 Z" fill="url(#${g}-nail)" stroke="#6b2f1f" stroke-opacity=".35" stroke-width=".8"/>
+          <path d="M1 109 C4 105 9 105 11 108" stroke="#fff" stroke-opacity=".7" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+          <rect x="-50" y="90" width="80" height="130" filter="url(#${g}-grain)" opacity=".45" style="mix-blend-mode:multiply"/></g></g></svg>`];
   };
 
   // an illustration drawn for this topic: the SVG file (scene: src, parts[]) is inlined by visual_plan.py as c.svg
@@ -398,6 +434,25 @@
       g.globalAlpha = 0.8; g.beginPath(); g.arc(((lon + 180) / 360) * w, ((85 - (lat + dl)) / 150) * h, w / 400, 0, 6.2832); g.fill();
     }
     return () => {};
+  };
+
+  // ---------- a Mac: an app window with the three window buttons, and a laptop that can show one
+  const winBody = (id, c, key) => {
+    const side = c.sidebar || [], lines = c.lines || [];
+    const sb = side.length ? `<div class="side">${side.map((t, i) => `<div class="it${i === (c.active || 1) - 1 ? " on" : ""}">${esc(t)}</div>`).join("")}</div>` : "";
+    return `<div data-obj="${id}.${key}" class="frame"><div class="bar">${DOTS}<span class="t">${esc(c.title || "")}</span></div><div class="main">${sb}<div class="body">${
+      lines.map((t, i) => `<div data-obj="${id}.l${i + 1}" class="ln"><span data-text="${esc(t)}">${esc(t)}</span></div>`).join("")}</div></div></div>`;
+  };
+  B.window = (c) => {
+    const w = c.w || 900, rows = Math.max((c.lines || []).length, (c.sidebar || []).length);
+    return [w, c.h || Math.round(w * (0.105 + rows * 0.062)), winBody(c.id, c, "frame"), "fr-win"];
+  };
+  B.macbook = (c) => {
+    const w = c.w || 940, id = c.id, app = c.title || (c.lines || []).length;
+    return [w, Math.round(w * 0.665), `<div data-obj="${id}.lid" class="lid"><div data-obj="${id}.screen" class="screen">
+        <div class="menubar"><b></b><span class="app">${esc(c.app || "Finder")}</span><span>File</span><span>Edit</span><span>View</span><i>${esc(c.clock || "9:41")}</i></div><div class="notch"></div>
+        ${app ? `<div class="fr-win slot">${winBody(id, c, "app")}</div>` : ""}</div></div>
+      <div data-obj="${id}.base" class="base"><i></i></div>`];
   };
 
   // ---------- numbers, data and UI

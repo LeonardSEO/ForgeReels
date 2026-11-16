@@ -16,6 +16,19 @@ Format for each entry:
 
 When a lesson appears twice, promote it into the right reference file (or a script) and say so here ("promoted").
 
+## 2026-11-16 · Realistic finger and hand, MacBook and Mac window (no new video)
+- The user: hand and finger must look more real (the phone is good); a MacBook and a macOS window were missing.
+- What made skin read as real in SVG: a tapered outline instead of a capsule, shading as BLURRED dark and light
+  shapes clipped to the body (not only a gradient), creases as a dark line with a light line under it, a nail with
+  a blurred fold shadow, lunula, free edge and gloss, a flush of red at the tip, and a faint feTurbulence grain in
+  multiply. Clip the grain to the shape: unclipped it shows as a dark box around the hand.
+- Hand from the front: fingertips end just past the phone edge and darken as they go round the back; each throws a
+  small blurred shadow on the glass; the thumb runs into the palm as one shape (a thumb that stops at the phone's
+  bottom leaves a ledge); the phone throws a soft shadow on the palm.
+- New: `window` (title bar with the three buttons, optional sidebar, lines) and `macbook` (lid, notch, menu bar
+  without any Apple mark, wallpaper of our own, aluminium base; shows an app window or carries another component).
+  Sizes inside both follow the component width (em units from --w), so they stay sharp at any size.
+
 ## 2026-11-16 · Brand logos from the web (`logo.py` + `logo` component, no new video)
 - The user: when a video is about "Instagram vs Facebook" it must fetch the real logos and use them. Built
   `scripts/logo.py` (Simple Icons -> Wikimedia Commons -> web search by hand) and the `logo` component (app-icon

@@ -86,11 +86,13 @@ token in `colors` (bg, ink, card, accent, accent2, marker, cap-bg, ...).
 | `steps` | w, steps[] | s1..N: a chapter rail; `highlight` on sN marks that chapter reached |
 | `frames` | src ("seq/%04d.jpg"), count, fps, first (1), w, device ("phone") | (the id itself): a captured screen recording; `play` on its word (dur = count / fps) |
 | `agent` | w, folder, prompt, steps[], model | prompt (type), input, s1..N (start hidden; reveal one per word): a coding agent at work |
-| `finger` | w, angle | tip, print, ions (hidden; free + and - charges), glow (hidden; contact light): a lit fingertip, tip at 50 % / 96 % of its box; `move` dy taps it |
+| `finger` | w, angle | tip, ions (hidden; free + and - charges), glow (hidden; contact light): a fingertip from the nail side (tapered, soft shading, joint creases, nail with fold shadow, lunula and gloss, skin grain), tip at 50 % / 96 % of its box; `move` dy taps it |
 | `section` | w, h, n (electrodes), touch (0-1), note | glass, field (draw), electrodes, pull (hidden; draw: field bends to the finger), pixels, charge, loss (hidden; meters drained near the touch), labels: a magnified cross-section of a touchscreen |
 | `mesh` | w, h, rows, cols, hot[row,col], tilt (deg), perspective | rows, cols (draw), nodes (a light per crossing), sweep (`flow`: a light walks the rows), hot (hidden; ring on one crossing): a sensor grid in perspective |
 | `cutaway` | w, layers[{label, h, kind: solid / glass / pads / pixels / cells, color, n}], gap, spread | L1..N: lit layers seen from the side, labels on the right; `explode` on the id lifts them apart |
-| `hand` | w (the phone's x, y and w; list it AFTER the phone) | palm, fingers, thumb: a hand around the phone |
+| `hand` | w (the phone's x, y and w; list it AFTER the phone) | palm, fingers, thumb: a hand around the phone seen from the front (four fingertips round the right edge with their shadow on the glass, the thumb with its nail along the left edge) |
+| `window` | w, h, title, sidebar[], active (which sidebar item), lines[] | frame, l1..N (type, highlight): a Mac app window with the red, yellow and green buttons |
+| `macbook` | w, app (menu bar name), clock, title, lines[] (an app window on its screen) | lid, screen, base, and with a title or lines: app, l1..N. Or leave the screen empty and lay a `window`, `code`, `browser` or `terminal` over it |
 | `svg` | src ("art/x.svg": keep drawings outside `assets/`, which is build output), parts[], w, h, hidden[] | the parts you list: every `<g id="part">` of the file animates. THE way to draw a topic's own objects (an earbud, a vault, a battery): draw the file in the macro style, give gradients and filters ids no other file uses |
 | `swarm` | w, h, count, from, to (cloud / grid / ring / stream / clusters / column), colors[], r, label | label: hundreds of dots; `explode` on the id moves them from one shape to the other (`collapse` back) |
 | `wave` | w, h, waves[{amp, freq, phase, color}], speed | w1..N, sum (hidden): travelling waves; `grow` raises one, `explode` flips it upside down, `sum` shows what they add up to |
