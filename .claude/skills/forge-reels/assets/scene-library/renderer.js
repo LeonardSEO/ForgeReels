@@ -189,6 +189,97 @@
       <div data-obj="${id}.input" class="input">+ Write / for commands<span class="model">${esc(c.model || "Claude")}</span></div></div>`];
   };
 
+  // ---------- macro kit: lit, close-up illustrations that fill the frame (light from the top left, rim light, glow)
+  const glowDef = (id, sd) => `<filter id="${id}-glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="${sd || 6}" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>`;
+
+  // a fingertip pointing down, skin shaded like a cylinder, nail with gloss, ridges, free charges inside, contact glow
+  B.finger = (c) => {
+    const w = c.w || 420, h = Math.round(w * 1.25), id = c.id, g = id + "-f";
+    const ions = Array.from({ length: 14 }, (_, i) => {
+      const x = 62 + (i * 37) % 78, y = 40 + ((i * 53) % 170), pos = i % 2 === 0;
+      return `<g transform="translate(${x} ${y})"><circle r="9" fill="${pos ? "var(--accent)" : "var(--accent2)"}" opacity=".9"/><path d="${pos ? "M-4.5 0H4.5M0 -4.5V4.5" : "M-4.5 0H4.5"}" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></g>`;
+    }).join("");
+    const ridges = Array.from({ length: 9 }, (_, i) => `<path d="M${52 + i * 3} ${150 + i * 9} Q100 ${120 + i * 12} ${148 - i * 3} ${150 + i * 9}"/>`).join("");
+    const body = "M40 -40 L40 170 C40 216 70 242 100 242 C130 242 160 216 160 170 L160 -40 Z";
+    return [w, h, `<svg viewBox="0 0 200 250" width="${w}" height="${h}" style="overflow:visible;transform:rotate(${c.angle || 0}deg);transform-origin:50% 96%">
+      <defs>${glowDef(g, 5)}
+        <linearGradient id="${g}-skin" x1="0" x2="1"><stop offset="0" stop-color="#9c5a42"/><stop offset=".2" stop-color="#d99a7c"/><stop offset=".42" stop-color="#f3c7ab"/><stop offset=".7" stop-color="#e2a586"/><stop offset="1" stop-color="#8d4f39"/></linearGradient>
+        <radialGradient id="${g}-tip" cx=".42" cy=".86" r=".5"><stop offset="0" stop-color="#ffe2cf" stop-opacity=".7"/><stop offset="1" stop-color="#ffe2cf" stop-opacity="0"/></radialGradient>
+        <linearGradient id="${g}-nail" x1="0" y1="0" x2=".3" y2="1"><stop offset="0" stop-color="#fbe9e2"/><stop offset=".55" stop-color="#e8b9ab"/><stop offset="1" stop-color="#d79c8c"/></linearGradient>
+        <linearGradient id="${g}-rim" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity=".75"/><stop offset=".25" stop-color="#fff" stop-opacity="0"/></linearGradient>
+        <clipPath id="${g}-clip"><path d="${body}"/></clipPath></defs>
+      <ellipse data-obj="${id}.glow" cx="100" cy="244" rx="44" ry="10" fill="var(--accent)" filter="url(#${g}-glow)" opacity=".6"/>
+      <g data-obj="${id}.tip"><path d="${body}" fill="url(#${g}-skin)"/><path d="${body}" fill="url(#${g}-tip)"/>
+        <g clip-path="url(#${g}-clip)"><g data-obj="${id}.print" fill="none" stroke="#7a3f2c" stroke-opacity=".16" stroke-width="1.6">${ridges}</g>
+          <path d="M68 118 C68 92 132 92 132 118 L132 178 C132 206 68 206 68 178 Z" fill="url(#${g}-nail)" opacity=".95"/>
+          <path d="M76 124 C78 108 96 104 104 106" stroke="#fff" stroke-opacity=".8" stroke-width="5" stroke-linecap="round" fill="none"/>
+          <path d="M48 22 Q100 34 152 22 M52 36 Q100 46 148 36" stroke="#8a4a35" stroke-opacity=".35" stroke-width="2.4" fill="none"/>
+          <path d="M40 120 C60 190 140 190 160 120 L160 250 L40 250 Z" fill="#7a3f2c" opacity=".14"/>
+          <g data-obj="${id}.ions">${ions}</g></g>
+        <path d="${body}" fill="none" stroke="url(#${g}-rim)" stroke-width="3"/></g></svg>`];
+  };
+
+  // a magnified cross-section of a touchscreen: cover glass, sensor electrodes with their fringe field, display pixels,
+  // and one charge meter per electrode (full -> drained near the touch)
+  B.section = (c) => {
+    const w = c.w || 1000, h = c.h || 760, id = c.id, g = id + "-s", n = c.n || 7, tx = (c.touch == null ? 0.5 : c.touch) * w;
+    const sp = w / n, xs = Array.from({ length: n }, (_, i) => sp * (i + 0.5)), gy = 230, gb = 330, ey = 350;
+    const pads = xs.map((x) => `<rect x="${x - sp * 0.32}" y="${ey}" width="${sp * 0.64}" height="16" rx="6" fill="url(#${g}-pad)"/>`).join("");
+    const arcs = xs.slice(1).map((x, i) => [1, 2, 3].map((k) => `<path pathLength="1" d="M${xs[i] + 12} ${ey} C${xs[i] + 12} ${ey - 38 * k} ${x - 12} ${ey - 38 * k} ${x - 12} ${ey}"/>`).join("")).join("");
+    const near = xs.filter((x) => Math.abs(x - tx) < sp * 1.6);
+    const pull = near.map((x) => [0, 1].map((k) => `<path pathLength="1" d="M${x + (k ? 14 : -14)} ${ey} C${x} ${ey - 120} ${tx + (x - tx) * 0.35} ${gy - 40} ${tx + (x - tx) * 0.2 + (k ? 10 : -10)} ${gy - 70}"/>`).join("")).join("");
+    const px = Array.from({ length: Math.ceil(w / 16) }, (_, i) => `<rect x="${i * 16 + 2}" y="430" width="11" height="22" rx="3" fill="${["#ff4d5e", "#3ddc84", "#4d8bff"][i % 3]}"/>`).join("");
+    const bar = (x, f) => `<rect x="${x - 16}" y="${600 + 120 * (1 - f)}" width="32" height="${120 * f}" rx="8"/>`;
+    const drop = (x) => 1 - 0.62 * Math.exp(-Math.pow((x - tx) / (sp * 1.05), 2));
+    const tracks = xs.map((x) => `<rect x="${x - 16}" y="600" width="32" height="120" rx="8"/>`).join("");
+    const mono = 'font-family="IBM Plex Mono, Menlo, monospace" font-size="24" font-weight="600" letter-spacing="2"';
+    return [w, h, `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="overflow:visible">
+      <defs>${glowDef(g, 5)}
+        <linearGradient id="${g}-glass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cfe6ff" stop-opacity=".30"/><stop offset=".5" stop-color="#8fb8e8" stop-opacity=".10"/><stop offset="1" stop-color="#cfe6ff" stop-opacity=".22"/></linearGradient>
+        <linearGradient id="${g}-band" x1="0" y1="0" x2="1" y2="1"><stop offset=".3" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".16"/><stop offset=".62" stop-color="#fff" stop-opacity="0"/></linearGradient>
+        <linearGradient id="${g}-pad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9f3ff"/><stop offset="1" stop-color="#3a7bd5"/></linearGradient>
+        <linearGradient id="${g}-fade" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".08" stop-color="#fff"/><stop offset=".92" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+        <radialGradient id="${g}-pool" cx=".5" cy=".42" r=".6"><stop offset="0" stop-color="#4d8bff" stop-opacity=".30"/><stop offset="1" stop-color="#4d8bff" stop-opacity="0"/></radialGradient>
+        <mask id="${g}-m"><rect x="0" y="-400" width="${w}" height="${h + 400}" fill="url(#${g}-fade)"/></mask></defs>
+      <ellipse cx="${w / 2}" cy="${h * 0.42}" rx="${w * 0.75}" ry="${h * 0.75}" fill="url(#${g}-pool)"/>
+      <g mask="url(#${g}-m)">
+        <g data-obj="${id}.glass"><rect x="0" y="${gy}" width="${w}" height="${gb - gy}" fill="url(#${g}-glass)"/><rect x="0" y="${gy}" width="${w}" height="${gb - gy}" fill="url(#${g}-band)"/>
+          <path d="M0 ${gy} H${w}" stroke="#fff" stroke-opacity=".85" stroke-width="3"/><path d="M0 ${gb} H${w}" stroke="#cfe6ff" stroke-opacity=".35" stroke-width="2"/></g>
+        <rect x="0" y="${ey - 8}" width="${w}" height="34" fill="#1a2742"/>
+        <g data-obj="${id}.field" fill="none" stroke="#5fd4ff" stroke-width="3" stroke-opacity=".9" filter="url(#${g}-glow)">${arcs}</g>
+        <g data-obj="${id}.electrodes" filter="url(#${g}-glow)">${pads}</g>
+        <g data-obj="${id}.pull" fill="none" stroke="var(--accent)" stroke-width="4" stroke-linecap="round" filter="url(#${g}-glow)">${pull}</g>
+        <rect x="0" y="418" width="${w}" height="46" fill="#121826"/>
+        <g data-obj="${id}.pixels" filter="url(#${g}-glow)">${px}</g>
+        <rect x="0" y="472" width="${w}" height="26" fill="#1f2635"/><rect x="0" y="504" width="${w}" height="14" fill="#191f2b"/></g>
+      <g fill="#1a2030">${tracks}</g>
+      <g data-obj="${id}.charge" fill="#5fd4ff" filter="url(#${g}-glow)">${xs.map((x) => bar(x, 1)).join("")}</g>
+      <g data-obj="${id}.loss" fill="#5fd4ff" filter="url(#${g}-glow)">${xs.map((x) => bar(x, drop(x))).join("")}</g>
+      <g data-obj="${id}.labels" fill="var(--muted)" ${mono}><text x="24" y="${gy - 16}">COVER GLASS</text><text x="24" y="${ey + 52}">SENSOR</text><text x="24" y="545">DISPLAY</text>
+        <text x="${w - 24}" y="${h - 4}" text-anchor="end" font-size="20" opacity=".7">${esc(c.note || "not to scale")}</text></g></svg>`];
+  };
+
+  // the sensor grid in perspective: glowing rows and columns, a light at every crossing, a scan dot that walks the rows
+  B.mesh = (c) => {
+    const w = c.w || 1000, h = c.h || 1000, id = c.id, g = id + "-m", nr = c.rows || 8, nc = c.cols || 6;
+    const ry = (i) => (h * (i + 1)) / (nr + 1), cx = (j) => (w * (j + 1)) / (nc + 1), hot = c.hot || [4, 3];
+    const rows = Array.from({ length: nr }, (_, i) => `<path pathLength="1" d="M20 ${ry(i)} H${w - 20}"/>`).join("");
+    const cols = Array.from({ length: nc }, (_, j) => `<path pathLength="1" d="M${cx(j)} 20 V${h - 20}"/>`).join("");
+    const nodes = Array.from({ length: nr * nc }, (_, k) => `<circle cx="${cx(k % nc)}" cy="${ry(Math.floor(k / nc))}" r="9"/>`).join("");
+    let walk = "";
+    for (let i = 0; i < nr; i++) walk += (i ? ` L${i % 2 ? cx(nc - 1) : cx(0)} ${ry(i)}` : `M${cx(0)} ${ry(0)}`) + ` L${i % 2 ? cx(0) : cx(nc - 1)} ${ry(i)}`;
+    const hx = cx(hot[1] - 1), hy = ry(hot[0] - 1);
+    return [w, h, `<div class="tilt" style="transform:perspective(${c.perspective || 1500}px) rotateX(${c.tilt == null ? 48 : c.tilt}deg)">
+      <svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="overflow:visible"><defs>${glowDef(g, 7)}</defs>
+      <defs><linearGradient id="${g}-panel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1d2840"/><stop offset="1" stop-color="#121a2b"/></linearGradient></defs><rect x="0" y="0" width="${w}" height="${h}" rx="40" fill="url(#${g}-panel)" stroke="#3a4a66" stroke-width="3"/>
+      <g data-obj="${id}.rows" fill="none" stroke="var(--accent2)" stroke-width="5" filter="url(#${g}-glow)">${rows}</g>
+      <g data-obj="${id}.cols" fill="none" stroke="#5fd4ff" stroke-width="5" filter="url(#${g}-glow)">${cols}</g>
+      <g data-obj="${id}.nodes" fill="#e9f8ff" filter="url(#${g}-glow)">${nodes}</g>
+      <g data-obj="${id}.sweep"><path data-flow-path fill="none" stroke="none" d="${walk}"/><circle data-flow-dot r="20" fill="#fff" filter="url(#${g}-glow)"/></g>
+      <g data-obj="${id}.hot" filter="url(#${g}-glow)"><circle cx="${hx}" cy="${hy}" r="34" fill="none" stroke="var(--accent)" stroke-width="7"/><circle cx="${hx}" cy="${hy}" r="15" fill="var(--accent)"/></g>
+      </svg></div>`];
+  };
+
   B.image = (c) => [c.w || 900, c.h || 600, `<img src="${esc(c.src)}" alt="">`, "fr-image" + (c.card === false ? "" : " fr-card")];
 
   // ---------- mount + render
@@ -304,8 +395,12 @@
       if (amb) {
         const g = amb.getContext("2d"); g.clearRect(0, 0, 1080, 1920);
         g.fillStyle = theme.particle || theme.accent;
+        // parallax: bigger (nearer) particles slide further against camera moves, so depth reads in every move
+        const cam = st.camera, wrap = (v, m) => ((v % m) + m) % m;
         for (const q of FR.particles(t, scene.particles || 70, 7)) {
-          g.globalAlpha = q.a * 0.55; g.beginPath(); g.arc(q.x * 1080, q.y * 1920, q.r, 0, 6.2832); g.fill();
+          const d = (q.r - 1) / 2.5 * 0.18;
+          g.globalAlpha = q.a * 0.55; g.beginPath();
+          g.arc(wrap(q.x * 1080 - cam.x * cam.s * d, 1080), wrap(q.y * 1920 - cam.y * cam.s * d, 1920), q.r, 0, 6.2832); g.fill();
         }
         g.globalAlpha = 1;
       }

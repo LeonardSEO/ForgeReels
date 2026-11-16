@@ -53,6 +53,10 @@
     lens:     { parts: () => ["glass", "centre", "rim", "label"], hidden: () => [] },
     agent:    { parts: (s) => ["prompt", "input", ...n("s", (s.steps || []).length)], hidden: (s) => n("s", (s.steps || []).length) },
     image:    { parts: () => [], hidden: () => [] },
+    // macro kit (renderer.js): lit close-ups that fill the frame
+    finger:   { parts: () => ["tip", "print", "ions", "glow"], hidden: () => ["ions", "glow"] },
+    section:  { parts: () => ["glass", "field", "electrodes", "pull", "pixels", "charge", "loss", "labels"], hidden: () => ["pull", "loss"] },
+    mesh:     { parts: () => ["rows", "cols", "nodes", "sweep", "hot"], hidden: () => ["hot"] },
   };
 
   // frames component: which image of the sequence shows after `play` seconds of playback

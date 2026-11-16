@@ -171,7 +171,8 @@ skill), earshot's Gemini critique (uploads audio) and its forge search (needs li
 | `lessons.md` | Your own dated lessons (newest first). Read at start, append after every video |
 
 Scripts (run Python helpers with `python -I`):
-- `scripts/qc_reel.py` (measured QC + safe-zone contact sheet), `scripts/pace_check.py` (still stretches)
+- `scripts/qc_reel.py` (measured QC + safe-zone contact sheet), `scripts/pace_check.py` (still stretches), `scripts/fill_check.py`
+  (how much of the frame the illustrations fill)
 - `scripts/avatar_track.py` (placed corner avatar, one transparent track), `scripts/face_rig.py` +
   `face_paint.py` + `face_patch.py` (face rig, lip seal, long-hair patch), `scripts/pose_consistency.py`
   (pose library gate)

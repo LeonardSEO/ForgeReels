@@ -26,6 +26,12 @@ Pace (added 2026-10-29):
 - Example from a real 80 s reel: 17 stretches over 1 s, including the hook's first ~1.2 s and two
   2.4-2.9 s holds. Each next video should beat its predecessor's number.
 
+Frame fill (added 2026-11-16): `python -I scripts/fill_check.py out.mp4` exits 0: the median share of the picture
+band (between the headline captions and the bottom UI) that differs from the background is at least 0.30, and at
+most a third of the sampled frames are under it. Measured: our first touchscreen reel 0.14, the macro remake 0.48,
+the KeyFrames touchscreen reel 0.56. Frames it lists mid camera move are fine; a listed held shot gets a zoom or a
+close-up component.
+
 Beat sync (added 2026-11-01): `python -I scripts/cuecheck.py --timeline timeline.json --cues cues.json` exits 0:
 every `beat` and `anchor` event within 1 frame of a beat (test reel: 13 events, mean 4 ms, max 30 ms).
 Print its table into the review notes; a reel with music and no timeline.json is not done.

@@ -82,7 +82,7 @@ test("every component draws exactly the parts core.js says it has", () => {
     nodes: { nodes: [{ id: "a", label: "A", x: 0, y: 0 }, { id: "b", label: "B", x: 300, y: 0 }], links: [["a", "b"]] },
     chart: { bars: [{ value: 1 }, { value: 3 }] }, document: { lines: ["one", "two"] }, chip: { traces: 6 },
     stack: { layers: [{ label: "Glass" }, { label: "Grid" }] }, text: { text: "Hi" }, counter: { value: 9 },
-    callout: { text: "Here" }, image: { src: "x.png" }, steps: { steps: ["Build", "Ship"] }, frames: { src: "s/%04d.jpg", count: 3 }, lens: {}, agent: { steps: ["a", "b"] },
+    callout: { text: "Here" }, image: { src: "x.png" }, steps: { steps: ["Build", "Ship"] }, frames: { src: "s/%04d.jpg", count: 3 }, lens: {}, agent: { steps: ["a", "b"] }, finger: {}, section: {}, mesh: {},
   };
   assert.deepEqual(Object.keys(samples).sort(), Object.keys(FR.COMPONENTS).sort());
   for (const [type, spec] of Object.entries(samples)) {
@@ -236,4 +236,14 @@ test("theme flips the whole stage on its word (dark <-> light marks a turn in th
   assert.ok(mid.from === "dark" && mid.to === "light" && mid.p > 0.2 && mid.p < 0.8);
   assert.deepEqual(FR.stateAt(4, s, evs, boxes).theme, { from: "dark", to: "light", p: 1 });
   assert.deepEqual(FR.stateAt(9, s, evs, boxes).theme, { from: "light", to: "dark", p: 1 });
+});
+
+test("macro kit: finger, section and mesh expose their parts; the ones that arrive on a word start hidden", () => {
+  const s = { components: [{ type: "finger", id: "f" }, { type: "section", id: "x" }, { type: "mesh", id: "m" }] };
+  const p = FR.parts(s);
+  for (const id of ["f.tip", "f.ions", "f.glow", "x.glass", "x.field", "x.pull", "x.charge", "x.loss", "m.rows", "m.sweep", "m.hot"])
+    assert.ok(p.includes(id), id);
+  const h = FR.hiddenAtStart(s);
+  for (const id of ["f.ions", "f.glow", "x.pull", "x.loss", "m.hot"]) assert.ok(h.has(id), id);
+  assert.ok(!h.has("x.charge") && !h.has("m.rows"));
 });

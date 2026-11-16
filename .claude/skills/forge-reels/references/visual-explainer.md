@@ -88,6 +88,20 @@ token in `colors` (bg, ink, card, accent, accent2, marker, cap-bg, ...).
 | `frames` | src ("seq/%04d.jpg"), count, fps, first (1), w, device ("phone") | (the id itself): a captured screen recording; `play` on its word (dur = count / fps) |
 | `lens` | w, h, label | glass, centre, rim, label: how a curved glass edge bends light (draw each) |
 | `agent` | w, folder, prompt, steps[], model | prompt (type), input, s1..N (start hidden; reveal one per word): a coding agent at work |
+| `finger` | w, angle | tip, print, ions (hidden; free + and - charges), glow (hidden; contact light): a lit fingertip, tip at 50 % / 96 % of its box; `move` dy taps it |
+| `section` | w, h, n (electrodes), touch (0-1), note | glass, field (draw), electrodes, pull (hidden; draw: field bends to the finger), pixels, charge, loss (hidden; meters drained near the touch), labels: a magnified cross-section of a touchscreen |
+| `mesh` | w, h, rows, cols, hot[row,col], tilt (deg), perspective | rows, cols (draw), nodes (a light per crossing), sweep (`flow`: a light walks the rows), hot (hidden; ring on one crossing): a sensor grid in perspective |
+
+**Macro kit (added 2026-11-16): fill the frame with a lit close-up.** A small flat diagram on an empty stage reads
+as "illustration", a close-up with light, glow and depth reads as "a real thing, magnified". Rules:
+- The subject itself is on screen (a finger, not a red circle) and fills the picture band: focus with `zoom`
+  1.3-1.8 and `pad: 0`, cropping the sides is fine. `scripts/fill_check.py out.mp4` measures it (below).
+- One picture per key word: a new part or a new close-up on its word, not a label on the same object.
+- Light from the top left, rim light, soft drop shadow; emissive parts (field, electrodes, pixels) glow on a dark
+  stage. Ambient particles slide by depth on camera moves (parallax), so every move reads as depth.
+- Order the world by the story's direction: "under the glass" sits right below the phone, so the move is short;
+  long camera trips show empty frames (the fill check lists them).
+- Honesty label in small mono ("not to scale") on magnified views.
 
 Add a component: a `parts`/`hidden` entry in `core.js` FR.COMPONENTS and a builder in `renderer.js` FR.BUILD that
 marks every part with `data-obj`; `tests/scene_core.test.js` checks the two agree.

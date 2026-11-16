@@ -211,3 +211,8 @@
 .fr-scanning::before { content: ""; position: absolute; top: -40px; bottom: -40px; width: 6px; z-index: 30;
   left: calc(var(--scan, 0) * 100% - 3px); background: #b9f3ff;
   box-shadow: 0 0 24px 8px rgba(80, 220, 255, .75), 0 0 90px 30px rgba(80, 200, 255, .35); }
+
+/* ---------- macro kit: finger, section, mesh (lit SVG; the shadow gives them weight on the stage) */
+.fr-finger svg { position: absolute; inset: 0; filter: drop-shadow(-18px 40px 40px rgba(0,0,0,.45)); }
+.fr-section svg, .fr-mesh svg { position: absolute; inset: 0; }
+.fr-mesh .tilt { position: absolute; inset: 0; transform-origin: 50% 50%; }

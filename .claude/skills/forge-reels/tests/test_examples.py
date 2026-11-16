@@ -15,8 +15,8 @@ EXAMPLES = sorted(p for p in (ROOT.parents[2] / "references" / "examples").iterd
 
 @unittest.skipUnless(shutil.which("node"), "needs node")
 class ExamplesTest(unittest.TestCase):
-    def test_there_are_three_reference_projects(self):
-        self.assertEqual([p.name for p in EXAMPLES], ["ai-tokens", "touchscreen", "web-cookies"])
+    def test_the_reference_projects(self):
+        self.assertEqual([p.name for p in EXAMPLES], ["ai-tokens", "git-at-ai-scale", "touchscreen", "web-cookies"])
 
     def test_every_event_targets_a_real_part_with_a_real_action(self):
         for ex in EXAMPLES:

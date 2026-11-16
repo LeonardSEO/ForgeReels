@@ -16,6 +16,22 @@ Format for each entry:
 
 When a lesson appears twice, promote it into the right reference file (or a script) and say so here ("promoted").
 
+## 2026-11-16 · Touchscreen macro remake (test of the macro illustration kit), 24 s
+- The user: "compared with the KeyFrames touchscreen video ours is really mediocre in illustrations". Side by side,
+  the gap was scale, light and depth: our phone diagram filled ~15 % of the frame, flat lines, no finger; theirs
+  is a lit close-up per key word. Measured with the new `fill_check.py`: ours 0.14, theirs 0.56.
+- Built the macro kit: `finger` (skin as a lit cylinder, nail gloss, creases, rim light, free charges, contact
+  glow), `section` (magnified cross-section: cover glass, glowing electrodes and fringe field, RGB pixel row, charge
+  meters that drain near the touch, "not to scale"), `mesh` (sensor grid in perspective with a light per crossing,
+  a scan light that walks the rows, a ring on the touched crossing), plus particle parallax by depth.
+- First pass still scored 0.16: dark surfaces on a dark stage count (and read) as empty, and the camera framed
+  each component whole. Fixes: lighter panels and a soft light pool behind the cross-section, `zoom` 1.35-1.7 with
+  `pad: 0` per focus, and the cross-section placed right under the phone ("Under the glass" = a short move). Result
+  0.48 median, pace 0 still frames in the first 2 s (a push-in from frame 0, offset -0.17 on the first word),
+  semantic sync pass, master -14.1 LUFS. Draft only (VO, no score): a visual test.
+- New baseline for illustrated explainers: the subject itself on screen, lit, filling the frame; fill >= 0.30.
+  Next: a hand holding the phone, blur dissolves between close-ups, and the same kit for other hardware topics.
+
 ## 2026-11-16 · Git at AI scale (Anthropic Scion vs OpenAI Pando), 66 s explainer
 - Facts: the Anthropic page was read with web tools; OpenAI's page sits behind a Cloudflare bot check (403 for
   fetch, the browser pane stuck on "Just a moment..."). We do not pass bot checks: the user pasted the text. Two
