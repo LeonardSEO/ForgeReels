@@ -102,6 +102,7 @@ token in `colors` (bg, ink, card, accent, accent2, marker, cap-bg, ...).
 | `code` | w, file, lines[] ("+ " added, "- " removed), stamp | window, l1..N (highlight), stamp (hidden) |
 | `social` | w, name, handle, button, keyword | card, follow (`highlight` presses it), comment (`type` writes the keyword): our own CTA card, no platform branding |
 | `calendar` | w, title, days, start (0 = Monday), mark[] | page, mark (hidden; rings the days) |
+| `logo` | src ("art/logos/x.svg" from `scripts/logo.py`), w, label, tile (background) | tile, mark, label: a real brand logo on an app-icon tile |
 
 **Macro kit (added 2026-11-16): fill the frame with a lit close-up.** A small flat diagram on an empty stage reads
 as "illustration", a close-up with light, glow and depth reads as "a real thing, magnified". Rules:
@@ -113,6 +114,14 @@ as "illustration", a close-up with light, glow and depth reads as "a real thing,
 - Order the world by the story's direction: "under the glass" sits right below the phone, so the move is short;
   long camera trips show empty frames (the fill check lists them).
 - Honesty label in small mono ("not to scale") on magnified views.
+
+**Real brands get their real logo (added 2026-11-16).** When the script names companies or products ("Instagram vs
+Facebook"), run `python -I scripts/logo.py --project <video> Instagram Facebook` before writing scene.json: it saves
+each logo in `art/logos/` with a sidecar (source, licence, brand colour), logs it in `licences.md` and prints the
+`logo` component to paste. It tries Simple Icons first (CC0 files, one colour, the brand's own hex), then Wikimedia
+Commons (look at that file before using it). A brand neither has: search the web for the company's own press or
+brand page, save the file into `art/logos/` and write the sidecar by hand. Logos are trademarks: use them only to
+name the company the video talks about, never recoloured or redrawn, never as if the company made the video.
 
 Live components (`swarm`, `wave`, `space`, `map`) also have a `FR.LIVE[type](el, c, els)` in `renderer.js` that returns
 `draw(t, obj)`: it redraws from `t` and the object states on every frame (never from the previous frame).

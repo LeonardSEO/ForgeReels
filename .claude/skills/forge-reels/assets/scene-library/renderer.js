@@ -450,6 +450,14 @@
     return [w, 180 + rows * s, `<div data-obj="${id}.page" class="page fr-card"><div class="head">${esc(c.title || "")}</div><div class="wd">${["M", "T", "W", "T", "F", "S", "S"].map((d) => `<b style="width:${s}px">${d}</b>`).join("")}</div>${cells}</div><div data-obj="${id}.mark" class="mark">${rings}</div>`];
   };
 
+  // a real brand logo on an app-icon tile (file fetched by scripts/logo.py; visual_plan.py inlines it as c.data)
+  B.logo = (c) => {
+    const w = c.w || 300, id = c.id;
+    return [w, w + (c.label ? 70 : 0), `<div data-obj="${id}.tile" class="tile" style="height:${w}px;${c.tile ? `background:${c.tile}` : ""}"></div>
+      <img data-obj="${id}.mark" class="mark" style="height:${w}px" src="${esc(c.data || c.src || "")}" alt="">
+      <div data-obj="${id}.label" class="label">${esc(c.label || "")}</div>`];
+  };
+
   B.image = (c) => [c.w || 900, c.h || 600, `<img src="${esc(c.src)}" alt="">`, "fr-image" + (c.card === false ? "" : " fr-card")];
 
   // ---------- mount + render

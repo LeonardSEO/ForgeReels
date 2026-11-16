@@ -86,7 +86,7 @@ test("every component draws exactly the parts core.js says it has", () => {
     cutaway: { layers: [{ label: "Glass", kind: "glass" }, { label: "Pixels", kind: "pixels" }] }, hand: {}, svg: { parts: ["a"], svg: '<svg><g id="a"/></svg>' },
     swarm: {}, wave: { waves: [{}, {}] }, space: { clusters: [{ label: "A", at: [0, 0, 0] }, { label: "B", at: [1, 0, 0] }] },
     map: { points: [{ id: "a", lon: 0, lat: 0 }, { id: "b", lon: 90, lat: 30 }], routes: [["a", "b"]] }, hud: { steps: ["One", "Two"] },
-    gauge: { value: 5 }, waffle: { marked: 3 }, code: { lines: ["a", "+ b"] }, social: {}, calendar: { mark: [3] },
+    gauge: { value: 5 }, waffle: { marked: 3 }, code: { lines: ["a", "+ b"] }, social: {}, calendar: { mark: [3] }, logo: { src: "x.svg", label: "X" },
   };
   assert.deepEqual(Object.keys(samples).sort(), Object.keys(FR.COMPONENTS).sort());
   for (const [type, spec] of Object.entries(samples)) {

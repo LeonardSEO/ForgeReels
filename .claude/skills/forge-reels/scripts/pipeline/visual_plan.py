@@ -20,6 +20,7 @@ Writes <project>/assets/events.js (window.__FR = {scene, events, captions, durat
 Re-run it after every re-voice: the times follow the words. Exit 1 on any error.
 """
 import argparse
+import base64
 import difflib
 import json
 import pathlib
@@ -129,6 +130,10 @@ def main():
     for c in scene.get("components", []):           # drawn illustrations: inline the SVG file so its groups can animate
         if c.get("type") == "svg" and c.get("src") and "svg" not in c:
             c["svg"] = (pj / c["src"]).read_text(encoding="utf-8")
+        if c.get("type") == "logo" and c.get("src") and "data" not in c:    # as a data URI: no loading, no id clashes
+            f = pj / c["src"]
+            mime = "image/svg+xml" if f.suffix == ".svg" else "image/png"
+            c["data"] = f"data:{mime};base64," + base64.b64encode(f.read_bytes()).decode("ascii")
     plan = json.loads((pj / "visual_plan.json").read_text(encoding="utf-8"))
     words = json.loads((pj / "vo" / "words.json").read_text(encoding="utf-8"))
     parts, dur = runtime_info(pj / "scene.json")

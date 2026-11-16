@@ -72,6 +72,7 @@
     code:     { parts: (s) => ["window", ...n("l", (s.lines || []).length), "stamp"], hidden: () => ["stamp"] },
     social:   { parts: () => ["card", "follow", "comment"], hidden: () => [] },
     calendar: { parts: () => ["page", "mark"], hidden: () => ["mark"] },
+    logo:     { parts: () => ["tile", "mark", "label"], hidden: () => [] },   // a fetched brand logo (scripts/logo.py)
   };
 
   // frames component: which image of the sequence shows after `play` seconds of playback

@@ -258,3 +258,7 @@
 .fr-calendar .wd { position: absolute; left: 30px; top: 100px; display: flex; } .fr-calendar .wd b { text-align: center; font-size: 24px; color: var(--muted); }
 .fr-calendar .page span { position: absolute; text-align: center; font-size: 32px; font-weight: 650; }
 .fr-calendar .mark { position: absolute; inset: 0; } .fr-calendar .mark i { position: absolute; border-radius: 50%; border: 6px solid var(--accent); box-sizing: border-box; }
+.fr-logo .tile { position: absolute; left: 0; right: 0; top: 0; border-radius: 23%; background: #fff;
+  box-shadow: inset 0 2px 0 rgba(255,255,255,.6), 0 30px 60px -20px var(--shadow), 0 2px 0 var(--edge); }
+.fr-logo .mark { position: absolute; left: 0; top: 0; width: 100%; padding: 21%; box-sizing: border-box; object-fit: contain; }
+.fr-logo .label { position: absolute; left: -40px; right: -40px; bottom: 0; text-align: center; font-size: 36px; font-weight: 780; letter-spacing: -.02em; }

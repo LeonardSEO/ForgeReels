@@ -16,6 +16,17 @@ Format for each entry:
 
 When a lesson appears twice, promote it into the right reference file (or a script) and say so here ("promoted").
 
+## 2026-11-16 · Brand logos from the web (`logo.py` + `logo` component, no new video)
+- The user: when a video is about "Instagram vs Facebook" it must fetch the real logos and use them. Built
+  `scripts/logo.py` (Simple Icons -> Wikimedia Commons -> web search by hand) and the `logo` component (app-icon
+  tile, logo inlined as a data URI by visual_plan.py, so nothing loads at render time).
+- Tested: Instagram, Facebook, Hugging Face from Simple Icons; LinkedIn and Microsoft from Commons. The first
+  Commons rule took "Microsoft Office logos" for Microsoft: now the title closest to "<brand> logo" wins, and the
+  script says to look at a Commons file before using it.
+- Simple Icons files are one colour (Instagram is a flat pink mark, not the gradient). For the full-colour mark,
+  take the file from the brand's own press page.
+- Logos live in `art/logos/` of the video, never in the shared examples: they are other companies' trademarks.
+
 ## 2026-11-16 · Scene library rebuilt around drawn objects (17 reference reels studied, no new video)
 - Studied all 17 reference reels for WHAT they draw: every one draws its topic's own objects (an earbud cut open,
   lockers, a key ring, a wafer), uses dot crowds for anything there is a lot of (agents, requests, air), waves,

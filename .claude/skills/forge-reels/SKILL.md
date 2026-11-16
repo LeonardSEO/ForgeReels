@@ -76,6 +76,7 @@ down concrete upgrades per aspect. After delivery, record the new baseline in `l
 | A short hand-painted cartoon (acted story beat, opener, loop) | ClaudeAnimationBase engine with OUR characters (`references/painted-animation.md`, route B) | MIT. Storyboard with reads first; contact sheet / strip / crop review loop. Clawd is Anthropic's mascot: see the trademark note in the reference |
 | Editorial paper-collage b-roll that assembles from empty under one VO line | `references/collage-broll.md` | Three gates: metaphor, still (`scripts/gen_image.py`, Codex), motion (HyperFrames assembly by default; Gemini Omni web optional) |
 | AI-generated cinematic b-roll (optional garnish) | `references/ai-broll.md` + `references/browser-ai.md` | Gemini Omni via the Playwright MCP, the user presses Send, ~4 clips/day |
+| Logos of the companies or products a video names | `scripts/logo.py --project <video> <Brand> ...` + the `logo` component (`references/visual-explainer.md`) | Simple Icons, then Wikimedia Commons, then a web search for the brand's press page. Every file gets a licence line; logos only name the company, never recoloured |
 | Still images: AI plates, backdrops, textures, collage stills | `scripts/gen_image.py` (Codex CLI image generation) | DEFAULT. One image per call (~1 min), `--ref` for brand/style frames, `--aspect 9:16`. Needs `codex` installed and logged in |
 | Character sheets and pose libraries (one character across many images) | ChatGPT image gen via the Playwright MCP (`references/browser-ai.md`) | Keeps one chat's character memory. One tab, new chat per prompt, sends >= 60 s apart |
 | Copy an audience will read (script, caption, hook text) | a de-AI writing skill (e.g. `/humanize`), one light pass for short text | |
@@ -180,7 +181,7 @@ Scripts (run Python helpers with `python -I`):
   `scripts/mouth_from_audio.py` (no-script fallback)
 - `scripts/motion_score.py` + `study_motion.py` (how a reel moves vs 71 measured reference reels),
   `scripts/number_check.py` (every spoken / on-screen number must be in sources.md)
-- `scripts/archive.py` (CC0 / public-domain images with licence sidecars), `scripts/photo_treat.py` (filmed-photo
+- `scripts/logo.py` (brand logos with licence sidecars), `scripts/archive.py` (CC0 / public-domain images with licence sidecars), `scripts/photo_treat.py` (filmed-photo
   look), `scripts/tighten_vo.py` (shorten long VO pauses), `scripts/hf_get.py` (SHA-256-verified model downloads)
 - `scripts/pipeline/`: `build_vo.py`, `words.py`, `build_timing.py`, `mix.py`, `sheets.py`, `render_chunks.py`,
   `scan_avatar.py`
