@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+<defs>
+<linearGradient id="bt-case" x1="0" x2="1"><stop offset="0" stop-color="#3a4254"/><stop offset=".3" stop-color="#8a95ab"/><stop offset=".55" stop-color="#565f73"/><stop offset="1" stop-color="#232936"/></linearGradient>
+<linearGradient id="bt-fill" x1="0" x2="1"><stop offset="0" stop-color="#1f9d57"/><stop offset=".35" stop-color="#7dffb4"/><stop offset="1" stop-color="#17804a"/></linearGradient>
+<filter id="bt-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<g id="body"><rect x="160" y="22" width="80" height="34" rx="10" fill="url(#bt-case)"/><rect x="110" y="48" width="180" height="330" rx="34" fill="url(#bt-case)"/>
+<rect x="128" y="68" width="144" height="292" rx="22" fill="#0c1018"/><path d="M124 80 V340" stroke="#fff" stroke-opacity=".45" stroke-width="4" stroke-linecap="round"/></g>
+<g id="level" filter="url(#bt-glow)"><rect x="138" y="182" width="124" height="168" rx="14" fill="url(#bt-fill)"/><rect x="138" y="182" width="124" height="14" rx="7" fill="#d6ffe6" fill-opacity=".8"/></g>
+<g id="bolt" filter="url(#bt-glow)"><path d="M212 96 L170 196 H198 L186 268 L236 160 H206 Z" fill="#ffd84d"/></g>
+</svg>

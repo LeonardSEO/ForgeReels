@@ -192,7 +192,7 @@ setup/                    setup-mac.sh, setup-voxcpm.sh, setup-audio.sh, pinned 
   assets/                 scene library (offline explainer runtime + components), fonts
   templates/              reel project, visual explainer, screen walkthrough, brand pack, cartoon avatar
   tests/                  python -I -m unittest discover -s .claude/skills/forge-reels/tests
-references/examples/      reference explainers (hardware, software UI, AI, an A/B argument), also regression tests
+references/examples/      reference explainers (hardware, software UI, AI, an A/B argument, the component gallery), also regression tests
 ```
 
 ## Principles

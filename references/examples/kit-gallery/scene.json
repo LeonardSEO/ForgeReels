@@ -1,0 +1,279 @@
+{
+ "theme": "dark",
+ "world": {
+  "w": 1080,
+  "h": 17500
+ },
+ "camera": {
+  "start": [
+   "title"
+  ],
+  "args": {
+   "zoom": 0.9
+  }
+ },
+ "components": [
+  {
+   "type": "hud",
+   "id": "hud",
+   "steps": [
+    "Motion",
+    "Data",
+    "Things"
+   ]
+  },
+  {
+   "type": "text",
+   "id": "title",
+   "x": 90,
+   "y": 550,
+   "w": 900,
+   "size": 150,
+   "align": "center",
+   "text": "The kit",
+   "serif": true
+  },
+  {
+   "type": "swarm",
+   "id": "swarm",
+   "x": 90,
+   "y": 1700,
+   "w": 900,
+   "h": 900,
+   "count": 360,
+   "from": "cloud",
+   "to": "grid",
+   "colors": [
+    "#5fd4ff",
+    "#4d8bff",
+    "#e9f8ff"
+   ]
+  },
+  {
+   "type": "wave",
+   "id": "wave",
+   "x": 90,
+   "y": 3300,
+   "w": 900,
+   "h": 460,
+   "waves": [
+    {
+     "amp": 0.3,
+     "freq": 2
+    },
+    {
+     "amp": 0.3,
+     "freq": 2
+    }
+   ]
+  },
+  {
+   "type": "space",
+   "id": "space",
+   "x": 90,
+   "y": 4500,
+   "w": 900,
+   "h": 900,
+   "arrow": [
+    1,
+    2
+   ],
+   "clusters": [
+    {
+     "label": "A",
+     "at": [
+      -0.55,
+      0.45,
+      0.2
+     ],
+     "n": 28
+    },
+    {
+     "label": "B",
+     "at": [
+      0.55,
+      -0.3,
+      -0.3
+     ],
+     "n": 28
+    },
+    {
+     "label": "C",
+     "at": [
+      0.1,
+      0.1,
+      0.65
+     ],
+     "n": 22
+    }
+   ]
+  },
+  {
+   "type": "map",
+   "id": "map",
+   "x": 40,
+   "y": 6100,
+   "w": 1000,
+   "points": [
+    {
+     "id": "a",
+     "lon": 4.9,
+     "lat": 52.4,
+     "label": "here"
+    },
+    {
+     "id": "b",
+     "lon": 139.7,
+     "lat": 35.7,
+     "label": "there"
+    },
+    {
+     "id": "c",
+     "lon": -74,
+     "lat": 40.7,
+     "label": ""
+    }
+   ],
+   "routes": [
+    [
+     "a",
+     "b"
+    ],
+    [
+     "c",
+     "a"
+    ]
+   ]
+  },
+  {
+   "type": "gauge",
+   "id": "gauge",
+   "x": 190,
+   "y": 7400,
+   "w": 700,
+   "value": 87,
+   "suffix": "%",
+   "fill": 0.87,
+   "label": "illustrative"
+  },
+  {
+   "type": "waffle",
+   "id": "waffle",
+   "x": 140,
+   "y": 8750,
+   "w": 800,
+   "rows": 8,
+   "cols": 10,
+   "marked": 14,
+   "label": "illustrative"
+  },
+  {
+   "type": "code",
+   "id": "code",
+   "x": 90,
+   "y": 10250,
+   "w": 900,
+   "file": "example.js",
+   "stamp": "SHIPPED",
+   "lines": [
+    "function greet(name) {",
+    "- return 'Hi ' + name",
+    "+ return `Hi ${name}`",
+    "}"
+   ]
+  },
+  {
+   "type": "calendar",
+   "id": "cal",
+   "x": 190,
+   "y": 11550,
+   "w": 700,
+   "title": "ANY MONTH",
+   "start": 2,
+   "days": 30,
+   "mark": [
+    17
+   ]
+  },
+  {
+   "type": "cutaway",
+   "id": "cut",
+   "x": 90,
+   "y": 13150,
+   "w": 620,
+   "spread": 90,
+   "layers": [
+    {
+     "label": "glass",
+     "kind": "glass",
+     "color": "#cfe6ff",
+     "h": 70
+    },
+    {
+     "label": "sensor",
+     "kind": "pads",
+     "h": 60
+    },
+    {
+     "label": "pixels",
+     "kind": "pixels",
+     "h": 60
+    },
+    {
+     "label": "battery",
+     "kind": "cells",
+     "color": "#3ddc84",
+     "h": 110
+    }
+   ]
+  },
+  {
+   "type": "svg",
+   "id": "draw",
+   "x": 190,
+   "y": 14350,
+   "w": 700,
+   "h": 700,
+   "src": "art/battery.svg",
+   "parts": [
+    "body",
+    "level",
+    "bolt"
+   ],
+   "hidden": [
+    "bolt"
+   ]
+  },
+  {
+   "type": "phone",
+   "id": "phone",
+   "x": 320,
+   "y": 15600,
+   "w": 440,
+   "title": "Reels",
+   "items": [
+    "One",
+    "Two",
+    "Three",
+    "Four"
+   ]
+  },
+  {
+   "type": "hand",
+   "id": "hand",
+   "x": 320,
+   "y": 15600,
+   "w": 440
+  },
+  {
+   "type": "social",
+   "id": "cta",
+   "x": 130,
+   "y": 16660,
+   "w": 820,
+   "name": "Your account",
+   "handle": "@yourhandle",
+   "keyword": "KIT"
+  }
+ ]
+}

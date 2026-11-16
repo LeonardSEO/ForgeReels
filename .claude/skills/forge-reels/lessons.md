@@ -16,6 +16,26 @@ Format for each entry:
 
 When a lesson appears twice, promote it into the right reference file (or a script) and say so here ("promoted").
 
+## 2026-11-16 · Scene library rebuilt around drawn objects (17 reference reels studied, no new video)
+- Studied all 17 reference reels for WHAT they draw: every one draws its topic's own objects (an earbud cut open,
+  lockers, a key ring, a wafer), uses dot crowds for anything there is a lot of (agents, requests, air), waves,
+  maps, gauges, calendars and real UI cards. Our use count told the same story from the other side: `text` 32x,
+  `nodes` 10x, `stack` and `image` 0x. We made diagrams with text; they draw things.
+- Added: `svg` (a drawn SVG file per topic, its `<g id>` groups animate: the main way to draw a topic's objects),
+  `swarm`, `wave`, `space`, `map` (live: redrawn every frame from t), `hud` (pinned to the screen; `pinned: true`
+  works on any component), `gauge`, `waffle`, `code`, `social`, `hand`, `calendar`, `cutaway`.
+- Changed: `phone` lost its old red-circle `finger`/`field` parts (use the `finger` component), got side buttons;
+  `chip` glows; `text` takes `serif: true`. Removed: `stack` (never used; `cutaway` replaces it) and `lens` (the
+  Liquid Glass reel now loads the same drawing as `assets/lens.svg`).
+- Examples: `touchscreen` is now the macro version; new `kit-gallery` shows every new component on its word and is
+  the regression test for them.
+- HyperFrames rejects `querySelector` with a template literal (its bundler's CSS parser crashes) and any font
+  family without a @font-face it can resolve ("Iowan Old Style"): look parts up in `els[...]`, and use a Google
+  font it fetches itself (EB Garamond for the serif).
+- Honest limits: `hand` is simple (four fingers as capsules), `map` is a coarse hand-made land mask (fine as a dot
+  grid, not for borders), the migrated lens was checked by plan + semantic sync, not by a new render.
+- Topic list for the next videos (20, ranked) is in `docs/topics-2026-11.md`.
+
 ## 2026-11-16 · Touchscreen macro remake (test of the macro illustration kit), 24 s
 - The user: "compared with the KeyFrames touchscreen video ours is really mediocre in illustrations". Side by side,
   the gap was scale, light and depth: our phone diagram filled ~15 % of the frame, flat lines, no finger; theirs

@@ -29,23 +29,21 @@
   const B = (FR.BUILD = {});
 
   B.phone = (c) => {
-    const w = c.w || 440, h = Math.round(w * 2.05), id = c.id, touch = c.touch || { x: 0.5, y: 0.56 };
+    const w = c.w || 440, h = Math.round(w * 2.05), id = c.id;
     const items = c.items || ["Messages", "Photos", "Maps", "Music"];
     const rows = items.map((t, i) => `<div class="row"><i style="background:${COLORS[i % COLORS.length]}"></i><div style="flex:1"><b>${esc(t)}</b><s></s></div></div>`).join("");
     const nr = c.rows || 9, nc = c.cols || 5;
     // viewBox follows the screen's own aspect (~100 x 213) so a stroke is equally thick across and down
     const rowsP = Array.from({ length: nr }, (_, i) => `<path pathLength="1" d="M4 ${((i + 1) * 213) / (nr + 1)} H96"/>`).join("");
     const colsP = Array.from({ length: nc }, (_, i) => `<path pathLength="1" d="M${((i + 1) * 100) / (nc + 1)} 4 V209"/>`).join("");
-    const at = `left:${touch.x * 100}%;top:${touch.y * 100}%`;
     return [w, h, `
+      <i class="btn" style="top:21%"></i><i class="btn" style="top:31%;height:9%"></i>
       <div data-obj="${id}.body" class="body"></div>
       <div data-obj="${id}.screen" class="screen">
         <div class="island"></div>
         <div data-obj="${id}.ui" class="ui"><div class="status"><span>9:41</span><span>● ● ▮</span></div><h4>${esc(c.title || "Home")}</h4>${rows}</div>
         <svg data-obj="${id}.grid" class="grid" viewBox="0 0 100 213" preserveAspectRatio="none">
           <g data-obj="${id}.rows" class="rows">${rowsP}</g><g data-obj="${id}.cols" class="cols">${colsP}</g></svg>
-        <div data-obj="${id}.field" class="field" style="${at}"></div>
-        <div data-obj="${id}.finger" class="finger" style="${at}"></div>
         <div data-obj="${id}.glass" class="glass"></div>
         <div data-obj="${id}.notification" class="notification">${esc(c.notification || "New message")}</div>
       </div>`];
@@ -123,19 +121,8 @@
     return [w, h, `<svg width="${w}" height="${h}">${traces}</svg><div data-obj="${id}.pins" class="pins">${pins}</div><div data-obj="${id}.chip" class="chip" style="left:${x0}px;top:${y0}px;width:${cs}px;height:${cs}px"><span data-obj="${id}.label" class="label">${esc(c.label || "CPU")}</span></div>`];
   };
 
-  B.stack = (c) => {
-    const w = c.w || 520, layers = c.layers || [], id = c.id, lh = c.lh || Math.round(w * 0.62), gap = c.gap || 150, step = c.step || 30;
-    const h = lh + (layers.length - 1) * step + 200;
-    const ls = layers.map((l, i) => {
-      const off = (layers.length - 1 - i) * step - (layers.length - 1) * step / 2, eg = (i - (layers.length - 1) / 2) * gap;
-      return `<div data-obj="${id}.L${i + 1}" class="layer" style="--off:${off + 100}px;--gap:${eg}px;background:${l.color || COLORS[i % COLORS.length]}"></div>` +
-        `<div class="tag" style="--off:${off + 100 + lh * 0.3}px;--gap:${eg}px">${esc(l.label || "")}</div>`;
-    }).join("");
-    return [w, h, `<div style="--lh:${lh}px;position:absolute;inset:0">${ls}</div>`];
-  };
-
   B.text = (c) => [c.w || 900, c.h || Math.round((c.size || 96) * 1.15 * (c.linesHint || 1)),
-    `<div style="font-size:${c.size || 96}px;font-weight:${c.weight || 830};color:${c.color || "var(--ink)"};text-align:${c.align || "left"}"><span data-text="${esc(c.text)}">${esc(c.text)}</span></div>`, "fr-text"];
+    `<div${c.serif ? ' class="serif"' : ""} style="font-size:${c.size || 96}px;font-weight:${c.weight || (c.serif ? 500 : 830)};color:${c.color || "var(--ink)"};text-align:${c.align || "left"}"><span data-text="${esc(c.text)}">${esc(c.text)}</span></div>`, "fr-text"];
 
   B.counter = (c) => {
     const w = c.w || 700, final = (c.prefix || "") + Number(c.value).toLocaleString("en-US", { minimumFractionDigits: c.decimals || 0,
@@ -163,19 +150,6 @@
     return [w, h, c.device === "phone"
       ? `<div class="bezel"><img data-frames src="${esc(first)}" alt=""></div>`
       : `<img data-frames src="${esc(first)}" alt="">`, c.device === "phone" ? "phone-frame" : "fr-card"];
-  };
-
-  // cross-section of a glass edge: rays pass straight through the flat centre and bend at the curved rim
-  B.lens = (c) => {
-    const w = c.w || 900, h = c.h || 620, id = c.id, top = h * 0.62, rim = w * 0.2;
-    const prof = `M0 ${h} L0 ${top + 40} C0 ${top - 40} ${rim * 0.35} ${top - 70} ${rim} ${top - 72} L${w - rim} ${top - 72} C${w - rim * 0.35} ${top - 70} ${w} ${top - 40} ${w} ${top + 40} L${w} ${h} Z`;
-    const ray = (x, bend) => `M${x} 0 L${x} ${top - 72 + (Math.abs(bend) > 0 ? 40 : 0)} L${x + bend} ${h}`;
-    const centre = [0.38, 0.5, 0.62].map((f) => `<path pathLength="1" d="${ray(w * f, 0)}"/>`).join("");
-    const rims = [[0.06, 70], [0.12, 46], [0.88, -46], [0.94, -70]].map(([f, b]) => `<path pathLength="1" d="${ray(w * f, b)}"/>`).join("");
-    return [w, h, `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
-      <path data-obj="${id}.glass" class="glass" pathLength="1" d="${prof}"/>
-      <g data-obj="${id}.centre" class="centre">${centre}</g><g data-obj="${id}.rim" class="rim">${rims}</g></svg>
-      <div data-obj="${id}.label" class="label">${esc(c.label || "flat centre: straight through · curved rim: bent")}</div>`];
   };
 
   // a coding-agent panel: the folder, a prompt typed into the input, then the steps it took, one per line
@@ -280,6 +254,202 @@
       </svg></div>`];
   };
 
+  // a stack of lit layers seen from the side (a battery, a display, a chip package): explode on the id spreads them
+  B.cutaway = (c) => {
+    const w = c.w || 900, id = c.id, g = id + "-c", layers = c.layers || [], gap = c.gap == null ? 10 : c.gap, spread = c.spread || 70;
+    let y = 0, defs = glowDef(g, 5), out = "";
+    layers.forEach((l, i) => {
+      const h = l.h || 90, col = l.color || COLORS[i % COLORS.length], kind = l.kind || "solid";
+      defs += `<linearGradient id="${g}-${i}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity="${kind === "glass" ? 0.42 : 1}"/><stop offset=".12" stop-color="${col}" stop-opacity="${kind === "glass" ? 0.14 : 0.82}"/><stop offset="1" stop-color="${col}" stop-opacity="${kind === "glass" ? 0.26 : 0.55}"/></linearGradient>`;
+      const cells = kind === "pixels" ? Array.from({ length: Math.ceil(w / 16) }, (_, k) => `<rect x="${k * 16 + 2}" y="${y + h * 0.25}" width="11" height="${h * 0.5}" rx="3" fill="${["#ff4d5e", "#3ddc84", "#4d8bff"][k % 3]}"/>`).join("")
+        : kind === "pads" ? Array.from({ length: l.n || 7 }, (_, k) => `<rect x="${(w / (l.n || 7)) * (k + 0.18)}" y="${y + h * 0.3}" width="${(w / (l.n || 7)) * 0.64}" height="${h * 0.4}" rx="6" fill="#d9f3ff"/>`).join("")
+        : kind === "cells" ? Array.from({ length: l.n || 5 }, (_, k) => `<rect x="${(w / (l.n || 5)) * k + 8}" y="${y + 8}" width="${w / (l.n || 5) - 16}" height="${h - 16}" rx="10" fill="#fff" fill-opacity=".16"/>`).join("") : "";
+      out += `<g data-obj="${id}.L${i + 1}" style="translate:0 calc(var(--explode, 0) * ${(i - (layers.length - 1) / 2) * spread}px)">
+        <rect x="0" y="${y}" width="${w}" height="${h}" rx="${kind === "glass" ? 4 : 10}" fill="${kind === "pixels" || kind === "pads" ? "#111827" : `url(#${g}-${i})`}"/>
+        <path d="M6 ${y + 2} H${w - 6}" stroke="#fff" stroke-opacity="${kind === "glass" ? 0.85 : 0.35}" stroke-width="3" stroke-linecap="round"/>
+        ${cells ? `<g filter="url(#${g}-glow)">${cells}</g>` : ""}
+        <text x="${w + 26}" y="${y + h / 2 + 9}" fill="var(--ink-soft)" font-family="IBM Plex Mono, Menlo, monospace" font-size="${c.labelSize || 28}" font-weight="600">${esc(l.label || "")}</text></g>`;
+      y += h + gap;
+    });
+    return [w, y - gap, `<svg width="${w}" height="${y - gap}" viewBox="0 0 ${w} ${y - gap}" style="overflow:visible"><defs>${defs}</defs>${out}</svg>`];
+  };
+
+  // a hand around a phone: give it the phone's x, y and w and list it AFTER the phone (fingers and thumb lie over its edges)
+  B.hand = (c) => {
+    const w = c.w || 440, h = Math.round(w * 2.05), id = c.id, g = id + "-h";
+    const finger = (y, len) => `<g transform="translate(0 ${y})"><rect x="${88 - len}" y="0" width="${60 + len}" height="19" rx="9.5" fill="url(#${g}-v)"/><path d="M${92 - len} 4 Q${98 - len} 2 ${104 - len} 4" stroke="#fff" stroke-opacity=".5" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M118 2 V17" stroke="#7a3f2c" stroke-opacity=".25" stroke-width="1.2"/></g>`;
+    return [w, h, `<svg viewBox="0 0 100 205" width="${w}" height="${h}" style="overflow:visible">
+      <defs><linearGradient id="${g}-v" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f3c7ab"/><stop offset=".55" stop-color="#dc9f81"/><stop offset="1" stop-color="#a8654b"/></linearGradient>
+        <linearGradient id="${g}-p" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e9b394"/><stop offset="1" stop-color="#9c5a42"/></linearGradient>
+        <clipPath id="${g}-out"><path clip-rule="evenodd" d="M-90 -30 H200 V330 H-90 Z M16 0 H84 A16 16 0 0 1 100 16 V189 A16 16 0 0 1 84 205 H16 A16 16 0 0 1 0 189 V16 A16 16 0 0 1 16 0 Z"/></clipPath></defs>
+      <g data-obj="${id}.palm" clip-path="url(#${g}-out)"><path d="M-12 112 C-30 150 -24 214 6 262 L112 262 C132 222 136 150 126 96 L104 92 L104 206 L-4 206 Z" fill="url(#${g}-p)"/></g>
+      <g data-obj="${id}.fingers">${finger(64, 5)}${finger(88, 8)}${finger(112, 7)}${finger(136, 3)}</g>
+      <g data-obj="${id}.thumb"><path d="M-22 168 C-26 142 -8 118 12 112 C20 110 24 120 18 128 C8 142 2 158 0 176 Z" fill="url(#${g}-v)"/><path d="M6 118 Q14 114 16 122" stroke="#fff" stroke-opacity=".55" stroke-width="1.6" fill="none" stroke-linecap="round"/></g></svg>`];
+  };
+
+  // an illustration drawn for this topic: the SVG file (scene: src, parts[]) is inlined by visual_plan.py as c.svg
+  B.svg = (c) => {
+    let svg = String(c.svg || "<svg></svg>").replace(/<\?xml[^>]*\?>|<!DOCTYPE[^>]*>/g, "");
+    for (const part of c.parts || []) svg = svg.replace(new RegExp(`\\bid="${part}"`), `data-obj="${c.id}.${part}"`);
+    return [c.w || 900, c.h || 900, svg];
+  };
+
+  // ---------- live components: FR.LIVE[type](el, c, els) returns draw(t, obj), called on every frame after the states
+  const L = (FR.LIVE = {});
+
+  // hundreds of dots that hold one shape and move to another (explode on the id): agents, requests, air, charge
+  B.swarm = (c) => [c.w || 900, c.h || 900, `<canvas width="${c.w || 900}" height="${c.h || 900}"></canvas><div data-obj="${c.id}.label" class="label">${esc(c.label || "")}</div>`];
+  L.swarm = (el, c) => {
+    const cv = el.querySelector("canvas"), g = cv.getContext("2d"), n = c.count || 300, from = c.from || "cloud", to = c.to || "grid";
+    const A = FR.swarmLayout(from, n, 11), Z = FR.swarmLayout(to, n, 23), cols = c.colors || ["#5fd4ff"], r = c.r || 7;
+    const wrap = (v) => ((v % 1) + 1) % 1;
+    return (t, obj) => {
+      const k = obj[c.id].explode;
+      g.clearRect(0, 0, cv.width, cv.height);
+      for (let i = 0; i < n; i++) {
+        const q = FR.ease.inOut(Math.max(0, Math.min(1, k * 1.5 - 0.5 * i / n)));
+        const ax = from === "stream" ? wrap(A[i][0] + t * 0.09) : A[i][0], zx = to === "stream" ? wrap(Z[i][0] + t * 0.09) : Z[i][0];
+        const x = ax + (zx - ax) * q + 0.006 * Math.sin(t * 1.3 + i * 1.7), y = A[i][1] + (Z[i][1] - A[i][1]) * q + 0.006 * Math.cos(t * 1.1 + i * 2.3);
+        g.globalAlpha = 0.5 + 0.5 * ((i * 37) % 10) / 10; g.fillStyle = cols[i % cols.length];
+        g.beginPath(); g.arc(x * cv.width, y * cv.height, r * (0.7 + 0.6 * ((i * 13) % 7) / 7), 0, 6.2832); g.fill();
+      }
+      g.globalAlpha = 1;
+    };
+  };
+
+  // travelling waves: grow sets a wave's height, explode flips it upside down, "sum" shows what they add up to
+  B.wave = (c) => {
+    const w = c.w || 900, h = c.h || 420, ws = c.waves || [{}];
+    const one = (key, cls, col) => `<svg data-obj="${c.id}.${key}" class="${cls}" viewBox="0 0 ${w} ${h}" style="--c:${col}"><path d=""/></svg>`;
+    return [w, h, '<div class="mid"></div>' + ws.map((x, i) => one("w" + (i + 1), "w", x.color || ["#ffb020", "#5fd4ff", "#ff5a7a"][i % 3])).join("") + one("sum", "w sum", c.sumColor || "#ffffff")];
+  };
+  L.wave = (el, c, els) => {
+    const w = c.w || 900, h = c.h || 420, ws = c.waves || [{}], N = 96, sp = c.speed == null ? 2.4 : c.speed;
+    const paths = ws.map((_, i) => els[c.id + ".w" + (i + 1)].querySelector("path")), sum = els[c.id + ".sum"].querySelector("path");
+    return (t, obj) => {
+      const amp = ws.map((x, i) => { const s = obj[c.id + ".w" + (i + 1)]; return (x.amp == null ? 0.3 : x.amp) * h * s.grow * (1 - 2 * s.explode); });
+      const y = (i, u) => amp[i] * Math.sin(6.2832 * ((ws[i].freq || 2) * u + (ws[i].phase || 0)) - t * sp);
+      const d = (f) => { let o = ""; for (let k = 0; k <= N; k++) o += (k ? "L" : "M") + ((k / N) * w).toFixed(1) + " " + (h / 2 - f(k / N)).toFixed(1); return o; };
+      paths.forEach((pth, i) => pth.setAttribute("d", d((u) => y(i, u))));
+      sum.setAttribute("d", d((u) => ws.reduce((a, _, i) => a + y(i, u), 0)));
+    };
+  };
+
+  // a slowly turning 3D map of points in clusters (embeddings, measurements); explode on the id presses it flat
+  B.space = (c) => {
+    const w = c.w || 900, h = c.h || 900, id = c.id, cl = c.clusters || [];
+    const gs = cl.map((k, i) => `<g data-obj="${id}.c${i + 1}" fill="${k.color || COLORS[i % COLORS.length]}">${"<circle/>".repeat(k.n || 24)}<text>${esc(k.label || "")}</text></g>`).join("");
+    return [w, h, `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" style="overflow:visible"><defs>${glowDef(id + "-sp", 5)}</defs>
+      <g data-obj="${id}.axes" class="axes"><path pathLength="1" d=""/><path pathLength="1" d=""/><path pathLength="1" d=""/></g>
+      <g filter="url(#${id}-sp-glow)">${gs}</g>
+      <g data-obj="${id}.arrow" class="arrow" filter="url(#${id}-sp-glow)"><path pathLength="1" d=""/><circle r="13"/></g></svg>`];
+  };
+  L.space = (el, c, els) => {
+    const w = c.w || 900, h = c.h || 900, cl = c.clusters || [], R = Math.min(w, h) * 0.4, rnd = FR.rng(c.seed || 5);
+    const gauss = () => Math.sqrt(-2 * Math.log(1 - rnd() * 0.999)) * Math.cos(6.2832 * rnd());
+    const pts = cl.map((k) => Array.from({ length: k.n || 24 }, () => (k.at || [0, 0, 0]).map((v) => v + (k.spread || 0.16) * gauss())));
+    const groups = cl.map((_, i) => els[c.id + ".c" + (i + 1)]), ax = el.querySelectorAll(".axes path");
+    const ar = el.querySelector(".arrow path"), tip = el.querySelector(".arrow circle"), pair = c.arrow || [1, 2];
+    return (t, obj) => {
+      const yaw = (c.yaw == null ? 0.6 : c.yaw) + t * (c.spin == null ? 0.14 : c.spin), flat = 1 - obj[c.id].explode;
+      const at = (q) => { const o = FR.project([q[0], q[1] * flat, q[2]], yaw, c.pitch == null ? 0.38 : c.pitch); return [w / 2 + o.x * R, h / 2 + o.y * R, o.z]; };
+      groups.forEach((gEl, i) => {
+        const cs = gEl.querySelectorAll("circle");
+        pts[i].forEach((q, k) => { const o = at(q); cs[k].setAttribute("cx", o[0].toFixed(1)); cs[k].setAttribute("cy", o[1].toFixed(1)); cs[k].setAttribute("r", (9 - 3.5 * o[2]).toFixed(1)); });
+        const o = at(cl[i].at || [0, 0, 0]), tx = gEl.querySelector("text");
+        tx.setAttribute("x", o[0].toFixed(1)); tx.setAttribute("y", (o[1] - R * 0.2).toFixed(1));
+      });
+      [[1, 0, 0], [0, 1, 0], [0, 0, 1]].forEach((v, i) => { const a = at(v.map((x) => -x)), b = at(v); ax[i].setAttribute("d", `M${a[0].toFixed(1)} ${a[1].toFixed(1)} L${b[0].toFixed(1)} ${b[1].toFixed(1)}`); });
+      if (cl[pair[0] - 1] && cl[pair[1] - 1]) {
+        const a = at(cl[pair[0] - 1].at), b = at(cl[pair[1] - 1].at);
+        ar.setAttribute("d", `M${a[0].toFixed(1)} ${a[1].toFixed(1)} L${b[0].toFixed(1)} ${b[1].toFixed(1)}`); tip.setAttribute("cx", b[0].toFixed(1)); tip.setAttribute("cy", b[1].toFixed(1));
+      }
+    };
+  };
+
+  // the world as a dot grid (equirectangular): points by lon/lat with a label, routes as arcs a packet can fly along
+  const LAND = [[75, [[-120, -80], [-60, -20], [80, 110]]], [70, [[-165, -140], [-130, -80], [-55, -22], [20, 180]]],
+    [65, [[-168, -65], [-52, -38], [-24, -14], [12, 180]]], [60, [[-165, -140], [-135, -95], [-78, -64], [-48, -42], [5, 165]]],
+    [55, [[-130, -60], [-7, 0], [8, 140], [156, 162]]], [50, [[-126, -56], [-5, 2], [4, 140], [142, 143]]],
+    [45, [[-124, -62], [-1, 135], [141, 145]]], [40, [[-124, -74], [-9, 0], [9, 17], [20, 125], [126, 129], [139, 141]]],
+    [35, [[-120, -76], [-6, 10], [36, 120], [133, 140]]], [30, [[-115, -82], [-10, 33], [34, 121]]],
+    [25, [[-110, -98], [-82, -80], [-15, 35], [37, 90], [98, 120]]], [20, [[-105, -97], [-90, -87], [-80, -75], [-17, 37], [40, 55], [72, 87], [93, 108]]],
+    [15, [[-92, -84], [-17, 40], [43, 50], [74, 80], [98, 108], [120, 124]]], [10, [[-85, -83], [-72, -62], [-14, 50], [76, 79], [99, 106], [123, 126]]],
+    [5, [[-77, -52], [-10, 47], [97, 103], [110, 118]]], [0, [[-80, -50], [9, 43], [99, 104], [109, 117], [120, 123]]],
+    [-5, [[-80, -36], [12, 40], [104, 114], [120, 122], [132, 150]]], [-10, [[-78, -36], [13, 40], [142, 150]]],
+    [-15, [[-76, -39], [12, 40], [47, 50], [125, 145]]], [-20, [[-70, -40], [13, 36], [44, 49], [118, 148]]],
+    [-25, [[-70, -48], [15, 35], [44, 47], [114, 153]]], [-30, [[-71, -50], [17, 31], [115, 153]]],
+    [-35, [[-72, -57], [19, 25], [117, 123], [136, 150]]], [-40, [[-73, -62], [145, 148], [173, 177]]],
+    [-45, [[-74, -66], [168, 172]]], [-50, [[-74, -68]]], [-55, [[-70, -66]]]];
+  B.map = (c) => {
+    const w = c.w || 1000, h = Math.round(w * 0.5), id = c.id, at = {}, X = (lon) => ((lon + 180) / 360) * w, Y = (lat) => ((85 - lat) / 150) * h;
+    (c.points || []).forEach((q) => (at[q.id] = q));
+    const routes = (c.routes || []).map(([a, b]) => {
+      const p = at[a], q = at[b], x1 = X(p.lon), y1 = Y(p.lat), x2 = X(q.lon), y2 = Y(q.lat), lift = Math.hypot(x2 - x1, y2 - y1) * 0.32;
+      return `<g data-obj="${id}.r_${a}_${b}"><path class="route" pathLength="1" data-flow-path d="M${x1} ${y1} Q${(x1 + x2) / 2} ${(y1 + y2) / 2 - lift} ${x2} ${y2}"/><circle class="packet" r="10" data-flow-dot/></g>`;
+    }).join("");
+    const pts = (c.points || []).map((q) => `<g data-obj="${id}.p_${q.id}" transform="translate(${X(q.lon)} ${Y(q.lat)})"><circle class="halo" r="24"/><circle class="dot" r="9"/><text y="-34" text-anchor="middle">${esc(q.label || "")}</text></g>`).join("");
+    return [w, h, `<canvas data-obj="${id}.land" width="${w}" height="${h}"></canvas><svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" style="overflow:visible"><defs>${glowDef(id + "-mp", 5)}</defs><g filter="url(#${id}-mp-glow)">${routes}${pts}</g></svg>`];
+  };
+  L.map = (el, c) => {
+    const cv = el.querySelector("canvas"), g = cv.getContext("2d"), w = cv.width, h = cv.height, step = 2.5;
+    g.fillStyle = c.land || "#6f8fc4";
+    for (const [lat, runs] of LAND) for (const dl of [0, -2.5]) for (const [a, b] of runs) for (let lon = a; lon <= b; lon += step) {
+      g.globalAlpha = 0.8; g.beginPath(); g.arc(((lon + 180) / 360) * w, ((85 - (lat + dl)) / 150) * h, w / 400, 0, 6.2832); g.fill();
+    }
+    return () => {};
+  };
+
+  // ---------- numbers, data and UI
+  // a chapter bar pinned to the screen (not the world): highlight on sN marks that chapter reached
+  B.hud = (c) => [c.w || 900, c.h || 60, (c.steps || []).map((l, i) => `<div data-obj="${c.id}.s${i + 1}" class="st"><i></i><span>${esc(l)}</span></div>`).join("")];
+
+  // a ring that fills (grow on "ring") around a number that counts (count on the id)
+  B.gauge = (c) => {
+    const w = c.w || 560, final = (c.prefix || "") + Number(c.value).toLocaleString("en-US", { minimumFractionDigits: c.decimals || 0, maximumFractionDigits: c.decimals || 0 }) + (c.suffix || "");
+    return [w, w, `<svg viewBox="0 0 200 200"><circle class="track" cx="100" cy="100" r="86"/><circle data-obj="${c.id}.ring" class="ring" cx="100" cy="100" r="86" pathLength="1" style="--fill:${c.fill == null ? 0.75 : c.fill}"/></svg>
+      <div class="num" style="font-size:${Math.min(w * 0.24, Math.floor((w * 0.7) / (final.length * 0.6)))}px" data-count data-decimals="${c.decimals || 0}" data-prefix="${esc(c.prefix || "")}" data-suffix="${esc(c.suffix || "")}">${esc(final)}</div>
+      <div data-obj="${c.id}.label" class="label">${esc(c.label || "")}</div>`];
+  };
+
+  // a grid of cells with some of them marked (tests failed, dies on a wafer, pixels on): reveal "marked" on its word
+  B.waffle = (c) => {
+    const w = c.w || 800, rows = c.rows || 10, cols = c.cols || 10, id = c.id, s = w / cols, total = rows * cols;
+    const order = Array.from({ length: total }, (_, i) => i).sort((a, b) => ((a * 7919 + 13) % 104729) - ((b * 7919 + 13) % 104729));
+    const marked = Array.isArray(c.marked) ? c.marked.map((k) => k - 1) : order.slice(0, c.marked || 0);
+    const cell = (i, cls) => `<rect class="${cls}" x="${(i % cols) * s + s * 0.1}" y="${Math.floor(i / cols) * s + s * 0.1}" width="${s * 0.8}" height="${s * 0.8}" rx="${s * 0.16}"/>`;
+    return [w, rows * s + 70, `<svg viewBox="0 0 ${w} ${rows * s}" width="${w}" height="${rows * s}" style="overflow:visible"><defs>${glowDef(id + "-wf", 4)}</defs>
+      <g data-obj="${id}.cells">${order.map((i) => cell(i, "cell")).join("")}</g><g data-obj="${id}.marked" filter="url(#${id}-wf-glow)">${marked.map((i) => cell(i, "on")).join("")}</g></svg>
+      <div data-obj="${id}.label" class="label">${esc(c.label || "")}</div>`];
+  };
+
+  // source code; a line starting "+ " is added, "- " removed; "stamp" lands a verdict across it
+  B.code = (c) => {
+    const w = c.w || 900, lines = c.lines || [], id = c.id, h = c.h || 110 + lines.length * 46;
+    const ls = lines.map((t, i) => {
+      const cls = t.startsWith("+ ") ? "add" : t.startsWith("- ") ? "del" : "";
+      return `<div data-obj="${id}.l${i + 1}" class="ln ${cls}"><b>${cls ? esc(t[0]) : i + 1}</b><span data-text="${esc(cls ? t.slice(2) : t)}">${esc(cls ? t.slice(2) : t)}</span></div>`;
+    }).join("");
+    return [w, h, `<div data-obj="${id}.window" class="window"><div class="bar">${DOTS}<span>${esc(c.file || "")}</span></div><div class="body">${ls}</div></div><div data-obj="${id}.stamp" class="stamp">${esc(c.stamp || "REVIEW")}</div>`];
+  };
+
+  // our own call-to-action card (no platform branding): highlight "follow" presses it, type "comment" writes the keyword
+  B.social = (c) => {
+    const w = c.w || 820, id = c.id, name = c.name || "ForgeReels";
+    return [w, c.h || 330, `<div data-obj="${id}.card" class="card fr-card"></div>
+      <div class="who"><i>${esc(name[0])}</i><div><b>${esc(name)}</b><small>${esc(c.handle || "")}</small></div><span data-obj="${id}.follow" class="follow">${esc(c.button || "Follow")}</span></div>
+      <div data-obj="${id}.comment" class="comment"><span data-text="${esc(c.keyword || "")}">${esc(c.keyword || "")}</span></div>`];
+  };
+
+  // a month: reveal "mark" to ring the days that matter
+  B.calendar = (c) => {
+    const w = c.w || 640, id = c.id, days = c.days || 31, start = c.start || 0, s = (w - 60) / 7, rows = Math.ceil((start + days) / 7);
+    const pos = (d) => [30 + ((start + d - 1) % 7) * s, 150 + Math.floor((start + d - 1) / 7) * s];
+    const cells = Array.from({ length: days }, (_, k) => { const [x, y] = pos(k + 1); return `<span style="left:${x}px;top:${y}px;width:${s}px;height:${s}px;line-height:${s}px">${k + 1}</span>`; }).join("");
+    const rings = (c.mark || []).map((d) => { const [x, y] = pos(d); return `<i style="left:${x + s * 0.1}px;top:${y + s * 0.1}px;width:${s * 0.8}px;height:${s * 0.8}px"></i>`; }).join("");
+    return [w, 180 + rows * s, `<div data-obj="${id}.page" class="page fr-card"><div class="head">${esc(c.title || "")}</div><div class="wd">${["M", "T", "W", "T", "F", "S", "S"].map((d) => `<b style="width:${s}px">${d}</b>`).join("")}</div>${cells}</div><div data-obj="${id}.mark" class="mark">${rings}</div>`];
+  };
+
   B.image = (c) => [c.w || 900, c.h || 600, `<img src="${esc(c.src)}" alt="">`, "fr-image" + (c.card === false ? "" : " fr-card")];
 
   // ---------- mount + render
@@ -292,17 +462,19 @@
     const ww = (scene.world && scene.world.w) || 1080, wh = (scene.world && scene.world.h) || 1920;
     world.style.width = ww + "px"; world.style.height = wh + "px";
     world.innerHTML = '<div class="fr-ground"></div>';
+    const pinned = [];
     for (const c of scene.components || []) {
       const [w, h, html, extra] = B[c.type](c);
       const el = document.createElement("div");
       el.className = "fr-c fr-" + c.type + (extra ? " " + extra : "");
       el.dataset.obj = c.id;
-      Object.assign(el.style, { left: c.x + "px", top: c.y + "px", width: w + "px", height: h + "px" });
+      Object.assign(el.style, { left: (c.x == null ? 90 : c.x) + "px", top: (c.y == null ? 176 : c.y) + "px", width: w + "px", height: h + "px" });
       el.style.setProperty("--w", w + "px");
       el.innerHTML = html;
-      world.appendChild(el);
+      if (c.pinned || c.type === "hud") { el.classList.add("fr-pinned"); pinned.push(el); } else world.appendChild(el);
     }
     stage.appendChild(world);
+    pinned.forEach((el) => stage.appendChild(el));           // screen space: above the world, under the captions
     // ambient particles behind everything: the frame never sits still (scene.ambient: "none" switches them off)
     const amb = scene.ambient === "none" ? null : document.createElement("canvas");
     if (amb) { amb.width = 1080; amb.height = 1920; amb.className = "fr-ambient"; stage.insertBefore(amb, world); }
@@ -313,7 +485,7 @@
     const view = FR.viewFor(scene);
 
     const els = {}, boxes = {}, flows = {};
-    world.querySelectorAll("[data-obj]").forEach((e) => (els[e.dataset.obj] = e));
+    stage.querySelectorAll("[data-obj]").forEach((e) => (els[e.dataset.obj] = e));
     function measure() {
       world.style.transform = "none";
       const wr = world.getBoundingClientRect();
@@ -372,6 +544,7 @@
       }
     }
 
+    const live = (scene.components || []).filter((c) => FR.LIVE[c.type]).map((c) => FR.LIVE[c.type](els[c.id], c, els));
     const seqs = (scene.components || []).filter((c) => c.type === "frames")
       .map((c) => ({ c, img: els[c.id].querySelector("[data-frames]"), shown: -1 }));
 
@@ -406,6 +579,7 @@
       }
       world.style.transform = FR.cameraTransform(st.camera, view);
       for (const id in st.obj) apply(id, st.obj[id]);
+      for (const draw of live) draw(t, st.obj);
       const c = FR.captionAt(t, data.captions);
       // headline: words appear as they are spoken; the word that triggers an animation gets the selection box
       const html = c ? '<div class="pill">' + c.words.map((w) => `<span class="${w.state}${w.key ? " key" : ""}">${esc(w.text)}</span>`).join("") + "</div>" : "";

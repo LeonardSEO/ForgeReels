@@ -33,8 +33,8 @@
   // ---------- components: their animatable parts (pure). renderer.js draws them.
   const n = (k, count) => Array.from({ length: count }, (_, i) => k + (i + 1));
   FR.COMPONENTS = {
-    phone:    { parts: () => ["body", "screen", "ui", "grid", "rows", "cols", "field", "finger", "glass", "notification"],
-                hidden: () => ["grid", "field", "finger", "notification"] },
+    phone:    { parts: () => ["body", "screen", "ui", "grid", "rows", "cols", "glass", "notification"],
+                hidden: () => ["grid", "notification"] },
     browser:  { parts: (s) => ["window", "address", "page", "title", "cursor", ...n("tab", (s.tabs || ["Home"]).length),
                                ...n("r", (s.results || []).length)], hidden: () => ["cursor"] },
     terminal: { parts: (s) => ["window", "cursor", ...n("l", (s.lines || []).length)], hidden: () => [] },
@@ -44,19 +44,34 @@
                 hidden: () => [] },
     document: { parts: (s) => ["page", "title", "source", ...n("l", (s.lines || []).length)], hidden: () => [] },
     chip:     { parts: (s) => ["chip", "label", "pins", ...n("t", s.traces || 6)], hidden: () => [] },
-    stack:    { parts: (s) => n("L", (s.layers || []).length), hidden: () => [] },
     text:     { parts: () => [], hidden: () => [] },
     counter:  { parts: () => ["label"], hidden: () => [] },
     callout:  { parts: () => ["arrow", "label"], hidden: () => [] },
     steps:    { parts: (s) => n("s", (s.steps || []).length), hidden: () => [] },
     frames:   { parts: () => [], hidden: () => [] },
-    lens:     { parts: () => ["glass", "centre", "rim", "label"], hidden: () => [] },
     agent:    { parts: (s) => ["prompt", "input", ...n("s", (s.steps || []).length)], hidden: (s) => n("s", (s.steps || []).length) },
     image:    { parts: () => [], hidden: () => [] },
     // macro kit (renderer.js): lit close-ups that fill the frame
     finger:   { parts: () => ["tip", "print", "ions", "glow"], hidden: () => ["ions", "glow"] },
     section:  { parts: () => ["glass", "field", "electrodes", "pull", "pixels", "charge", "loss", "labels"], hidden: () => ["pull", "loss"] },
     mesh:     { parts: () => ["rows", "cols", "nodes", "sweep", "hot"], hidden: () => ["hot"] },
+    cutaway:  { parts: (s) => n("L", (s.layers || []).length), hidden: () => [] },
+    hand:     { parts: () => ["palm", "fingers", "thumb"], hidden: () => [] },
+    // drawn per topic: an SVG file whose <g id="part"> groups are the parts listed in scene.json
+    svg:      { parts: (s) => s.parts || [], hidden: () => [] },
+    // live components (renderer.js FR.LIVE redraws them every frame from t and their state)
+    swarm:    { parts: () => ["label"], hidden: () => [] },
+    wave:     { parts: (s) => [...n("w", (s.waves || [{}]).length), "sum"], hidden: () => ["sum"] },
+    space:    { parts: (s) => ["axes", ...n("c", (s.clusters || []).length), "arrow"], hidden: () => ["arrow"] },
+    map:      { parts: (s) => ["land", ...(s.points || []).map((x) => "p_" + x.id),
+                               ...(s.routes || []).map(([a, b]) => "r_" + a + "_" + b)], hidden: () => [] },
+    // numbers, data and UI
+    hud:      { parts: (s) => n("s", (s.steps || []).length), hidden: () => [] },
+    gauge:    { parts: () => ["ring", "label"], hidden: () => [] },
+    waffle:   { parts: () => ["cells", "marked", "label"], hidden: () => ["marked"] },
+    code:     { parts: (s) => ["window", ...n("l", (s.lines || []).length), "stamp"], hidden: () => ["stamp"] },
+    social:   { parts: () => ["card", "follow", "comment"], hidden: () => [] },
+    calendar: { parts: () => ["page", "mark"], hidden: () => ["mark"] },
   };
 
   // frames component: which image of the sequence shows after `play` seconds of playback
@@ -75,6 +90,37 @@
       return { x: clamp(x0 + 0.015 * Math.sin(t * 0.6 + sway), 0, 1), y, r: 1 + size * 2.5,
                a: clamp(0.25 + 0.55 * size * (0.6 + 0.4 * Math.sin(t * 1.3 + sway)), 0, 1) };
     });
+  };
+
+  // seeded random numbers (mulberry32): the same picture on every frame and every machine
+  FR.rng = function (seed) {
+    let s = (seed || 1) >>> 0;
+    return () => { s = (s + 0x6D2B79F5) >>> 0; let x = s; x = Math.imul(x ^ (x >>> 15), x | 1);
+      x ^= x + Math.imul(x ^ (x >>> 7), x | 61); return ((x ^ (x >>> 14)) >>> 0) / 4294967296; };
+  };
+  // swarm: where n dots sit (0..1) in a named shape; the renderer blends two shapes by the swarm's `explode`
+  FR.SWARM_SHAPES = ["cloud", "grid", "ring", "stream", "clusters", "column"];
+  FR.swarmLayout = function (name, count, seed) {
+    const r = FR.rng(seed || 7), cols = Math.ceil(Math.sqrt(count)), rows = Math.ceil(count / cols);
+    const gauss = () => Math.sqrt(-2 * Math.log(1 - r() * 0.999)) * Math.cos(6.2832 * r());
+    const centres = [[0.27, 0.3], [0.72, 0.38], [0.45, 0.74]];
+    return Array.from({ length: count }, (_, i) => {
+      let x, y;
+      if (name === "grid") { x = 0.08 + 0.84 * ((i % cols) + 0.5) / cols; y = 0.08 + 0.84 * (Math.floor(i / cols) + 0.5) / rows; }
+      else if (name === "ring") { const a = 6.2832 * i / count, q = 0.36 + 0.05 * r(); x = 0.5 + q * Math.cos(a); y = 0.5 + q * Math.sin(a); }
+      else if (name === "stream") { x = r(); y = 0.5 + 0.13 * gauss(); }
+      else if (name === "clusters") { const k = centres[i % 3]; x = k[0] + 0.07 * gauss(); y = k[1] + 0.07 * gauss(); }
+      else if (name === "column") { x = 0.5 + 0.05 * gauss(); y = 0.06 + 0.88 * r(); }
+      else { x = 0.5 + 0.15 * gauss(); y = 0.5 + 0.15 * gauss(); }
+      return [clamp(x, 0.01, 0.99), clamp(y, 0.01, 0.99)];
+    });
+  };
+  // space: a 3D point (each axis -1..1) turned by yaw around the vertical axis, tilted by pitch -> x, y in -1..1 and depth z
+  FR.project = function (pt, yaw, pitch) {
+    const cy = Math.cos(yaw), sy = Math.sin(yaw), cp = Math.cos(pitch), sp = Math.sin(pitch);
+    const x = pt[0] * cy + pt[2] * sy, z = -pt[0] * sy + pt[2] * cy;
+    const y = pt[1] * cp - z * sp, z2 = pt[1] * sp + z * cp, k = 1 / (1 + 0.22 * z2);
+    return { x: x * k, y: -y * k, z: z2 };
   };
 
   // odometer: which characters of a rolling number already show their final digit (they lock from the left)

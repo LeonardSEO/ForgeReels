@@ -1,0 +1,413 @@
+{
+ "events": [
+  {
+   "word_ref": {
+    "line": 1,
+    "expected": "This"
+   },
+   "action": "type",
+   "object": "title",
+   "offset": -0.1
+  },
+  {
+   "word_ref": {
+    "line": 1,
+    "expected": "kit"
+   },
+   "action": "pulse",
+   "object": "title"
+  },
+  {
+   "word_ref": {
+    "line": 2,
+    "expected": "swarm"
+   },
+   "action": "focus",
+   "object": "swarm",
+   "args": {
+    "zoom": 1.15,
+    "pad": 0
+   }
+  },
+  {
+   "word_ref": {
+    "line": 2,
+    "expected": "swarm"
+   },
+   "action": "highlight",
+   "object": "hud.s1"
+  },
+  {
+   "word_ref": {
+    "line": 2,
+    "expected": "gather"
+   },
+   "action": "explode",
+   "object": "swarm",
+   "dur": 1.4
+  },
+  {
+   "word_ref": {
+    "line": 3,
+    "expected": "wave"
+   },
+   "action": "focus",
+   "object": "wave",
+   "args": {
+    "zoom": 1.1,
+    "pad": 0
+   }
+  },
+  {
+   "word_ref": {
+    "line": 3,
+    "expected": "wave"
+   },
+   "action": "draw",
+   "object": "wave.w1"
+  },
+  {
+   "word_ref": {
+    "line": 3,
+    "expected": "opposite"
+   },
+   "action": "reveal",
+   "object": "wave.w2"
+  },
+  {
+   "word_ref": {
+    "line": 3,
+    "expected": "opposite"
+   },
+   "action": "explode",
+   "object": "wave.w2",
+   "dur": 0.6
+  },
+  {
+   "word_ref": {
+    "line": 3,
+    "expected": "cancel"
+   },
+   "action": "reveal",
+   "object": "wave.sum"
+  },
+  {
+   "word_ref": {
+    "line": 4,
+    "expected": "Points"
+   },
+   "action": "focus",
+   "object": "space",
+   "args": {
+    "zoom": 1.15,
+    "pad": 0
+   }
+  },
+  {
+   "word_ref": {
+    "line": 4,
+    "expected": "Points"
+   },
+   "action": "draw",
+   "object": "space.axes"
+  },
+  {
+   "word_ref": {
+    "line": 4,
+    "expected": "clusters"
+   },
+   "action": "pulse",
+   "object": "space.c1"
+  },
+  {
+   "word_ref": {
+    "line": 4,
+    "expected": "clusters"
+   },
+   "action": "pulse",
+   "object": "space.c2",
+   "offset": 0.15
+  },
+  {
+   "word_ref": {
+    "line": 4,
+    "expected": "arrow"
+   },
+   "action": "reveal",
+   "object": "space.arrow",
+   "dur": 0.2
+  },
+  {
+   "word_ref": {
+    "line": 4,
+    "expected": "arrow"
+   },
+   "action": "draw",
+   "object": "space.arrow"
+  },
+  {
+   "word_ref": {
+    "line": 5,
+    "expected": "map"
+   },
+   "action": "focus",
+   "object": "map",
+   "args": {
+    "zoom": 1.2,
+    "pad": 0
+   }
+  },
+  {
+   "word_ref": {
+    "line": 5,
+    "expected": "map"
+   },
+   "action": "highlight",
+   "object": "hud.s2"
+  },
+  {
+   "word_ref": {
+    "line": 5,
+    "expected": "packet"
+   },
+   "action": "flow",
+   "object": "map.r_a_b",
+   "dur": 1.6
+  },
+  {
+   "word_ref": {
+    "line": 5,
+    "expected": "world"
+   },
+   "action": "pulse",
+   "object": "map.p_b"
+  },
+  {
+   "word_ref": {
+    "line": 6,
+    "expected": "gauge"
+   },
+   "action": "focus",
+   "object": "gauge",
+   "args": {
+    "zoom": 1.2,
+    "pad": 0
+   }
+  },
+  {
+   "word_ref": {
+    "line": 6,
+    "expected": "fills"
+   },
+   "action": "grow",
+   "object": "gauge.ring",
+   "dur": 1.2
+  },
+  {
+   "word_ref": {
+    "line": 6,
+    "expected": "number"
+   },
+   "action": "count",
+   "object": "gauge",
+   "dur": 1.2,
+   "args": {
+    "to": 87
+   }
+  },
+  {
+   "word_ref": {
+    "line": 7,
+    "expected": "grid"
+   },
+   "action": "focus",
+   "object": "waffle",
+   "args": {
+    "zoom": 1.15,
+    "pad": 0
+   }
+  },
+  {
+   "word_ref": {
+    "line": 7,
+    "expected": "cells"
+   },
+   "action": "pulse",
+   "object": "waffle.cells"
+  },
+  {
+   "word_ref": {
+    "line": 7,
+    "expected": "failed"
+   },
+   "action": "reveal",
+   "object": "waffle.marked"
+  },
+  {
+   "word_ref": {
+    "line": 8,
+    "expected": "Code"
+   },
+   "action": "focus",
+   "object": "code",
+   "args": {
+    "zoom": 1.1,
+    "pad": 0
+   }
+  },
+  {
+   "word_ref": {
+    "line": 8,
+    "expected": "line"
+   },
+   "action": "highlight",
+   "object": "code.l2"
+  },
+  {
+   "word_ref": {
+    "line": 8,
+    "expected": "line"
+   },
+   "action": "highlight",
+   "object": "code.l3",
+   "offset": 0.3
+  },
+  {
+   "word_ref": {
+    "line": 8,
+    "expected": "stamp"
+   },
+   "action": "reveal",
+   "object": "code.stamp",
+   "dur": 0.25
+  },
+  {
+   "word_ref": {
+    "line": 9,
+    "expected": "calendar"
+   },
+   "action": "focus",
+   "object": "cal",
+   "args": {
+    "zoom": 1.2,
+    "pad": 0
+   }
+  },
+  {
+   "word_ref": {
+    "line": 9,
+    "expected": "rings"
+   },
+   "action": "reveal",
+   "object": "cal.mark"
+  },
+  {
+   "word_ref": {
+    "line": 10,
+    "expected": "Layers"
+   },
+   "action": "focus",
+   "object": "cut",
+   "args": {
+    "zoom": 1.0,
+    "pad": 120
+   }
+  },
+  {
+   "word_ref": {
+    "line": 10,
+    "expected": "Layers"
+   },
+   "action": "highlight",
+   "object": "hud.s3"
+  },
+  {
+   "word_ref": {
+    "line": 10,
+    "expected": "apart"
+   },
+   "action": "explode",
+   "object": "cut",
+   "dur": 1.0
+  },
+  {
+   "word_ref": {
+    "line": 11,
+    "expected": "drawing"
+   },
+   "action": "focus",
+   "object": "draw",
+   "args": {
+    "zoom": 1.25,
+    "pad": 0
+   }
+  },
+  {
+   "word_ref": {
+    "line": 11,
+    "expected": "moves"
+   },
+   "action": "reveal",
+   "object": "draw.bolt"
+  },
+  {
+   "word_ref": {
+    "line": 11,
+    "expected": "part"
+   },
+   "action": "pulse",
+   "object": "draw.level"
+  },
+  {
+   "word_ref": {
+    "line": 12,
+    "expected": "hand"
+   },
+   "action": "focus",
+   "object": [
+    "phone",
+    "hand"
+   ],
+   "args": {
+    "zoom": 1.1,
+    "pad": 0
+   }
+  },
+  {
+   "word_ref": {
+    "line": 12,
+    "expected": "phone"
+   },
+   "action": "pulse",
+   "object": "phone.screen"
+  },
+  {
+   "word_ref": {
+    "line": 12,
+    "expected": "card"
+   },
+   "action": "focus",
+   "object": "cta",
+   "args": {
+    "zoom": 1.1,
+    "pad": 0
+   }
+  },
+  {
+   "word_ref": {
+    "line": 12,
+    "expected": "card"
+   },
+   "action": "type",
+   "object": "cta.comment"
+  },
+  {
+   "word_ref": {
+    "line": 12,
+    "expected": "follow"
+   },
+   "action": "highlight",
+   "object": "cta.follow"
+  }
+ ]
+}

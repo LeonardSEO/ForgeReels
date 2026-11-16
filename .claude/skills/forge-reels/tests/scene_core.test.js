@@ -81,8 +81,12 @@ test("every component draws exactly the parts core.js says it has", () => {
     phone: {}, browser: { tabs: ["A", "B"], results: ["x", "y", "z"] }, terminal: { lines: ["$ ls", "ok"] },
     nodes: { nodes: [{ id: "a", label: "A", x: 0, y: 0 }, { id: "b", label: "B", x: 300, y: 0 }], links: [["a", "b"]] },
     chart: { bars: [{ value: 1 }, { value: 3 }] }, document: { lines: ["one", "two"] }, chip: { traces: 6 },
-    stack: { layers: [{ label: "Glass" }, { label: "Grid" }] }, text: { text: "Hi" }, counter: { value: 9 },
-    callout: { text: "Here" }, image: { src: "x.png" }, steps: { steps: ["Build", "Ship"] }, frames: { src: "s/%04d.jpg", count: 3 }, lens: {}, agent: { steps: ["a", "b"] }, finger: {}, section: {}, mesh: {},
+    text: { text: "Hi" }, counter: { value: 9 },
+    callout: { text: "Here" }, image: { src: "x.png" }, steps: { steps: ["Build", "Ship"] }, frames: { src: "s/%04d.jpg", count: 3 }, agent: { steps: ["a", "b"] }, finger: {}, section: {}, mesh: {},
+    cutaway: { layers: [{ label: "Glass", kind: "glass" }, { label: "Pixels", kind: "pixels" }] }, hand: {}, svg: { parts: ["a"], svg: '<svg><g id="a"/></svg>' },
+    swarm: {}, wave: { waves: [{}, {}] }, space: { clusters: [{ label: "A", at: [0, 0, 0] }, { label: "B", at: [1, 0, 0] }] },
+    map: { points: [{ id: "a", lon: 0, lat: 0 }, { id: "b", lon: 90, lat: 30 }], routes: [["a", "b"]] }, hud: { steps: ["One", "Two"] },
+    gauge: { value: 5 }, waffle: { marked: 3 }, code: { lines: ["a", "+ b"] }, social: {}, calendar: { mark: [3] },
   };
   assert.deepEqual(Object.keys(samples).sort(), Object.keys(FR.COMPONENTS).sort());
   for (const [type, spec] of Object.entries(samples)) {
@@ -166,9 +170,30 @@ test("frames: a captured image sequence plays from its word and holds its last f
   assert.equal(FR.frameIndex(99, sc.components[0]), 89);
 });
 
-test("lens: parts for the glass profile and the two sets of light rays", () => {
-  assert.deepEqual(FR.parts({ components: [{ type: "lens", id: "lens" }] }).sort(),
-    ["lens", "lens.centre", "lens.glass", "lens.label", "lens.rim"]);
+test("svg: the parts a drawn illustration declares become objects, and the file's groups are wired to them", () => {
+  const c = { type: "svg", id: "d", x: 0, y: 0, parts: ["body", "bolt"], svg: '<?xml version="1.0"?><svg><g id="body"/><g id="bolt"/><g id="other"/></svg>' };
+  assert.deepEqual(FR.parts({ components: [c] }), ["d", "d.body", "d.bolt"]);
+  require("../assets/scene-library/renderer.js");
+  const html = FR.BUILD.svg(c)[2];
+  assert.ok(html.includes('data-obj="d.body"') && html.includes('data-obj="d.bolt"') && html.includes('id="other"') && !html.includes("<?xml"));
+});
+
+test("swarm shapes keep every dot inside the box, a grid is a grid, and the same seed gives the same picture", () => {
+  for (const name of FR.SWARM_SHAPES) {
+    const pts = FR.swarmLayout(name, 120, 3);
+    assert.equal(pts.length, 120);
+    assert.ok(pts.every(([x, y]) => x > 0 && x < 1 && y > 0 && y < 1), name);
+  }
+  const g = FR.swarmLayout("grid", 9, 1);
+  assert.equal(new Set(g.map((q) => q[0].toFixed(3))).size, 3);
+  assert.deepEqual(FR.swarmLayout("cloud", 20, 5), FR.swarmLayout("cloud", 20, 5));
+});
+
+test("space projection: yaw turns x into depth, nearer points draw larger", () => {
+  const a = FR.project([1, 0, 0], 0, 0), b = FR.project([1, 0, 0], Math.PI / 2, 0);
+  assert.ok(Math.abs(a.x - 1) < 1e-9 && Math.abs(a.z) < 1e-9);
+  assert.ok(Math.abs(b.x) < 1e-9 && Math.abs(b.z + 1) < 1e-9);
+  assert.ok(Math.abs(FR.project([0.5, 0, -1], 0, 0).x) > Math.abs(FR.project([0.5, 0, 1], 0, 0).x));
 });
 
 test("frames: file names follow ffmpeg's numbering, which starts at 1 unless the scene says otherwise", () => {

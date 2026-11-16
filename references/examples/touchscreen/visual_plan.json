@@ -5,27 +5,52 @@
     "line": 1,
     "expected": "Your"
    },
-   "action": "reveal",
-   "object": "title"
+   "action": "focus",
+   "object": "fingerA",
+   "dur": 1.6,
+   "args": {
+    "zoom": 1.05,
+    "pad": 40
+   },
+   "offset": -0.17
   },
   {
    "word_ref": {
-    "line": 2,
-    "expected": "Under"
+    "line": 1,
+    "expected": "Your"
    },
-   "action": "focus",
-   "object": "phone",
+   "action": "reveal",
+   "object": "fingerA",
+   "offset": -0.17
+  },
+  {
+   "word_ref": {
+    "line": 1,
+    "expected": "screen"
+   },
+   "action": "pulse",
+   "object": "phone.screen"
+  },
+  {
+   "word_ref": {
+    "line": 1,
+    "expected": "glass"
+   },
+   "action": "move",
+   "object": "fingerA",
+   "dur": 0.35,
    "args": {
-    "pad": 40
+    "dy": 70
    }
   },
   {
    "word_ref": {
-    "line": 2,
-    "expected": "Under"
+    "line": 1,
+    "expected": "glass"
    },
-   "action": "hide",
-   "object": "title"
+   "action": "reveal",
+   "object": "fingerA.glow",
+   "dur": 0.3
   },
   {
    "word_ref": {
@@ -37,19 +62,23 @@
   },
   {
    "word_ref": {
-    "line": 1,
-    "expected": "glass"
+    "line": 2,
+    "expected": "Under"
    },
-   "action": "reveal",
-   "object": "glassTag"
+   "action": "focus",
+   "object": "sec",
+   "args": {
+    "pad": 0,
+    "zoom": 1.7
+   }
   },
   {
    "word_ref": {
     "line": 2,
     "expected": "Under"
    },
-   "action": "hide",
-   "object": "glassTag"
+   "action": "pulse",
+   "object": "sec.glass"
   },
   {
    "word_ref": {
@@ -57,95 +86,86 @@
     "expected": "grid"
    },
    "action": "reveal",
-   "object": "phone.grid",
-   "dur": 0.2
-  },
-  {
-   "word_ref": {
-    "line": 2,
-    "expected": "grid"
-   },
-   "action": "draw",
-   "object": "phone.rows"
+   "object": "sec.electrodes"
   },
   {
    "word_ref": {
     "line": 2,
     "expected": "wires"
    },
+   "action": "focus",
+   "object": "mesh",
+   "args": {
+    "pad": 0,
+    "zoom": 1.35
+   }
+  },
+  {
+   "word_ref": {
+    "line": 3,
+    "expected": "Rows"
+   },
    "action": "draw",
-   "object": "phone.cols"
-  },
-  {
-   "word_ref": {
-    "line": 3,
-    "expected": "Rows"
-   },
-   "action": "pulse",
-   "object": "phone.rows"
-  },
-  {
-   "word_ref": {
-    "line": 3,
-    "expected": "Rows"
-   },
-   "action": "reveal",
-   "object": "rowsTag"
+   "object": "mesh.rows"
   },
   {
    "word_ref": {
     "line": 3,
     "expected": "Columns"
    },
-   "action": "pulse",
-   "object": "phone.cols"
+   "action": "draw",
+   "object": "mesh.cols"
   },
   {
    "word_ref": {
-    "line": 3,
-    "expected": "Columns"
+    "line": 4,
+    "expected": "crossing"
    },
    "action": "reveal",
-   "object": "colsTag"
+   "object": "mesh.nodes"
   },
   {
    "word_ref": {
     "line": 4,
-    "expected": "crossing"
-   },
-   "action": "hide",
-   "object": "rowsTag"
-  },
-  {
-   "word_ref": {
-    "line": 4,
-    "expected": "crossing"
-   },
-   "action": "hide",
-   "object": "colsTag"
-  },
-  {
-   "word_ref": {
-    "line": 4,
-    "expected": "crossing"
+    "expected": "tiny"
    },
    "action": "focus",
-   "object": "phone.screen",
+   "object": "sec",
    "args": {
-    "zoom": 1.25
+    "pad": 0,
+    "zoom": 1.7
    }
+  },
+  {
+   "word_ref": {
+    "line": 4,
+    "expected": "electric"
+   },
+   "action": "draw",
+   "object": "sec.field"
   },
   {
    "word_ref": {
     "line": 4,
     "expected": "charge"
    },
-   "action": "pulse",
-   "object": "phone.grid",
-   "args": {
-    "repeat": 2
+   "action": "reveal",
+   "object": "sec.charge"
+  },
+  {
+   "word_ref": {
+    "line": 5,
+    "expected": "finger"
    },
-   "dur": 1.0
+   "action": "focus",
+   "object": [
+    "fingerB",
+    "sec"
+   ],
+   "args": {
+    "pad": 0,
+    "zoom": 1.35
+   }
   },
   {
    "word_ref": {
@@ -153,7 +173,15 @@
     "expected": "finger"
    },
    "action": "reveal",
-   "object": "phone.finger"
+   "object": "fingerB"
+  },
+  {
+   "word_ref": {
+    "line": 5,
+    "expected": "conducts"
+   },
+   "action": "reveal",
+   "object": "fingerB.ions"
   },
   {
    "word_ref": {
@@ -161,15 +189,47 @@
     "expected": "pulls"
    },
    "action": "reveal",
-   "object": "phone.field"
+   "object": "sec.pull",
+   "dur": 0.2
+  },
+  {
+   "word_ref": {
+    "line": 5,
+    "expected": "pulls"
+   },
+   "action": "draw",
+   "object": "sec.pull"
   },
   {
    "word_ref": {
     "line": 5,
     "expected": "away"
    },
-   "action": "pulse",
-   "object": "phone.field"
+   "action": "hide",
+   "object": "sec.charge"
+  },
+  {
+   "word_ref": {
+    "line": 5,
+    "expected": "away"
+   },
+   "action": "reveal",
+   "object": "sec.loss"
+  },
+  {
+   "word_ref": {
+    "line": 6,
+    "expected": "chip"
+   },
+   "action": "focus",
+   "object": [
+    "mesh",
+    "ic"
+   ],
+   "args": {
+    "zoom": 1.4,
+    "pad": 0
+   }
   },
   {
    "word_ref": {
@@ -182,115 +242,25 @@
   {
    "word_ref": {
     "line": 6,
-    "expected": "chip"
+    "expected": "scans"
    },
-   "action": "focus",
-   "object": "ic",
+   "action": "flow",
+   "object": "mesh.sweep",
+   "dur": 2.4,
    "args": {
-    "pad": 30
+    "repeat": 2
    }
   },
   {
    "word_ref": {
     "line": 6,
-    "expected": "scans"
+    "expected": "times"
    },
    "action": "flow",
    "object": "ic.t1",
    "args": {
-    "repeat": 3
-   },
-   "dur": 1.8
-  },
-  {
-   "word_ref": {
-    "line": 6,
-    "expected": "scans"
-   },
-   "action": "flow",
-   "object": "ic.t2",
-   "args": {
-    "repeat": 3
-   },
-   "dur": 1.8,
-   "offset": 0.1
-  },
-  {
-   "word_ref": {
-    "line": 6,
-    "expected": "scans"
-   },
-   "action": "flow",
-   "object": "ic.t3",
-   "args": {
-    "repeat": 3
-   },
-   "dur": 1.8,
-   "offset": 0.2
-  },
-  {
-   "word_ref": {
-    "line": 6,
-    "expected": "scans"
-   },
-   "action": "flow",
-   "object": "ic.t4",
-   "args": {
-    "repeat": 3
-   },
-   "dur": 1.8,
-   "offset": 0.3
-  },
-  {
-   "word_ref": {
-    "line": 6,
-    "expected": "every"
-   },
-   "action": "flow",
-   "object": "ic.t5",
-   "args": {
-    "repeat": 3
-   },
-   "dur": 1.8
-  },
-  {
-   "word_ref": {
-    "line": 6,
-    "expected": "every"
-   },
-   "action": "flow",
-   "object": "ic.t6",
-   "args": {
-    "repeat": 3
-   },
-   "dur": 1.8,
-   "offset": 0.1
-  },
-  {
-   "word_ref": {
-    "line": 6,
-    "expected": "every"
-   },
-   "action": "flow",
-   "object": "ic.t7",
-   "args": {
-    "repeat": 3
-   },
-   "dur": 1.8,
-   "offset": 0.2
-  },
-  {
-   "word_ref": {
-    "line": 6,
-    "expected": "every"
-   },
-   "action": "flow",
-   "object": "ic.t8",
-   "args": {
-    "repeat": 3
-   },
-   "dur": 1.8,
-   "offset": 0.3
+    "repeat": 2
+   }
   },
   {
    "word_ref": {
@@ -298,18 +268,27 @@
     "expected": "second"
    },
    "action": "pulse",
-   "object": "ic.chip"
+   "object": "mesh.nodes"
   },
   {
    "word_ref": {
     "line": 7,
-    "expected": "crossing"
+    "expected": "most"
    },
    "action": "focus",
-   "object": "phone.screen",
+   "object": "mesh",
    "args": {
-    "zoom": 1.25
+    "pad": 0,
+    "zoom": 1.5
    }
+  },
+  {
+   "word_ref": {
+    "line": 7,
+    "expected": "most"
+   },
+   "action": "reveal",
+   "object": "mesh.hot"
   },
   {
    "word_ref": {
@@ -317,7 +296,8 @@
     "expected": "touched"
    },
    "action": "pulse",
-   "object": "phone.finger",
+   "object": "mesh.hot",
+   "dur": 1.0,
    "args": {
     "repeat": 2
    }
@@ -327,10 +307,37 @@
     "line": 8,
     "expected": "tap"
    },
-   "action": "wide",
-   "object": "phone",
+   "action": "focus",
+   "object": [
+    "phone"
+   ],
    "args": {
-    "pad": 40
+    "zoom": 1.25,
+    "pad": 0
+   }
+  },
+  {
+   "word_ref": {
+    "line": 8,
+    "expected": "tap"
+   },
+   "action": "move",
+   "object": "fingerA",
+   "dur": 0.3,
+   "args": {
+    "dy": -70
+   }
+  },
+  {
+   "word_ref": {
+    "line": 8,
+    "expected": "click"
+   },
+   "action": "move",
+   "object": "fingerA",
+   "dur": 0.25,
+   "args": {
+    "dy": 70
    }
   },
   {
@@ -340,15 +347,6 @@
    },
    "action": "reveal",
    "object": "phone.notification"
-  },
-  {
-   "word_ref": {
-    "line": 8,
-    "expected": "click"
-   },
-   "action": "pulse",
-   "object": "phone.notification",
-   "offset": 0.15
   }
  ]
 }

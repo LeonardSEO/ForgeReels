@@ -7,7 +7,7 @@ visual_plan.json:
   {"events": [
      {"word_ref": {"line": 2, "index": 3, "expected": "glass"}, "action": "reveal", "object": "phone.glass"},
      {"word_ref": {"line": 2, "expected": "grid"},              "action": "draw",   "object": "phone.rows"},
-     {"word_ref": {"expected": "charge", "nth": 1},             "action": "pulse",  "object": "phone.field",
+     {"word_ref": {"expected": "charge", "nth": 1},             "action": "pulse",  "object": "phone.grid",
       "at": "start", "offset": -0.05, "dur": 0.8, "args": {"repeat": 2}},
      {"word_ref": {"line": 5, "expected": "screen"},            "action": "focus",  "object": "phone.screen"}]}
   word_ref: line (1-based) + index (0-based script word, as in words.json from `words.py --align`) + expected; or
@@ -126,6 +126,9 @@ def main():
     a = ap.parse_args()
     pj = pathlib.Path(a.project)
     scene = json.loads((pj / "scene.json").read_text(encoding="utf-8"))
+    for c in scene.get("components", []):           # drawn illustrations: inline the SVG file so its groups can animate
+        if c.get("type") == "svg" and c.get("src") and "svg" not in c:
+            c["svg"] = (pj / c["src"]).read_text(encoding="utf-8")
     plan = json.loads((pj / "visual_plan.json").read_text(encoding="utf-8"))
     words = json.loads((pj / "vo" / "words.json").read_text(encoding="utf-8"))
     parts, dur = runtime_info(pj / "scene.json")

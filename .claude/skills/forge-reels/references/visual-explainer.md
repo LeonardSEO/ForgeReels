@@ -72,25 +72,36 @@ token in `colors` (bg, ink, card, accent, accent2, marker, cap-bg, ...).
 
 | type | spec | parts (object ids are `<id>.<part>`) |
 |---|---|---|
-| `phone` | w, title, items[], touch{x,y}, notification, rows, cols | body, screen, ui, grid, rows, cols, field, finger, glass, notification (grid, field, finger, notification start hidden) |
+| `phone` | w, title, items[], notification, rows, cols | body, screen, ui, grid, rows, cols, glass, notification (grid, notification start hidden). A touch is a `finger` component over it; a `hand` holds it |
 | `browser` | w, h, tabs[], url, title, results[], cursor{x,y} | window, address, page, title, cursor, tab1..N, r1..N |
 | `terminal` | w, lines[] ("$ " = command, "✓" = success) | window, cursor, l1..N |
 | `nodes` | w, h, nodes[{id,label,sub,icon,x,y,color}], links[[a,b]], scale (node size, 1.5 = 45 px labels) | n_<id>, l_<a>_<b> (flow sends a packet along the link) |
 | `chart` | w, h, title, bars[{label,value,decimals,hot}], max, prefix, suffix | title, axis, b1..N (grow), v1..N (count) |
 | `document` | w, h, title, lines[], source | page, title, source, l1..N (highlight marks the line) |
 | `chip` | w, h, label, traces | chip, label, pins, t1..N (flow along each trace) |
-| `stack` | w, layers[{label,color}], gap, step | L1..N (explode / collapse on the stack id) |
-| `text` | w, text, size, weight, color, align | (the id itself; type types it) |
+| `text` | w, text, size, weight, color, align, serif (true = serif italic, for the one emphasis line) | (the id itself; type types it) |
 | `counter` | value, prefix, suffix, decimals, label | label (count on the id) |
 | `callout` | text, to{dx,dy} | arrow (draw), label |
 | `image` | src, w, h, card | (the id itself): real screenshots and product photos |
 | `steps` | w, steps[] | s1..N: a chapter rail; `highlight` on sN marks that chapter reached |
 | `frames` | src ("seq/%04d.jpg"), count, fps, first (1), w, device ("phone") | (the id itself): a captured screen recording; `play` on its word (dur = count / fps) |
-| `lens` | w, h, label | glass, centre, rim, label: how a curved glass edge bends light (draw each) |
 | `agent` | w, folder, prompt, steps[], model | prompt (type), input, s1..N (start hidden; reveal one per word): a coding agent at work |
 | `finger` | w, angle | tip, print, ions (hidden; free + and - charges), glow (hidden; contact light): a lit fingertip, tip at 50 % / 96 % of its box; `move` dy taps it |
 | `section` | w, h, n (electrodes), touch (0-1), note | glass, field (draw), electrodes, pull (hidden; draw: field bends to the finger), pixels, charge, loss (hidden; meters drained near the touch), labels: a magnified cross-section of a touchscreen |
 | `mesh` | w, h, rows, cols, hot[row,col], tilt (deg), perspective | rows, cols (draw), nodes (a light per crossing), sweep (`flow`: a light walks the rows), hot (hidden; ring on one crossing): a sensor grid in perspective |
+| `cutaway` | w, layers[{label, h, kind: solid / glass / pads / pixels / cells, color, n}], gap, spread | L1..N: lit layers seen from the side, labels on the right; `explode` on the id lifts them apart |
+| `hand` | w (the phone's x, y and w; list it AFTER the phone) | palm, fingers, thumb: a hand around the phone |
+| `svg` | src ("art/x.svg": keep drawings outside `assets/`, which is build output), parts[], w, h, hidden[] | the parts you list: every `<g id="part">` of the file animates. THE way to draw a topic's own objects (an earbud, a vault, a battery): draw the file in the macro style, give gradients and filters ids no other file uses |
+| `swarm` | w, h, count, from, to (cloud / grid / ring / stream / clusters / column), colors[], r, label | label: hundreds of dots; `explode` on the id moves them from one shape to the other (`collapse` back) |
+| `wave` | w, h, waves[{amp, freq, phase, color}], speed | w1..N, sum (hidden): travelling waves; `grow` raises one, `explode` flips it upside down, `sum` shows what they add up to |
+| `space` | w, h, clusters[{label, at[x,y,z] (-1..1), n, spread, color}], arrow[a,b], spin, yaw, pitch | axes (draw), c1..N, arrow (hidden; draw): a turning 3D map of points; `explode` on the id presses it flat |
+| `map` | w, points[{id, lon, lat, label}], routes[[a,b]] | land, p_<id>, r_<a>_<b> (`flow` flies a packet along the arc): the world as a dot grid |
+| `hud` | steps[] (pinned to the screen at x 90, y 176 by default) | s1..N: `highlight` marks a chapter reached. Any component takes `pinned: true` to stay in screen space |
+| `gauge` | w, value, prefix, suffix, decimals, fill (0-1), label | ring (`grow` fills it), label; `count` on the id |
+| `waffle` | w, rows, cols, marked (a count or a list of cell numbers), label | cells, marked (hidden), label |
+| `code` | w, file, lines[] ("+ " added, "- " removed), stamp | window, l1..N (highlight), stamp (hidden) |
+| `social` | w, name, handle, button, keyword | card, follow (`highlight` presses it), comment (`type` writes the keyword): our own CTA card, no platform branding |
+| `calendar` | w, title, days, start (0 = Monday), mark[] | page, mark (hidden; rings the days) |
 
 **Macro kit (added 2026-11-16): fill the frame with a lit close-up.** A small flat diagram on an empty stage reads
 as "illustration", a close-up with light, glow and depth reads as "a real thing, magnified". Rules:
@@ -102,6 +113,11 @@ as "illustration", a close-up with light, glow and depth reads as "a real thing,
 - Order the world by the story's direction: "under the glass" sits right below the phone, so the move is short;
   long camera trips show empty frames (the fill check lists them).
 - Honesty label in small mono ("not to scale") on magnified views.
+
+Live components (`swarm`, `wave`, `space`, `map`) also have a `FR.LIVE[type](el, c, els)` in `renderer.js` that returns
+`draw(t, obj)`: it redraws from `t` and the object states on every frame (never from the previous frame).
+Reach for these before a `nodes` diagram: a crowd is a `swarm`, a signal is a `wave`, a place is a `map`, a thing is
+an `svg` drawing. All of them render in `references/examples/kit-gallery` (build it to see each one move).
 
 Add a component: a `parts`/`hidden` entry in `core.js` FR.COMPONENTS and a builder in `renderer.js` FR.BUILD that
 marks every part with `data-obj`; `tests/scene_core.test.js` checks the two agree.

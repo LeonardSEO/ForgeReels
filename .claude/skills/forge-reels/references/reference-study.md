@@ -50,9 +50,9 @@ has them, and never the same three as the previous video (lessons.md lists what 
 | Agent panel at work, steps with file names | keyframes | `agent` component |
 | Odometer counter, scan reveal, strike | keyframes | built |
 | One persistent world that changes (ghosting, cards standing up in front of the model) | styles | world persists; "ghost" focus and returning objects: build when a brief picks it |
-| Progress HUD pinned to the screen, ticking per chapter | styles | `steps` rail exists in the world; screen-pinned: build when picked |
+| Progress HUD pinned to the screen, ticking per chapter | styles | built: `hud` (pinned to the screen), `pinned: true` on any component |
 | Theme flip (dark <-> light) on the turn word | styles | built: `theme` action (Git at AI scale) |
 | Blur dissolve instead of a cut | styles | build when picked |
 | Captions that show the coming words blurred; serif italic key word | styles | build when picked |
-| Number as an event: ring gauge, +delta, context pill | styles | chart + counter used (Git at AI scale); gauge: build when picked |
+| Number as an event: ring gauge, +delta, context pill | styles | chart + counter used (Git at AI scale); `gauge` built |
 | Limits line before the CTA; CTA as a question about the viewer | styles | used (Git at AI scale) |

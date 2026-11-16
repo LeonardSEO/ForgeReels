@@ -1,32 +1,25 @@
 {
- "theme": "light",
+ "theme": "dark",
  "world": {
   "w": 1080,
-  "h": 2050
+  "h": 4900
  },
  "camera": {
   "start": [
-   "title",
-   "phone"
-  ]
+   "fingerA"
+  ],
+  "args": {
+   "zoom": 0.85,
+   "pad": 40
+  }
  },
  "components": [
   {
-   "type": "text",
-   "id": "title",
-   "x": 90,
-   "y": 110,
-   "w": 900,
-   "size": 76,
-   "align": "center",
-   "text": "How your screen finds your finger"
-  },
-  {
    "type": "phone",
    "id": "phone",
-   "x": 330,
-   "y": 330,
-   "w": 420,
+   "x": 160,
+   "y": 300,
+   "w": 760,
    "title": "Messages",
    "items": [
     "Anna",
@@ -35,53 +28,67 @@
     "Delivery"
    ],
    "touch": {
-    "x": 0.62,
-    "y": 0.47
+    "x": 0.55,
+    "y": 0.5
    },
-   "notification": "Tap: row 5, column 3"
+   "notification": "Tap: row 5, column 4"
   },
   {
-   "type": "callout",
-   "id": "glassTag",
-   "x": 900,
-   "y": 470,
-   "text": "Glass",
-   "to": {
-    "dx": -150,
-    "dy": 120
-   }
+   "type": "finger",
+   "id": "fingerA",
+   "x": 318,
+   "y": 385,
+   "w": 520,
+   "angle": -14
   },
   {
-   "type": "callout",
-   "id": "rowsTag",
-   "x": 240,
-   "y": 700,
-   "text": "Rows",
-   "to": {
-    "dx": 170,
-    "dy": 40
-   }
-  },
-  {
-   "type": "callout",
-   "id": "colsTag",
-   "x": 840,
-   "y": 1000,
-   "text": "Columns",
-   "to": {
-    "dx": -160,
-    "dy": -60
-   }
+   "type": "mesh",
+   "id": "mesh",
+   "x": 40,
+   "y": 3100,
+   "w": 1000,
+   "h": 1100,
+   "rows": 8,
+   "cols": 6,
+   "hot": [
+    5,
+    4
+   ],
+   "hidden": [
+    "nodes"
+   ],
+   "tilt": 34
   },
   {
    "type": "chip",
    "id": "ic",
-   "x": 190,
-   "y": 1460,
-   "w": 700,
-   "h": 620,
+   "x": 240,
+   "y": 4120,
+   "w": 600,
+   "h": 520,
    "label": "TOUCH IC",
    "traces": 8,
+   "hidden": true
+  },
+  {
+   "type": "section",
+   "id": "sec",
+   "x": 40,
+   "y": 2150,
+   "w": 1000,
+   "h": 760,
+   "touch": 0.5,
+   "hidden": [
+    "electrodes",
+    "charge"
+   ]
+  },
+  {
+   "type": "finger",
+   "id": "fingerB",
+   "x": 375,
+   "y": 1974,
+   "w": 330,
    "hidden": true
   }
  ]
