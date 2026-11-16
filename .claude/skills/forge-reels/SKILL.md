@@ -13,7 +13,7 @@ every script finds its tools through `scripts/_paths.py` (see `references/toolch
 - each video gets `reels/<yyyy-mm-dd>-<slug>/` and every file for it stays there (brief, sources, script, voice,
   scenes, drafts, QC);
 - the finished video goes to `output/<slug>.mp4`;
-- brand packs are in `brand/<name>/`; reference reels and the three example explainers in `references/`;
+- brand packs are in `brand/<name>/`; reference reels and the example explainers in `references/`;
 - scripts run as `~/forge-reels/venv/bin/python -I .claude/skills/forge-reels/scripts/<script>` from the workspace
   root (`scripts/_paths.py` finds the workspace, the output folder and the other skills).
 

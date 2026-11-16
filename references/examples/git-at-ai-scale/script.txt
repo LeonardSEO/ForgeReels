@@ -1,0 +1,11 @@
+[speed=1.08] Anthropic just stopped using Git. OpenAI kept it. Same problem, opposite answers.
+[speed=1.08] The problem is agents. Anthropic went from twenty-five hundred code merges a day in May to over thirty thousand by September.
+[speed=1.08] Git was built for people on laptops. Here, almost every client is an agent that never goes offline.
+[speed=1.08] So Anthropic built Scion. The server keeps the history and does the commits and merges. Agents just call an API.
+[speed=1.08] A team of seven moved the whole monorepo in five months, on infrastructure two hundred times smaller.
+[speed=1.08] But OpenAI went the other way.
+[speed=1.08] Its engineers and agents still use plain Git. OpenAI rebuilt the server behind it, and called it Pando.
+[speed=1.08] Every branch updates on its own, so pushes to different branches stop waiting. The median push got almost eighty percent faster.
+[speed=1.08] So, is Git finished? No. Anthropic itself says Scion is not a replacement for Git in general.
+[speed=1.08] Both fixes are for thousands of agents on one giant repo. For your team, Git still works fine.
+[speed=1.08] How many agents push to your repo today?

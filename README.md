@@ -121,7 +121,7 @@ ForgeReels/
   reels/            one folder per video: script, voice, scenes, drafts, QC        (stays local)
   output/           finished videos, ready to post                                 (stays local)
   brand/            your brand packs: brand.md, MOTION.md, logos                   (stays local)
-  references/       reels you want to learn from + three example explainers
+  references/       reels you want to learn from + example explainers
 ```
 
 ## Visual explainers
@@ -192,7 +192,7 @@ setup/                    setup-mac.sh, setup-voxcpm.sh, setup-audio.sh, pinned 
   assets/                 scene library (offline explainer runtime + components), fonts
   templates/              reel project, visual explainer, screen walkthrough, brand pack, cartoon avatar
   tests/                  python -I -m unittest discover -s .claude/skills/forge-reels/tests
-references/examples/      three reference explainers (hardware, software UI, AI), also regression tests
+references/examples/      reference explainers (hardware, software UI, AI, an A/B argument), also regression tests
 ```
 
 ## Principles

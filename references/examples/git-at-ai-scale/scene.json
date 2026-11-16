@@ -1,0 +1,382 @@
+{
+ "theme": "dark",
+ "world": {
+  "w": 1080,
+  "h": 8700
+ },
+ "camera": {
+  "start": [
+   "git",
+   "aName",
+   "aLine",
+   "oName",
+   "oLine"
+  ],
+  "args": {
+   "pad": 40
+  }
+ },
+ "components": [
+  {
+   "type": "text",
+   "id": "git",
+   "x": 90,
+   "y": 120,
+   "w": 900,
+   "size": 230,
+   "weight": 850,
+   "align": "center",
+   "text": "git"
+  },
+  {
+   "type": "text",
+   "id": "aName",
+   "x": 70,
+   "y": 470,
+   "w": 450,
+   "size": 80,
+   "weight": 830,
+   "align": "center",
+   "text": "Anthropic"
+  },
+  {
+   "type": "text",
+   "id": "aLine",
+   "x": 70,
+   "y": 580,
+   "w": 450,
+   "size": 60,
+   "weight": 750,
+   "align": "center",
+   "color": "var(--accent)",
+   "text": "Replaced Git",
+   "hidden": true
+  },
+  {
+   "type": "text",
+   "id": "oName",
+   "x": 560,
+   "y": 470,
+   "w": 450,
+   "size": 80,
+   "weight": 830,
+   "align": "center",
+   "text": "OpenAI",
+   "hidden": true
+  },
+  {
+   "type": "text",
+   "id": "oLine",
+   "x": 560,
+   "y": 580,
+   "w": 450,
+   "size": 60,
+   "weight": 750,
+   "align": "center",
+   "color": "var(--accent2)",
+   "text": "Kept Git",
+   "hidden": true
+  },
+  {
+   "type": "chart",
+   "id": "merges",
+   "x": 110,
+   "y": 1300,
+   "w": 860,
+   "h": 760,
+   "title": "Code merges per day, Anthropic",
+   "bars": [
+    {
+     "label": "May 2026",
+     "value": 2500
+    },
+    {
+     "label": "Sep 2026",
+     "value": 30000,
+     "hot": true
+    }
+   ],
+   "max": 30000,
+   "hidden": true
+  },
+  {
+   "type": "text",
+   "id": "mergesSrc",
+   "x": 110,
+   "y": 2090,
+   "w": 860,
+   "size": 30,
+   "weight": 600,
+   "align": "center",
+   "color": "var(--muted)",
+   "text": "anthropic.com/research, Oct 2026",
+   "hidden": true
+  },
+  {
+   "type": "nodes",
+   "id": "who",
+   "x": 90,
+   "y": 2550,
+   "w": 900,
+   "h": 700,
+   "scale": 1.35,
+   "nodes": [
+    {
+     "id": "srv",
+     "label": "Git server",
+     "x": 450,
+     "y": 350,
+     "icon": "G"
+    },
+    {
+     "id": "dev",
+     "label": "Developer",
+     "sub": "on a laptop",
+     "x": 200,
+     "y": 90,
+     "icon": "D"
+    },
+    {
+     "id": "a1",
+     "label": "Agent",
+     "sub": "always on",
+     "x": 700,
+     "y": 90,
+     "icon": "A"
+    },
+    {
+     "id": "a2",
+     "label": "Agent",
+     "sub": "always on",
+     "x": 720,
+     "y": 610,
+     "icon": "A"
+    },
+    {
+     "id": "a3",
+     "label": "Agent",
+     "sub": "always on",
+     "x": 180,
+     "y": 610,
+     "icon": "A"
+    }
+   ],
+   "links": [
+    [
+     "dev",
+     "srv"
+    ],
+    [
+     "a1",
+     "srv"
+    ],
+    [
+     "a2",
+     "srv"
+    ],
+    [
+     "a3",
+     "srv"
+    ]
+   ]
+  },
+  {
+   "type": "counter",
+   "id": "team",
+   "x": 70,
+   "y": 3650,
+   "w": 300,
+   "value": 7,
+   "suffix": "",
+   "label": "people"
+  },
+  {
+   "type": "counter",
+   "id": "months",
+   "x": 390,
+   "y": 3650,
+   "w": 300,
+   "value": 5,
+   "suffix": "",
+   "label": "months"
+  },
+  {
+   "type": "counter",
+   "id": "smaller",
+   "x": 710,
+   "y": 3650,
+   "w": 300,
+   "value": 200,
+   "suffix": "x",
+   "label": "smaller"
+  },
+  {
+   "type": "text",
+   "id": "sTitle",
+   "x": 60,
+   "y": 4250,
+   "w": 440,
+   "size": 40,
+   "weight": 800,
+   "align": "center",
+   "color": "var(--muted)",
+   "text": "ANTHROPIC"
+  },
+  {
+   "type": "nodes",
+   "id": "scion",
+   "x": 60,
+   "y": 4330,
+   "w": 440,
+   "h": 760,
+   "scale": 1.45,
+   "nodes": [
+    {
+     "id": "ag",
+     "label": "Agents",
+     "x": 220,
+     "y": 90,
+     "icon": "A"
+    },
+    {
+     "id": "api",
+     "label": "API",
+     "sub": "no local repo",
+     "x": 220,
+     "y": 380,
+     "icon": "→"
+    },
+    {
+     "id": "core",
+     "label": "Scion",
+     "sub": "history, merges",
+     "x": 220,
+     "y": 670,
+     "icon": "S"
+    }
+   ],
+   "links": [
+    [
+     "ag",
+     "api"
+    ],
+    [
+     "api",
+     "core"
+    ]
+   ]
+  },
+  {
+   "type": "text",
+   "id": "pTitle",
+   "x": 580,
+   "y": 4250,
+   "w": 440,
+   "size": 40,
+   "weight": 800,
+   "align": "center",
+   "color": "var(--muted)",
+   "text": "OPENAI",
+   "hidden": true
+  },
+  {
+   "type": "nodes",
+   "id": "pando",
+   "x": 580,
+   "y": 4330,
+   "w": 440,
+   "h": 760,
+   "scale": 1.45,
+   "hidden": true,
+   "nodes": [
+    {
+     "id": "ag",
+     "label": "Agents",
+     "sub": "and engineers",
+     "x": 220,
+     "y": 90,
+     "icon": "A"
+    },
+    {
+     "id": "git",
+     "label": "Plain Git",
+     "sub": "push, fetch",
+     "x": 220,
+     "y": 380,
+     "icon": "G"
+    },
+    {
+     "id": "core",
+     "label": "Pando",
+     "sub": "new backend",
+     "x": 220,
+     "y": 670,
+     "icon": "P"
+    }
+   ],
+   "links": [
+    [
+     "ag",
+     "git"
+    ],
+    [
+     "git",
+     "core"
+    ]
+   ]
+  },
+  {
+   "type": "terminal",
+   "id": "push",
+   "x": 140,
+   "y": 5600,
+   "w": 800,
+   "lines": [
+    "$ git push origin feature-a",
+    "✓ feature-a updated",
+    "$ git push origin feature-b",
+    "✓ feature-b updated, no queue"
+   ]
+  },
+  {
+   "type": "counter",
+   "id": "latency",
+   "x": 190,
+   "y": 6350,
+   "w": 700,
+   "value": 80,
+   "prefix": "−",
+   "suffix": "%",
+   "label": "median push time"
+  },
+  {
+   "type": "document",
+   "id": "quote",
+   "x": 260,
+   "y": 7150,
+   "w": 560,
+   "h": 470,
+   "title": "Anthropic, about Scion",
+   "hidden": true,
+   "lines": [
+    "“by no means",
+    "a suitable replacement",
+    "for git for",
+    "general use”"
+   ],
+   "source": "anthropic.com/research"
+  },
+  {
+   "type": "text",
+   "id": "cta",
+   "x": 90,
+   "y": 8150,
+   "w": 900,
+   "size": 88,
+   "weight": 820,
+   "align": "center",
+   "text": "How many agents push to your repo today?",
+   "linesHint": 3
+  }
+ ]
+}

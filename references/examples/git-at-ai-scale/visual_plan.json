@@ -1,0 +1,786 @@
+{
+ "events": [
+  {
+   "word_ref": {
+    "line": 1,
+    "expected": "Anthropic"
+   },
+   "action": "focus",
+   "object": [
+    "git",
+    "aName",
+    "aLine",
+    "oName",
+    "oLine"
+   ],
+   "offset": -0.2,
+   "dur": 1.2,
+   "args": {
+    "pad": 30,
+    "ease": "out"
+   }
+  },
+  {
+   "word_ref": {
+    "line": 1,
+    "expected": "stopped"
+   },
+   "action": "reveal",
+   "object": "aLine"
+  },
+  {
+   "word_ref": {
+    "line": 1,
+    "expected": "Git."
+   },
+   "action": "pulse",
+   "object": "git"
+  },
+  {
+   "word_ref": {
+    "line": 1,
+    "expected": "OpenAI"
+   },
+   "action": "reveal",
+   "object": "oName"
+  },
+  {
+   "word_ref": {
+    "line": 1,
+    "expected": "kept"
+   },
+   "action": "reveal",
+   "object": "oLine"
+  },
+  {
+   "word_ref": {
+    "line": 1,
+    "expected": "opposite"
+   },
+   "action": "pulse",
+   "object": "aLine"
+  },
+  {
+   "word_ref": {
+    "line": 1,
+    "expected": "answers."
+   },
+   "action": "pulse",
+   "object": "oLine"
+  },
+  {
+   "word_ref": {
+    "line": 2,
+    "expected": "problem"
+   },
+   "action": "reveal",
+   "object": "merges"
+  },
+  {
+   "word_ref": {
+    "line": 2,
+    "expected": "agents."
+   },
+   "action": "focus",
+   "object": "merges",
+   "args": {
+    "pad": 30
+   }
+  },
+  {
+   "word_ref": {
+    "line": 2,
+    "expected": "twenty-five"
+   },
+   "action": "grow",
+   "object": "merges.b1"
+  },
+  {
+   "word_ref": {
+    "line": 2,
+    "expected": "twenty-five"
+   },
+   "action": "count",
+   "object": "merges.v1",
+   "args": {
+    "to": 2500
+   }
+  },
+  {
+   "word_ref": {
+    "line": 2,
+    "expected": "thirty"
+   },
+   "action": "grow",
+   "object": "merges.b2",
+   "dur": 1.0
+  },
+  {
+   "word_ref": {
+    "line": 2,
+    "expected": "thirty"
+   },
+   "action": "count",
+   "object": "merges.v2",
+   "args": {
+    "to": 30000
+   },
+   "dur": 1.1
+  },
+  {
+   "word_ref": {
+    "line": 2,
+    "expected": "September."
+   },
+   "action": "reveal",
+   "object": "mergesSrc"
+  },
+  {
+   "word_ref": {
+    "line": 2,
+    "expected": "September."
+   },
+   "action": "pulse",
+   "object": "merges.b2"
+  },
+  {
+   "word_ref": {
+    "line": 3,
+    "expected": "built"
+   },
+   "action": "focus",
+   "object": "who",
+   "args": {
+    "pad": 30
+   }
+  },
+  {
+   "word_ref": {
+    "line": 3,
+    "expected": "built"
+   },
+   "action": "reveal",
+   "object": "who.n_srv"
+  },
+  {
+   "word_ref": {
+    "line": 3,
+    "expected": "people"
+   },
+   "action": "reveal",
+   "object": "who.n_dev"
+  },
+  {
+   "word_ref": {
+    "line": 3,
+    "expected": "laptops."
+   },
+   "action": "draw",
+   "object": "who.l_dev_srv"
+  },
+  {
+   "word_ref": {
+    "line": 3,
+    "expected": "every"
+   },
+   "action": "reveal",
+   "object": "who.n_a1"
+  },
+  {
+   "word_ref": {
+    "line": 3,
+    "expected": "every"
+   },
+   "action": "draw",
+   "object": "who.l_a1_srv"
+  },
+  {
+   "word_ref": {
+    "line": 3,
+    "expected": "client"
+   },
+   "action": "reveal",
+   "object": "who.n_a2",
+   "offset": -0.05
+  },
+  {
+   "word_ref": {
+    "line": 3,
+    "expected": "client"
+   },
+   "action": "draw",
+   "object": "who.l_a2_srv",
+   "offset": -0.05
+  },
+  {
+   "word_ref": {
+    "line": 3,
+    "expected": "agent"
+   },
+   "action": "reveal",
+   "object": "who.n_a3"
+  },
+  {
+   "word_ref": {
+    "line": 3,
+    "expected": "agent"
+   },
+   "action": "draw",
+   "object": "who.l_a3_srv"
+  },
+  {
+   "word_ref": {
+    "line": 3,
+    "expected": "never"
+   },
+   "action": "flow",
+   "object": "who.l_a1_srv",
+   "args": {
+    "repeat": 3
+   },
+   "dur": 1.4
+  },
+  {
+   "word_ref": {
+    "line": 3,
+    "expected": "never"
+   },
+   "action": "flow",
+   "object": "who.l_a2_srv",
+   "offset": 0.15,
+   "args": {
+    "repeat": 3
+   },
+   "dur": 1.4
+  },
+  {
+   "word_ref": {
+    "line": 3,
+    "expected": "never"
+   },
+   "action": "flow",
+   "object": "who.l_a3_srv",
+   "offset": 0.3,
+   "args": {
+    "repeat": 3
+   },
+   "dur": 1.4
+  },
+  {
+   "word_ref": {
+    "line": 3,
+    "expected": "offline."
+   },
+   "action": "pulse",
+   "object": "who.n_srv",
+   "args": {
+    "repeat": 2
+   },
+   "dur": 0.9
+  },
+  {
+   "word_ref": {
+    "line": 4,
+    "expected": "built"
+   },
+   "action": "focus",
+   "object": [
+    "sTitle",
+    "scion"
+   ],
+   "args": {
+    "pad": 40
+   }
+  },
+  {
+   "word_ref": {
+    "line": 4,
+    "expected": "Anthropic"
+   },
+   "action": "reveal",
+   "object": "sTitle"
+  },
+  {
+   "word_ref": {
+    "line": 4,
+    "expected": "Scion."
+   },
+   "action": "reveal",
+   "object": "scion.n_core"
+  },
+  {
+   "word_ref": {
+    "line": 4,
+    "expected": "history"
+   },
+   "action": "pulse",
+   "object": "scion.n_core"
+  },
+  {
+   "word_ref": {
+    "line": 4,
+    "expected": "commits"
+   },
+   "action": "pulse",
+   "object": "scion.n_core"
+  },
+  {
+   "word_ref": {
+    "line": 4,
+    "expected": "merges."
+   },
+   "action": "pulse",
+   "object": "scion.n_core"
+  },
+  {
+   "word_ref": {
+    "line": 4,
+    "expected": "Agents"
+   },
+   "action": "reveal",
+   "object": "scion.n_ag"
+  },
+  {
+   "word_ref": {
+    "line": 4,
+    "expected": "call"
+   },
+   "action": "reveal",
+   "object": "scion.n_api"
+  },
+  {
+   "word_ref": {
+    "line": 4,
+    "expected": "call"
+   },
+   "action": "draw",
+   "object": "scion.l_ag_api"
+  },
+  {
+   "word_ref": {
+    "line": 4,
+    "expected": "API."
+   },
+   "action": "draw",
+   "object": "scion.l_api_core"
+  },
+  {
+   "word_ref": {
+    "line": 4,
+    "expected": "API."
+   },
+   "action": "flow",
+   "object": "scion.l_ag_api",
+   "offset": 0.3,
+   "dur": 1.0
+  },
+  {
+   "word_ref": {
+    "line": 5,
+    "expected": "team"
+   },
+   "action": "focus",
+   "object": [
+    "team",
+    "months",
+    "smaller"
+   ],
+   "args": {
+    "pad": 30
+   }
+  },
+  {
+   "word_ref": {
+    "line": 5,
+    "expected": "seven"
+   },
+   "action": "count",
+   "object": "team",
+   "args": {
+    "to": 7
+   },
+   "dur": 0.6
+  },
+  {
+   "word_ref": {
+    "line": 5,
+    "expected": "five"
+   },
+   "action": "count",
+   "object": "months",
+   "args": {
+    "to": 5
+   },
+   "dur": 0.6
+  },
+  {
+   "word_ref": {
+    "line": 5,
+    "expected": "two"
+   },
+   "action": "count",
+   "object": "smaller",
+   "args": {
+    "to": 200
+   },
+   "dur": 1.0
+  },
+  {
+   "word_ref": {
+    "line": 6,
+    "expected": "But"
+   },
+   "action": "theme",
+   "object": "stage",
+   "args": {
+    "to": "light"
+   }
+  },
+  {
+   "word_ref": {
+    "line": 6,
+    "expected": "But"
+   },
+   "action": "focus",
+   "object": [
+    "pTitle",
+    "pando"
+   ],
+   "args": {
+    "pad": 40,
+    "ease": "out"
+   }
+  },
+  {
+   "word_ref": {
+    "line": 6,
+    "expected": "OpenAI"
+   },
+   "action": "reveal",
+   "object": "pTitle"
+  },
+  {
+   "word_ref": {
+    "line": 6,
+    "expected": "OpenAI"
+   },
+   "action": "reveal",
+   "object": "pando"
+  },
+  {
+   "word_ref": {
+    "line": 6,
+    "expected": "other"
+   },
+   "action": "pulse",
+   "object": "pando.n_git"
+  },
+  {
+   "word_ref": {
+    "line": 7,
+    "expected": "agents"
+   },
+   "action": "pulse",
+   "object": "pando.n_ag"
+  },
+  {
+   "word_ref": {
+    "line": 7,
+    "expected": "plain"
+   },
+   "action": "pulse",
+   "object": "pando.n_git"
+  },
+  {
+   "word_ref": {
+    "line": 7,
+    "expected": "Git."
+   },
+   "action": "flow",
+   "object": "pando.l_ag_git",
+   "dur": 0.9
+  },
+  {
+   "word_ref": {
+    "line": 7,
+    "expected": "rebuilt"
+   },
+   "action": "pulse",
+   "object": "pando.n_core"
+  },
+  {
+   "word_ref": {
+    "line": 7,
+    "expected": "server"
+   },
+   "action": "flow",
+   "object": "pando.l_git_core",
+   "dur": 0.9
+  },
+  {
+   "word_ref": {
+    "line": 7,
+    "expected": "Pando."
+   },
+   "action": "pulse",
+   "object": "pando.n_core",
+   "args": {
+    "repeat": 2
+   },
+   "dur": 0.9
+  },
+  {
+   "word_ref": {
+    "line": 8,
+    "expected": "Every"
+   },
+   "action": "focus",
+   "object": "push",
+   "args": {
+    "pad": 30
+   }
+  },
+  {
+   "word_ref": {
+    "line": 8,
+    "expected": "branch"
+   },
+   "action": "type",
+   "object": "push.l1"
+  },
+  {
+   "word_ref": {
+    "line": 8,
+    "expected": "updates"
+   },
+   "action": "type",
+   "object": "push.l2"
+  },
+  {
+   "word_ref": {
+    "line": 8,
+    "expected": "pushes"
+   },
+   "action": "type",
+   "object": "push.l3"
+  },
+  {
+   "word_ref": {
+    "line": 8,
+    "expected": "different"
+   },
+   "action": "type",
+   "object": "push.l4"
+  },
+  {
+   "word_ref": {
+    "line": 8,
+    "expected": "waiting."
+   },
+   "action": "pulse",
+   "object": "push.l4"
+  },
+  {
+   "word_ref": {
+    "line": 8,
+    "expected": "median"
+   },
+   "action": "focus",
+   "object": "latency",
+   "args": {
+    "pad": 40
+   }
+  },
+  {
+   "word_ref": {
+    "line": 8,
+    "expected": "eighty"
+   },
+   "action": "count",
+   "object": "latency",
+   "args": {
+    "to": 80
+   },
+   "dur": 0.9
+  },
+  {
+   "word_ref": {
+    "line": 9,
+    "expected": "So,"
+   },
+   "action": "theme",
+   "object": "stage",
+   "args": {
+    "to": "dark"
+   }
+  },
+  {
+   "word_ref": {
+    "line": 9,
+    "expected": "So,"
+   },
+   "action": "focus",
+   "object": "quote",
+   "args": {
+    "pad": 40,
+    "ease": "out"
+   }
+  },
+  {
+   "word_ref": {
+    "line": 9,
+    "expected": "So,"
+   },
+   "action": "reveal",
+   "object": "quote"
+  },
+  {
+   "word_ref": {
+    "line": 9,
+    "expected": "not"
+   },
+   "action": "highlight",
+   "object": "quote.l1"
+  },
+  {
+   "word_ref": {
+    "line": 9,
+    "expected": "replacement"
+   },
+   "action": "highlight",
+   "object": "quote.l2"
+  },
+  {
+   "word_ref": {
+    "line": 9,
+    "expected": "general."
+   },
+   "action": "highlight",
+   "object": "quote.l3"
+  },
+  {
+   "word_ref": {
+    "line": 10,
+    "expected": "Both"
+   },
+   "action": "focus",
+   "object": [
+    "sTitle",
+    "scion",
+    "pTitle",
+    "pando"
+   ],
+   "args": {
+    "pad": 20
+   }
+  },
+  {
+   "word_ref": {
+    "line": 10,
+    "expected": "thousands"
+   },
+   "action": "pulse",
+   "object": "scion.n_ag"
+  },
+  {
+   "word_ref": {
+    "line": 10,
+    "expected": "thousands"
+   },
+   "action": "pulse",
+   "object": "pando.n_ag",
+   "offset": 0.08
+  },
+  {
+   "word_ref": {
+    "line": 10,
+    "expected": "giant"
+   },
+   "action": "flow",
+   "object": "scion.l_api_core",
+   "dur": 0.9
+  },
+  {
+   "word_ref": {
+    "line": 10,
+    "expected": "giant"
+   },
+   "action": "flow",
+   "object": "pando.l_git_core",
+   "offset": 0.08,
+   "dur": 0.9
+  },
+  {
+   "word_ref": {
+    "line": 10,
+    "expected": "team,"
+   },
+   "action": "pulse",
+   "object": "scion.n_api"
+  },
+  {
+   "word_ref": {
+    "line": 10,
+    "expected": "works"
+   },
+   "action": "pulse",
+   "object": "pando.n_git"
+  },
+  {
+   "word_ref": {
+    "line": 11,
+    "expected": "How"
+   },
+   "action": "focus",
+   "object": "cta",
+   "args": {
+    "pad": 40
+   }
+  },
+  {
+   "word_ref": {
+    "line": 11,
+    "expected": "How"
+   },
+   "action": "type",
+   "object": "cta",
+   "dur": 1.4
+  },
+  {
+   "word_ref": {
+    "line": 6,
+    "expected": "But"
+   },
+   "action": "hide",
+   "object": "team",
+   "offset": -0.15
+  },
+  {
+   "word_ref": {
+    "line": 6,
+    "expected": "But"
+   },
+   "action": "hide",
+   "object": "months",
+   "offset": -0.15
+  },
+  {
+   "word_ref": {
+    "line": 6,
+    "expected": "But"
+   },
+   "action": "hide",
+   "object": "smaller",
+   "offset": -0.15
+  },
+  {
+   "word_ref": {
+    "line": 9,
+    "expected": "So,"
+   },
+   "action": "hide",
+   "object": "latency",
+   "offset": -0.15
+  }
+ ]
+}
